@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		4287FC818DCFF02203B29368 /* libPods.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 6E0FEE483E67B98876C902EC /* libPods.a */; };
+		1B5467CA4D8D013386BBAE27 /* Pods.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 93907A7B14F942F86EB51B2A /* Pods.framework */; };
 		BF4C0F6F1C078B0500374D5B /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF4C0F6E1C078B0500374D5B /* Error.swift */; };
 		BF75B5E31C064011004BFE06 /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF75B5DE1C064011004BFE06 /* Form.swift */; };
 		BF75B5E41C064011004BFE06 /* Headless.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF75B5DF1C064011004BFE06 /* Headless.swift */; };
@@ -25,8 +25,8 @@
 
 /* Begin PBXFileReference section */
 		2ABA87E70CBF613C7E75588B /* Pods.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.release.xcconfig; path = "Pods/Target Support Files/Pods/Pods.release.xcconfig"; sourceTree = "<group>"; };
-		6E0FEE483E67B98876C902EC /* libPods.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libPods.a; sourceTree = BUILT_PRODUCTS_DIR; };
 		769FEB3B3ED44230BF4095F0 /* Pods.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = Pods.debug.xcconfig; path = "Pods/Target Support Files/Pods/Pods.debug.xcconfig"; sourceTree = "<group>"; };
+		93907A7B14F942F86EB51B2A /* Pods.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BF4C0F6E1C078B0500374D5B /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		BF75B5DE1C064011004BFE06 /* Form.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
 		BF75B5DF1C064011004BFE06 /* Headless.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Headless.swift; sourceTree = "<group>"; };
@@ -50,7 +50,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				4287FC818DCFF02203B29368 /* libPods.a in Frameworks */,
+				1B5467CA4D8D013386BBAE27 /* Pods.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -69,7 +69,7 @@
 		B93E0B5227D77A8778E01A88 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				6E0FEE483E67B98876C902EC /* libPods.a */,
+				93907A7B14F942F86EB51B2A /* Pods.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";

@@ -3,6 +3,6 @@ platform :ios, '9.1'
 source 'https://github.com/CocoaPods/Specs.git'
 
 inhibit_all_warnings!
+use_frameworks!
 
-#pod 'Headless', :podspec => '../Headless.podspec'
-pod 'hpple'
+pod 'Headless', :path => '../' 
