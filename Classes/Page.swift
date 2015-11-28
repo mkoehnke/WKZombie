@@ -14,6 +14,10 @@ public class Page : NSObject {
     public private(set) var url : NSURL?
     private var doc : TFHpple!
     
+    public var data: NSData {
+        return doc.data
+    }
+    
     init(data: NSData, url: NSURL? = nil) {
         super.init()
         self.doc = TFHpple(HTMLData: data)
@@ -22,21 +26,21 @@ public class Page : NSObject {
     
     func formWith(name: String) -> Form? {
         if let parsedObject = doc.searchWithXPathQuery("//form[@name='\(name)']").first as? TFHppleElement {
-            return Form(parsedObject: parsedObject)
+            return Form(element: parsedObject)
         }
         return nil
     }
     
     func linkWith(name: String) ->  Link? {
         if let parsedObject = doc.searchWithXPathQuery("//a[text()='\(name)']/@href").first as? TFHppleElement {
-            return Link(parsedObject: parsedObject, baseURL: url?.baseURL ?? url)
+            return Link(element: parsedObject, baseURL: url?.baseURL ?? url)
         }
         return nil
     }
     
-    func elementsWith(criteria: String) -> [Element]? {
-        if let parsedObjects = doc.searchWithXPathQuery(criteria) as? [TFHppleElement] {
-            return parsedObjects.map { Element(parsedObject: $0)! }
+    func elementsWith(xPathQuery: String) -> [Element]? {
+        if let parsedObjects = doc.searchWithXPathQuery(xPathQuery) as? [TFHppleElement] {
+            return parsedObjects.map { Element(element: $0)! }
         }
         return nil
     }

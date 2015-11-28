@@ -7,22 +7,7 @@
 //
 
 import Foundation
-import hpple
 
-public class Element : NSObject {
-    
-    internal var parsedObject : TFHppleElement?
-    
-    public init?(parsedObject: AnyObject) {
-        super.init()
-        if let parsedObject = parsedObject as? TFHppleElement {
-            self.parsedObject = parsedObject
-        } else {
-            return nil
-        }
-    }
-    
-    override public var description : String {
-        return parsedObject?.raw ?? ""
-    }
+public class Element : ParserElement {
+
 }

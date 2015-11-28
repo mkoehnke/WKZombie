@@ -7,14 +7,13 @@
 //
 
 import Foundation
-import hpple
 
 public class Form : Element {
     
     private var inputs = [String : String]()
     
     public var action : String? {
-        return parsedObject?.objectForKey("action")
+        return objectForKey("action")
     }
     
     public var actionRequest : NSURLRequest? {
@@ -22,15 +21,6 @@ public class Form : Element {
             return createURLRequest(action, parameters: inputs)
         }
         return nil
-    }
-    
-    override init?(parsedObject: AnyObject) {
-        super.init(parsedObject: parsedObject)
-        if let parsedObject = self.parsedObject {
-            self.collectInputs(parsedObject)
-        } else {
-            return nil
-        }
     }
  
     subscript(input: String) -> String? {
@@ -42,15 +32,15 @@ public class Form : Element {
         }
     }
     
-    func collectInputs(element: TFHppleElement) {
+    func collectInputs(element: Element) {
         if let tagName = element.tagName as String? where tagName == "input" {
             if let name = element.objectForKey("name") {
                 inputs[name] = element.objectForKey("value")
             }
         }
-        if element.children.count > 0 {
-            for child in element.children {
-                collectInputs(child as! TFHppleElement)
+        if let children = element.children where children.count > 0 {
+            for child in children {
+                collectInputs(child)
             }
         }
     }
