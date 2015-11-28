@@ -105,6 +105,10 @@ extension Future {
     }
 }
 
+//
+// Free Functions
+//
+
 public func repeatUntil<T, E: ErrorType>(initial: T, f: T -> Future<T, E>, condition: T -> Bool) -> Future<[T], E> {
     var values : [T] = [initial]
     func loop(value : T) -> Future<[T], E> {
@@ -145,7 +149,7 @@ internal struct Response {
 }
 
 infix operator >>> { associativity left precedence 150 }
-internal func >>><A, B>(a: Result<A, NetworkErrorDomain>, f: A -> Result<B, NetworkErrorDomain>) -> Result<B, NetworkErrorDomain> {
+internal func >>><A, B>(a: Result<A, Error>, f: A -> Result<B, Error>) -> Result<B, Error> {
     switch a {
     case let .Success(x):   return f(x)
     case let .Error(error): return .Error(error)
@@ -157,7 +161,7 @@ public func >>><T, U, E: ErrorType>(a: Future<T, E>, f: T -> Future<U, E>) -> Fu
 }
 
 
-internal func parseResponse(response: Response) -> Result<NSData, NetworkErrorDomain> {
+internal func parseResponse(response: Response) -> Result<NSData, Error> {
     guard let data = response.data else {
         return .Error(.NetworkRequestFailure)
     }
@@ -169,7 +173,7 @@ internal func parseResponse(response: Response) -> Result<NSData, NetworkErrorDo
     return Result(nil, data)
 }
 
-internal func resultFromOptional<A>(optional: A?, error: NetworkErrorDomain) -> Result<A, NetworkErrorDomain> {
+internal func resultFromOptional<A>(optional: A?, error: Error) -> Result<A, Error> {
     if let a = optional {
         return .Success(a)
     } else {
@@ -177,6 +181,6 @@ internal func resultFromOptional<A>(optional: A?, error: NetworkErrorDomain) -> 
     }
 }
 
-internal func decodeResult(url: NSURL? = nil)(data: NSData?) -> Result<Page, NetworkErrorDomain> {
+internal func decodeResult(url: NSURL? = nil)(data: NSData?) -> Result<Page, Error> {
     return resultFromOptional((data == nil) ? nil : Page(data: data!, url: url), error: .NetworkRequestFailure)
 }

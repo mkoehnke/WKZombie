@@ -13,7 +13,7 @@ public class Link : Element {
     public private(set) var baseURL : NSURL?
 
     public var href : String? {
-        return parsedObject?.text()
+        return text
     }
     
     public var hrefURL : NSURL? {
@@ -26,8 +26,8 @@ public class Link : Element {
         return nil
     }
     
-    public init?(parsedObject: AnyObject, baseURL: NSURL? = nil) {
-        super.init(parsedObject: parsedObject)
+    public init?(element: AnyObject, baseURL: NSURL? = nil) {
+        super.init(element: element)
         self.baseURL = baseURL
     }
     

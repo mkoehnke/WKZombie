@@ -14,11 +14,11 @@ public enum NoError: ErrorType { }
 
 extension NSError: ErrorType { }
 
-public enum NetworkErrorDomain: ErrorType {
+public enum Error: ErrorType {
     case NetworkRequestFailure
 }
 
-extension NetworkErrorDomain: CustomDebugStringConvertible {
+extension Error: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .NetworkRequestFailure: return "NetworkRequestFailure"
