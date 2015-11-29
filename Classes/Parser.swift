@@ -10,14 +10,26 @@ import Foundation
 import hpple
 
 public class Parser : NSObject {
+    
     private var doc : TFHpple?
-    init?(doc: AnyObject) {
+    public private(set) var url : NSURL?
+    
+    init(data: NSData, url: NSURL? = nil) {
         super.init()
-        if let doc = doc as? TFHpple {
-            self.doc = doc
-        } else {
-            return nil
-        }
+        self.doc = TFHpple(HTMLData: data)
+        self.url = url
+    }
+    
+    public func searchWithXPathQuery(xPathOrCSS: String) -> [AnyObject]? {
+        return doc?.searchWithXPathQuery(xPathOrCSS)
+    }
+    
+    public var data: NSData? {
+        return doc?.data
+    }
+    
+    override public var description : String {
+        return (NSString(data: doc?.data ?? NSData(), encoding: NSUTF8StringEncoding) ?? "") as String
     }
 }
 
