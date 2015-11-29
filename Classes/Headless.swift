@@ -21,7 +21,7 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         self.session = NSURLSession(configuration: configuration, delegate: self, delegateQueue: NSOperationQueue.mainQueue())
     }
  
-    public func get(url: NSURL) -> Future<Page, NetworkErrorDomain> {
+    public func get(url: NSURL) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             let task = self.session.dataTaskWithRequest(request) { [unowned self] data, response, error in
@@ -31,7 +31,7 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
 
-    public func submit(form: Form) -> Future<Page, NetworkErrorDomain> {
+    public func submit(form: Form) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
             if let request = form.actionRequest {
                 let task = self.session.dataTaskWithRequest(request) { [unowned self] data, response, error in
@@ -44,7 +44,7 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
     
-    public func click(link : Link) -> Future<Page, NetworkErrorDomain> {
+    public func click(link : Link) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
             if let url = link.hrefURL {
                 let task = self.session.dataTaskWithRequest(NSURLRequest(URL: url)) { [unowned self] data, response, error in
@@ -71,12 +71,12 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
     //
     private var session : NSURLSession!
     
-    private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<Page, NetworkErrorDomain> {
+    private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<Page, Error> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
-        let errorDomain : NetworkErrorDomain? = (error == nil) ? nil : .NetworkRequestFailure
-        let responseResult: Result<Response, NetworkErrorDomain> = Result(errorDomain, Response(data: data, urlResponse: response))
+        let errorDomain : Error? = (error == nil) ? nil : .NetworkRequestFailure
+        let responseResult: Result<Response, Error> = Result(errorDomain, Response(data: data, urlResponse: response))
         return responseResult >>> parseResponse >>> decodeResult(response.URL)
     }
 }
