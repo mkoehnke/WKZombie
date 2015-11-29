@@ -10,15 +10,25 @@ import Foundation
 
 public class Form : Element {
     
+    public private(set) var baseURL : NSURL?
     private var inputs = [String : String]()
+    
+    init?(element: AnyObject, baseURL: NSURL? = nil) {
+        super.init(element: element)
+        if let element = Element(element: element) {
+            self.collectInputs(element)
+            self.baseURL = baseURL
+        }
+    }
     
     public var action : String? {
         return objectForKey("action")
     }
     
     public var actionRequest : NSURLRequest? {
-        if let action = action {
-            return createURLRequest(action, parameters: inputs)
+        let urlString = action ?? baseURL?.absoluteString
+        if let urlString = urlString {
+            return createURLRequest(urlString, parameters: inputs)
         }
         return nil
     }

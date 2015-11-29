@@ -9,38 +9,29 @@
 import Foundation
 import hpple
 
-public class Page : NSObject {
-    
-    public private(set) var url : NSURL?
-    private var doc : TFHpple!
-    
-    public var data: NSData {
-        return doc.data
-    }
-    
-    init(data: NSData, url: NSURL? = nil) {
-        super.init()
-        self.doc = TFHpple(HTMLData: data)
-        self.url = url
-    }
-    
+public class Page : Parser {
+        
     func formWith(name: String) -> Form? {
-        if let parsedObject = doc.searchWithXPathQuery("//form[@name='\(name)']").first as? TFHppleElement {
-            return Form(element: parsedObject)
+        return formsWith("//form[@name='\(name)']")?.first
+    }
+    
+    func formsWith(xPathQuery: String) -> [Form]? {
+        if let parsedObjects = searchWithXPathQuery(xPathQuery) {
+            return parsedObjects.flatMap { Form(element: $0, baseURL: url) }
         }
         return nil
     }
     
     func linkWith(name: String) ->  Link? {
-        if let parsedObject = doc.searchWithXPathQuery("//a[text()='\(name)']/@href").first as? TFHppleElement {
+        if let parsedObject = searchWithXPathQuery("//a[text()='\(name)']/@href")?.first {
             return Link(element: parsedObject, baseURL: url?.baseURL ?? url)
         }
         return nil
     }
     
     func elementsWith(xPathQuery: String) -> [Element]? {
-        if let parsedObjects = doc.searchWithXPathQuery(xPathQuery) as? [TFHppleElement] {
-            return parsedObjects.map { Element(element: $0)! }
+        if let parsedObjects = searchWithXPathQuery(xPathQuery) {
+            return parsedObjects.flatMap { Element(element: $0) }
         }
         return nil
     }

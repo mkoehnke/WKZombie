@@ -71,6 +71,8 @@ public struct Future<T, E: ErrorType> {
 }
 
 extension Future {
+    // TODO - implement flatMap
+    
     public func map<U>(f: T -> U) -> Future<U, E> {
         return Future<U, E>(operation: { completion in
             self.start { result in
@@ -82,7 +84,7 @@ extension Future {
         })
     }
     
-    func mapError<F>(f: E -> F) -> Future<T, F> {
+    public func mapError<F>(f: E -> F) -> Future<T, F> {
         return Future<T, F>(operation: { completion in
             self.start { result in
                 switch result {
@@ -106,30 +108,32 @@ extension Future {
 }
 
 //
-// Free Functions
+// MARK: Repeat andThen
 //
 
-public func repeatUntil<T, E: ErrorType>(initial: T, f: T -> Future<T, E>, condition: T -> Bool) -> Future<[T], E> {
-    var values : [T] = [initial]
-    func loop(value : T) -> Future<[T], E> {
-        if condition(value) == true {
+extension Future {
+    
+    public func andThen(f: T -> Future<T, E>, until: T -> Bool) -> Future<[T], E> {
+        var values = [T]()
+        func loop(future: Future<T, E>) -> Future<[T], E> {
             return Future<[T], E>(operation: { completion in
-                f(value).start({ result in
+                future.start { result in
                     switch result {
                     case .Success(let newValue):
                         values.append(newValue)
-                        loop(newValue).start(completion)
+                        if until(newValue) == true {
+                            loop(f(newValue)).start(completion)
+                        } else {
+                            completion(Result.Success(values))
+                        }
                     case .Error(let error): completion(Result.Error(error))
                     }
-                })
+                }
             })
-        } else {
-            return Future<[T], E>(result: Result.Success(values))
         }
+        return loop(self)
     }
-    return loop(initial)
 }
-
 
 //
 // MARK: Response
@@ -159,7 +163,6 @@ internal func >>><A, B>(a: Result<A, Error>, f: A -> Result<B, Error>) -> Result
 public func >>><T, U, E: ErrorType>(a: Future<T, E>, f: T -> Future<U, E>) -> Future<U, E> {
     return a.andThen(f)
 }
-
 
 internal func parseResponse(response: Response) -> Result<NSData, Error> {
     guard let data = response.data else {
