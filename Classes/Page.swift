@@ -7,7 +7,6 @@
 //
 
 import Foundation
-import hpple
 
 public class Page : Parser {
         
@@ -16,24 +15,30 @@ public class Page : Parser {
     }
     
     func formsWith(xPathQuery: String) -> [Form]? {
-        if let parsedObjects = searchWithXPathQuery(xPathQuery) {
-            return parsedObjects.flatMap { Form(element: $0, baseURL: url) }
-        }
-        return nil
+        return elementsWith(xPathQuery)
     }
     
     func linkWith(name: String) ->  Link? {
-        if let parsedObject = searchWithXPathQuery("//a[text()='\(name)']/@href")?.first {
-            return Link(element: parsedObject, baseURL: url?.baseURL ?? url)
+        return linksWith("//a[text()='\(name)']/@href")?.first
+    }
+    
+    func linksWith(xPathQuery: String) -> [Link]? {
+        return elementsWith(xPathQuery)
+    }
+    
+    func elementsWith<T: Element>(xPathQuery: String) -> [T]? {
+        if let parsedObjects = searchWithXPathQuery(xPathQuery) where parsedObjects.count > 0 {
+            return parsedObjects.flatMap { T(element: $0, pageURL: url) }
         }
         return nil
     }
     
-    func elementsWith(xPathQuery: String) -> [Element]? {
-        if let parsedObjects = searchWithXPathQuery(xPathQuery) {
-            return parsedObjects.flatMap { Element(element: $0) }
-        }
-        return nil
+    func tableWith(name: String) -> Table? {
+        return tablesWith("//table[@name='\(name)']")?.first
+    }
+    
+    func tablesWith(xPathQuery: String) -> [Table]? {
+        return elementsWith(xPathQuery)
     }
     
     // formWith(criteria)

@@ -9,15 +9,13 @@
 import Foundation
 
 public class Form : Element {
-    
-    public private(set) var baseURL : NSURL?
+
     private var inputs = [String : String]()
     
-    init?(element: AnyObject, baseURL: NSURL? = nil) {
-        super.init(element: element)
+    required public init?(element: AnyObject, pageURL: NSURL? = nil) {
+        super.init(element: element, pageURL: pageURL)
         if let element = Element(element: element) {
             self.collectInputs(element)
-            self.baseURL = baseURL
         }
     }
     
@@ -25,12 +23,33 @@ public class Form : Element {
         return objectForKey("action")
     }
     
-    public var actionRequest : NSURLRequest? {
-        let urlString = action ?? baseURL?.absoluteString
-        if let urlString = urlString {
-            return createURLRequest(urlString, parameters: inputs)
+    private var onSubmit : String? {
+        return objectForKey("onSubmit")
+    }
+    
+    public func actionRequest(customURL: NSURL? = nil) -> NSURLRequest? {
+        if let customURL = customURL {
+            return createURLRequest(customURL, parameters: inputs)
+        } else {
+            if hasJavascriptAction() {
+                NSLog("Javascript in HTTP form actions is not supported.")
+                return nil
+            }
+            
+            if let action = action where action.characters.count > 0 {
+                var url : NSURL?
+                if action.lowercaseString.hasPrefix("/") {
+                    url = NSURL(string: action, relativeToURL: pageURL?.baseURL ?? pageURL)
+                } else if action.lowercaseString.hasPrefix("http://") {
+                    url = NSURL(string: action)
+                } else {
+                    url = pageURL?.URLByDeletingLastPathComponent?.URLByAppendingPathComponent(action)
+                }
+                return createURLRequest(url, parameters: inputs)
+            } else {
+                return (pageURL == nil) ? nil : createURLRequest(pageURL!, parameters: inputs)
+            }
         }
-        return nil
     }
  
     subscript(input: String) -> String? {
@@ -55,15 +74,22 @@ public class Form : Element {
         }
     }
 
-    private func createURLRequest(path: String, parameters: [String : String]) -> NSURLRequest? {
-        let request = NSMutableURLRequest(URL: NSURL(string: path)!)
-        request.HTTPMethod = "POST"
-        
-        let keysAndValues = parameters.map {"\($0)=\($1)"}
-        let flatKeysAndValues = keysAndValues.joinWithSeparator("&")
-        let data : NSData! = (flatKeysAndValues as NSString).dataUsingEncoding(NSUTF8StringEncoding)
-        request.HTTPBody = data
-        
-        return request
+    private func createURLRequest(url: NSURL?, parameters: [String : String]) -> NSURLRequest? {
+        if let url = url {
+            let request = NSMutableURLRequest(URL: url)
+            request.encodeParameters(parameters)
+            return request
+        }
+        return nil
+    }
+    
+    private func hasJavascriptAction() -> Bool {
+        if let _ = onSubmit {
+            return true
+        }
+        if let action = action where action.lowercaseString.beginsWith("javascript") {
+            return true
+        }
+        return false
     }
 }
