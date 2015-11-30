@@ -37,10 +37,13 @@ public class Parser : NSObject {
 
 public class ParserElement : NSObject {
     private var element : TFHppleElement?
-    init?(element: AnyObject) {
+    public internal(set) var pageURL : NSURL?
+    
+    required public init?(element: AnyObject, pageURL: NSURL? = nil) {
         super.init()
         if let element = element as? TFHppleElement {
             self.element = element
+            self.pageURL = pageURL
         } else {
             return nil
         }
@@ -59,7 +62,11 @@ public class ParserElement : NSObject {
     }
     
     public var children: [Element]? {
-        return element?.children.flatMap { Element(element:$0) }
+        return element?.children.flatMap { Element(element:$0, pageURL: pageURL) }
+    }
+    
+    public func childrenWithTagName(tagName: String) -> [Element]? {
+        return element?.childrenWithTagName(tagName).flatMap { Element(element: $0, pageURL: pageURL) }
     }
     
     override public var description : String {

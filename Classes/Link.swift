@@ -10,7 +10,9 @@ import Foundation
 
 public class Link : Element {
     
-    public private(set) var baseURL : NSURL?
+    private var baseURL : NSURL? {
+        return pageURL?.baseURL ?? pageURL
+    }
 
     public var href : String? {
         return text
@@ -26,9 +28,8 @@ public class Link : Element {
         return nil
     }
     
-    public init?(element: AnyObject, baseURL: NSURL? = nil) {
-        super.init(element: element)
-        self.baseURL = baseURL
+    public required init?(element: AnyObject, pageURL: NSURL? = nil) {
+        super.init(element: element, pageURL: pageURL)
     }
     
     override public var description : String {
