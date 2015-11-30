@@ -31,9 +31,9 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
 
-    public func submit(form: Form) -> Future<Page, Error> {
+    public func submit(form: Form, url: NSURL? = nil) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
-            if let request = form.actionRequest {
+            if let request = form.actionRequest(url) {
                 let task = self.session.dataTaskWithRequest(request) { [unowned self] data, response, error in
                     completion(self.handleResponse(data, response: response, error: error))
                 }
