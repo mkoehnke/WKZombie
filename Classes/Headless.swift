@@ -22,28 +22,32 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         self.renderer = Renderer()
     }
  
-    public func get(url: NSURL) -> Future<Page, Error> {
+    // MARK: Get Page
+    
+    private func get(url: NSURL, postAction: PostAction? = nil) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
-            self.renderer.renderPageWithRequest(request, completionHandler: { data, response, error in
+            self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
                 completion(self.handleResponse(data as? NSData, response: response, error: error))
             })
         }
     }
+    
+    public func get(url: NSURL, condition: String? = nil) -> Future<Page, Error> {
+        return get(url, postAction: (condition == nil) ? nil : PostAction(type: .Validate, script: condition!))
+    }
 
-    public func get(url: NSURL, condition: String) -> Future<Page, Error> {
-        return Future(error: Error.NetworkRequestFailure)
-    }
-    
     public func get(url: NSURL, wait: NSTimeInterval) -> Future<Page, Error> {
-        return Future(error: Error.NetworkRequestFailure)
+        return get(url, postAction: PostAction(type: .Wait, wait: wait))
     }
     
-    public func submit(form: Form) -> Future<Page, Error> {
+    // MARK: Submit Form
+    
+    private func submit(form: Form, postAction: PostAction? = nil) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
             if let name = form.name {
                 let script = self.formSubmitScript(name, values: form.inputs)
-                self.renderer.executeScript(script, waitForReload: true, completionHandler: { result, response, error in
+                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
                     completion(self.handleResponse(result as? NSData, response: response, error: error))
                 })
             } else {
@@ -52,22 +56,38 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
     
-    public func click(link : Link) -> Future<Page, Error> {
+    public func submit(form: Form, condition: String? = nil) -> Future<Page, Error> {
+        return submit(form, postAction: (condition == nil) ? nil : PostAction(type: .Validate, script: condition!))
+    }
+
+    public func submit(form: Form, wait: NSTimeInterval) -> Future<Page, Error> {
+        return submit(form, postAction: PostAction(type: .Wait, wait: wait))
+    }
+    
+    
+    // MARK: Click Event
+    
+    private func click(link : Link, postAction: PostAction? = nil) -> Future<Page, Error> {
         return Future() { [unowned self] completion in
             if let url = link.href {
                 let script = self.clickLinkScript(url)
-                self.renderer.executeScript(script, waitForReload: true, completionHandler: { result, response, error in
+                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
                     completion(self.handleResponse(result as? NSData, response: response, error: error))
                 })
-                //let task = self.session.dataTaskWithRequest(NSURLRequest(URL: url)) { [unowned self] data, response, error in
-                //    completion(self.handleResponse(data, response: response, error: error))
-                //}
-                //task.resume()
             } else {
                 completion(Result.Error(.NetworkRequestFailure))
             }
         }
     }
+    
+    public func click(link : Link, condition: String? = nil) -> Future<Page, Error> {
+        return click(link, postAction: (condition == nil) ? nil : PostAction(type: .Validate, script: condition!))
+    }
+    
+    public func click(link : Link, wait: NSTimeInterval) -> Future<Page, Error> {
+        return click(link, postAction: PostAction(type: .Wait, wait: wait))
+    }
+    
     
     //
     // MARK: Private

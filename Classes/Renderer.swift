@@ -9,16 +9,40 @@
 import Foundation
 import WebKit
 
+internal enum PostActionType {
+    case Wait
+    case Validate
+}
+
+internal struct PostAction {
+    var type : PostActionType
+    var value : AnyObject
+    
+    init(type: PostActionType, script: String) {
+        self.type = type
+        self.value = script
+    }
+    
+    init(type: PostActionType, wait: NSTimeInterval) {
+        self.type = type
+        self.value = wait
+    }
+}
+
 internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     
     typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
-    //typealias JavaScriptCompletion = (data : AnyObject?, error: NSError?) -> Void
-    
+
     private var renderCompletion : Completion?
     private var renderResponse : NSURLResponse?
     private var renderError : NSError?
     
-    private lazy var webView : WKWebView = {
+    private var postAction: PostAction?
+    private var webView : WKWebView!
+    
+    override init() {
+        super.init()
+        
         let jsScrapingString = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
         
         //Make the script be injected when the main document is done loading
@@ -34,50 +58,49 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         config.userContentController = contentController
         
         //Re-initialize the web view and load the page
-        let instance = WKWebView(frame: CGRectZero, configuration: config)
-        instance.navigationDelegate = self
-        return instance
-    }()
+        webView = WKWebView(frame: CGRectZero, configuration: config)
+        webView.navigationDelegate = self
+        
+        webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
+    }
     
+    deinit {
+        webView.removeObserver(self, forKeyPath: "loading", context: nil)
+    }
     
+    //
+    // MARK: Render Page
+    //
     
-    internal func renderPageWithRequest(request: NSURLRequest, completionHandler: Completion) {
+    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction? = nil, completionHandler: Completion) {
         if let _ = renderCompletion {
             NSLog("Rendering already in progress ...")
             return
         }
-        
-        renderCompletion = completionHandler
-        webView.loadRequest(request)
+        self.postAction = postAction
+        self.renderCompletion = completionHandler
+        self.webView.loadRequest(request)
     }
     
-    internal func renderPageWithRequest(request: NSURLRequest, condition: String, completionHandler: Completion) {
-        // TODO: implement
-    }
+    //
+    // MARK: Execute Script
+    //
     
-    internal func renderPageWithRequest(request: NSURLRequest, wait: NSTimeInterval, completionHandler: Completion) {
-        // TODO: implement
-    }
-    
-    
-    internal func executeScript(script: String, waitForReload: Bool? = false, completionHandler: Completion?) {
-        if let waitForReload = waitForReload where waitForReload == true {
-            renderCompletion = completionHandler
-            webView.evaluateJavaScript(script, completionHandler: nil)
+    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction? = nil, completionHandler: Completion?) {
+        if let _ = renderCompletion {
+            NSLog("Rendering already in progress ...")
+            return
+        }
+        if let willLoadPage = willLoadPage where willLoadPage == true {
+            self.postAction = postAction
+            self.renderCompletion = completionHandler
+            self.webView.evaluateJavaScript(script, completionHandler: nil)
         } else {
             let javaScriptCompletionHandler = { (result : AnyObject?, error : NSError?) -> Void in
                 completionHandler?(result: result, response: nil, error: error)
             }
-            webView.evaluateJavaScript(script, completionHandler: javaScriptCompletionHandler)
+            self.webView.evaluateJavaScript(script, completionHandler: javaScriptCompletionHandler)
         }
-    }
-    
-    internal func executeScript(script: String, waitForReload: Bool? = false, condition: String, completionHandler: Completion?) {
-        // TODO: implement
-    }
-    
-    internal func executeScript(script: String, waitForReload: Bool, waitAfterReload: NSTimeInterval, completionHandler: Completion?) {
-        // TODO: implement
     }
     
     //
@@ -86,12 +109,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         //None of the content loaded after this point is necessary (images, videos, etc.)
-        //webView.stopLoading()
-        
-        //if let _ = renderCompletion {
-        //    print("Received script message: \(message.body)")
-        //    renderResult = message.body as? String
-        //}
+        //print("Received script message: \(message.body)")
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
@@ -120,16 +138,55 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     // TODO: Observe webview.loading for getting a more reliable finished state
     // also check document.readyState == 'complete';
-    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+    func finishedLoading(webView: WKWebView) {
         print("Finish loading")
-        
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(3 * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, dispatch_get_main_queue()) {
-            webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
-                print(result)
-                print("isLoading: \(webView.loading)")
-                self?.callRenderCompletion(result as? String)
+        webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
+            print(result)
+            print("isLoading: \(webView.loading)")
+            self?.callRenderCompletion(result as? String)
+        }
+    }
+    
+    func validate(condition: String, webView: WKWebView) {
+        webView.evaluateJavaScript(condition) { [weak self] result, error in
+            if let result = result as? Bool where result == true {
+                self?.finishedLoading(webView)
+            } else {
+                delay(0.5, completion: {
+                    self?.validate(condition, webView: webView)
+                })
             }
         }
+    }
+    
+    func waitAndFinish(time: NSTimeInterval, webView: WKWebView) {
+        delay(time) {
+            self.finishedLoading(webView)
+        }
+    }
+    
+    // MARK: KVO
+    
+    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
+        if keyPath == "loading" && webView.loading == false {
+            if let postAction = postAction {
+                switch postAction.type {
+                case .Validate: validate(postAction.value as! String, webView: webView)
+                case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
+                }
+                self.postAction = nil
+            } else {
+                validate("document.readyState == 'complete';", webView: webView)
+            }
+        }
+    }
+}
+
+// MARK: Helper
+
+func delay(time: NSTimeInterval, completion: () -> Void) {
+    let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
+    dispatch_after(delayTime, dispatch_get_main_queue()) {
+        completion()
     }
 }
