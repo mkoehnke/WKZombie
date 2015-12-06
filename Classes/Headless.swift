@@ -119,7 +119,7 @@ public class Headless : NSObject {
     private func formSubmitScript(name: String, values: [String: String]?) -> String {
         var script = String()
         for (key, value) in values! {
-            script += "document.\(name).\(key).value='\(value)';\n"
+            script += "document.\(name)['\(key)'].value='\(value)';"
         }
         script += "document.\(name).submit();"
         return script

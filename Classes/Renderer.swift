@@ -33,7 +33,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
     
-    internal var loadMediaContent : Bool = true
+    private var loadMediaContent : Bool = true
     
     private var renderCompletion : Completion?
     private var renderResponse : NSURLResponse?
@@ -104,17 +104,6 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         //None of the content loaded after this point is necessary (images, videos, etc.)
-        if message.name == "doneLoading" && loadMediaContent == false {
-            if let postAction = postAction {
-                switch postAction.type {
-                case .Validate: validate(postAction.value as! String, webView: webView)
-                case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
-                }
-                self.postAction = nil
-            } else {
-                finishedLoading(webView)
-            }
-        }
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
@@ -186,7 +175,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
 
 // MARK: Helper
 
-func delay(time: NSTimeInterval, completion: () -> Void) {
+private func delay(time: NSTimeInterval, completion: () -> Void) {
     let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
     dispatch_after(delayTime, dispatch_get_main_queue()) {
         completion()
