@@ -32,7 +32,9 @@ internal struct PostAction {
 internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     
     typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
-
+    
+    internal var loadMediaContent : Bool = true
+    
     private var renderCompletion : Completion?
     private var renderResponse : NSURLResponse?
     private var renderError : NSError?
@@ -42,7 +44,17 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     override init() {
         super.init()
-        webView = WKWebView(frame: CGRectZero, configuration: WKWebViewConfiguration())
+        let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
+        let userScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
+
+        let contentController = WKUserContentController()
+        contentController.addUserScript(userScript)
+        contentController.addScriptMessageHandler(self, name: "doneLoading")
+        
+        let config = WKWebViewConfiguration()
+        config.userContentController = contentController
+        
+        webView = WKWebView(frame: CGRectZero, configuration: config)
         webView.navigationDelegate = self
         webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
     }
@@ -92,7 +104,17 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         //None of the content loaded after this point is necessary (images, videos, etc.)
-        //print("Received script message: \(message.body)")
+        if message.name == "doneLoading" && loadMediaContent == false {
+            if let postAction = postAction {
+                switch postAction.type {
+                case .Validate: validate(postAction.value as! String, webView: webView)
+                case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
+                }
+                self.postAction = nil
+            } else {
+                finishedLoading(webView)
+            }
+        }
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
