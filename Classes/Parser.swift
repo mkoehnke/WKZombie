@@ -49,6 +49,10 @@ public class ParserElement : NSObject {
         }
     }
     
+    public var innerContent : String? {
+        return element?.raw as String?
+    }
+    
     public var text : String? {
         return element?.text() as String?
     }
@@ -65,12 +69,16 @@ public class ParserElement : NSObject {
         return element?.objectForKey(key) as String?
     }
     
-    public var children: [Element]? {
-        return element?.children.flatMap { Element(element:$0, pageURL: pageURL) }
+    public func childrenWithTagName<T: Element>(tagName: String) -> [T]? {
+        return element?.childrenWithTagName(tagName).flatMap { T(element: $0, pageURL: pageURL) }
+    }
+        
+    public func children<T: Element>() -> [T]? {
+        return element?.children.flatMap { T(element:$0, pageURL: pageURL) }
     }
     
-    public func childrenWithTagName(tagName: String) -> [Element]? {
-        return element?.childrenWithTagName(tagName).flatMap { Element(element: $0, pageURL: pageURL) }
+    public func hasChildren() -> Bool {
+        return element?.hasChildren() ?? false
     }
     
     override public var description : String {

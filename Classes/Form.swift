@@ -71,7 +71,7 @@ public class Form : Element {
                 inputs[name] = element.objectForKey("value")
             }
         }
-        if let children = element.children where children.count > 0 {
+        if let children = element.children() as [Element]? where children.count > 0 {
             for child in children {
                 collectInputs(child)
             }

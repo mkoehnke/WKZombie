@@ -40,17 +40,7 @@ public class Page : Parser {
     func tablesWith(xPathQuery: String) -> [Table]? {
         return elementsWith(xPathQuery)
     }
-    
-    func rowsWith(values: [String : String]) -> [Row]? {
-        let keysAndValues = values.map {"@\($0)='\($1)'"}
-        let joinedKeysAndValues = keysAndValues.joinWithSeparator(" and ")
-        return rows("//td[\(joinedKeysAndValues)]")
-    }
-    
-    func rows(xPathQuery: String) -> [Row]? {
-        return elementsWith(xPathQuery)
-    }
-    
+        
     // formWith(criteria)
     // formsWith(name)
     // frameWith

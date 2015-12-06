@@ -16,12 +16,14 @@ extension NSError: ErrorType { }
 
 public enum Error: ErrorType {
     case NetworkRequestFailure
+    case NotFound
 }
 
 extension Error: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .NetworkRequestFailure: return "NetworkRequestFailure"
+        case .NotFound: return "NotFound"
         }
     }
 }
