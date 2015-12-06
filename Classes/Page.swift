@@ -46,14 +46,14 @@ public class Page : Parser {
         return elementsWithQuery(xPathQuery)
     }
     
-    // MARK: Helper Methods
-    
-    private func elementsWithQuery<T: Element>(xPathQuery: String) -> Result<[T], Error> {
+    public func elementsWithQuery<T: Element>(xPathQuery: String) -> Result<[T], Error> {
         if let parsedObjects = searchWithXPathQuery(xPathQuery) where parsedObjects.count > 0 {
             return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
         }
         return Result.Error(.NotFound)
     }
+    
+    // MARK: Helper Methods
     
     private func firstElementFromResult<T: Element>(result: Result<[T], Error>) -> Result<T, Error> {
         switch result {
