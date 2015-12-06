@@ -42,25 +42,8 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     override init() {
         super.init()
-        
-        let jsScrapingString = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
-        
-        //Make the script be injected when the main document is done loading
-        let userScript = WKUserScript(source: jsScrapingString, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
-        
-        //Create a content controller and add the script and message handler
-        let contentController = WKUserContentController()
-        contentController.addUserScript(userScript)
-        contentController.addScriptMessageHandler(self, name: "doneLoading")
-        
-        //Create a configuration for the web view
-        let config = WKWebViewConfiguration()
-        config.userContentController = contentController
-        
-        //Re-initialize the web view and load the page
-        webView = WKWebView(frame: CGRectZero, configuration: config)
+        webView = WKWebView(frame: CGRectZero, configuration: WKWebViewConfiguration())
         webView.navigationDelegate = self
-        
         webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
     }
     
@@ -135,9 +118,6 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         renderError = nil
     }
     
-    
-    // TODO: Observe webview.loading for getting a more reliable finished state
-    // also check document.readyState == 'complete';
     func finishedLoading(webView: WKWebView) {
         print("Finish loading")
         webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in

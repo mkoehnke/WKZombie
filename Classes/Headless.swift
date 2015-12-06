@@ -9,7 +9,7 @@
 import Foundation
 
 
-public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate {
+public class Headless : NSObject {
     
     private var renderer : Renderer!
     public private(set) var name : String!
