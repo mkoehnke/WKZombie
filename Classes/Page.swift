@@ -10,37 +10,57 @@ import Foundation
 
 public class Page : Parser {
         
-    func formWith(name: String) -> Form? {
-        return formsWith("//form[@name='\(name)']")?.first
+    func formWithName(name: String) -> Result<Form, Error> {
+        return firstElementFromResult(formsWithQuery("//form[@name='\(name)']"))
     }
     
-    func formsWith(xPathQuery: String) -> [Form]? {
-        return elementsWith(xPathQuery)
+    func formsWithQuery(xPathQuery: String) -> Result<[Form], Error> {
+        return elementsWithQuery(xPathQuery)
     }
     
-    func linkWith(name: String) ->  Link? {
-        return linksWith("//a[text()='\(name)']/@href")?.first
+    func linkWithName(name: String) -> Result<Link, Error> {
+        return firstElementFromResult(linksWithQuery("//a[text()='\(name)']/@href"))
     }
     
-    func linksWith(xPathQuery: String) -> [Link]? {
-        return elementsWith(xPathQuery)
+    func firstLinkWithAttribute(key: String, value: String) -> Result<Link, Error> {
+        return firstElementFromResult(linksWithAttribute(key, value: value))
     }
     
-    func elementsWith<T: Element>(xPathQuery: String) -> [T]? {
+    func linksWithAttribute(key: String, value: String) -> Result<[Link], Error> {
+        return linksWithQuery("//a[@\(key)='\(value)']/@href")
+    }
+    
+    func linksWithQuery(xPathQuery: String) -> Result<[Link], Error> {
+        return elementsWithQuery(xPathQuery)
+    }
+    
+    func elementsWithQuery<T: Element>(xPathQuery: String) -> Result<[T], Error> {
         if let parsedObjects = searchWithXPathQuery(xPathQuery) where parsedObjects.count > 0 {
-            return parsedObjects.flatMap { T(element: $0, pageURL: url) }
+            return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
         }
-        return nil
+        return Result.Error(.NotFound)
     }
     
-    func tableWith(name: String) -> Table? {
-        return tablesWith("//table[@name='\(name)']")?.first
+    func firstTableWithAttribute(key: String, value: String) -> Result<Table, Error> {
+        return firstElementFromResult(tablesWithAttribute(key, value: value))
     }
     
-    func tablesWith(xPathQuery: String) -> [Table]? {
-        return elementsWith(xPathQuery)
+    func tablesWithAttribute(key: String, value: String) -> Result<[Table], Error> {
+        return tablesWithQuery("//table[@\(key)='\(value)']")
     }
-        
+    
+    func tablesWithQuery(xPathQuery: String) -> Result<[Table], Error> {
+        return elementsWithQuery(xPathQuery)
+    }
+    
+    
+    private func firstElementFromResult<T: Element>(result: Result<[T], Error>) -> Result<T, Error> {
+        switch result {
+        case .Success(let result): return resultFromOptional(result.first, error: .NotFound)
+        case .Error(let error): return Result.Error(error)
+        }
+    }
+    
     // formWith(criteria)
     // formsWith(name)
     // frameWith

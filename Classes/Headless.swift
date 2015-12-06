@@ -33,11 +33,15 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
     
-    public func get(url: NSURL, condition: String? = nil) -> Future<Page, Error> {
-        return get(url, postAction: (condition == nil) ? nil : PostAction(type: .Validate, script: condition!))
+    public func get(url: NSURL) -> Future<Page, Error> {
+        return get(url, postAction: nil)
+    }
+    
+    public func get(condition: String)(url: NSURL) -> Future<Page, Error> {
+        return get(url, postAction: PostAction(type: .Validate, script: condition))
     }
 
-    public func get(url: NSURL, wait: NSTimeInterval) -> Future<Page, Error> {
+    public func get(wait: NSTimeInterval)(url: NSURL) -> Future<Page, Error> {
         return get(url, postAction: PostAction(type: .Wait, wait: wait))
     }
     
@@ -56,11 +60,15 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
     
-    public func submit(form: Form, condition: String? = nil) -> Future<Page, Error> {
-        return submit(form, postAction: (condition == nil) ? nil : PostAction(type: .Validate, script: condition!))
+    public func submit(form: Form) -> Future<Page, Error> {
+        return submit(form, postAction: nil)
+    }
+    
+    public func submit(condition: String)(form: Form) -> Future<Page, Error> {
+        return submit(form, postAction: PostAction(type: .Validate, script: condition))
     }
 
-    public func submit(form: Form, wait: NSTimeInterval) -> Future<Page, Error> {
+    public func submit(wait: NSTimeInterval)(form: Form) -> Future<Page, Error> {
         return submit(form, postAction: PostAction(type: .Wait, wait: wait))
     }
     
@@ -80,11 +88,15 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
         }
     }
     
-    public func click(link : Link, condition: String? = nil) -> Future<Page, Error> {
-        return click(link, postAction: (condition == nil) ? nil : PostAction(type: .Validate, script: condition!))
+    public func click(link : Link) -> Future<Page, Error> {
+        return click(link, postAction: nil)
     }
     
-    public func click(link : Link, wait: NSTimeInterval) -> Future<Page, Error> {
+    public func click(condition: String)(link : Link) -> Future<Page, Error> {
+        return click(link, postAction: PostAction(type: .Validate, script: condition))
+    }
+    
+    public func click(wait: NSTimeInterval)(link : Link) -> Future<Page, Error> {
         return click(link, postAction: PostAction(type: .Wait, wait: wait))
     }
     

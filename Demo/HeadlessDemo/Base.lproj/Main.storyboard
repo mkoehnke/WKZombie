@@ -103,6 +103,7 @@
                     </navigationItem>
                     <connections>
                         <outlet property="activityIndicator" destination="Jx9-9E-Nb1" id="6og-gy-uox"/>
+                        <outlet property="loginButton" destination="qgq-1m-uzi" id="IZW-sJ-Jcd"/>
                         <outlet property="nameTextField" destination="hHv-Nx-gKF" id="9TH-ea-1Ii"/>
                         <outlet property="passwordTextField" destination="V0q-Fh-Rsg" id="C7f-6W-1jA"/>
                         <segue destination="I9d-4F-Hou" kind="show" identifier="detailSegue" id="Cgk-gO-suG"/>
