@@ -45,7 +45,7 @@ class LoginViewController : UIViewController {
         if let form = page.formWith("form2") {
             form["appleId"] = nameTextField.text
             form["accountPassword"] = passwordTextField.text
-            return headless.submit(form, wait: 1.5)
+            return headless.submit(form, wait: 2.0)
         }
         return Future(error: Error.NetworkRequestFailure)
     }
