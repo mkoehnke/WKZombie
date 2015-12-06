@@ -31,7 +31,7 @@ public class Form : Element {
         return objectForKey("name")
     }
      
-    subscript(input: String) -> String? {
+    public subscript(input: String) -> String? {
         get {
             return inputs[input]
         }
