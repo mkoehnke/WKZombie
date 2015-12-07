@@ -46,7 +46,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         super.init()
         let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
         let userScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
-
+        
         let contentController = WKUserContentController()
         contentController.addUserScript(userScript)
         contentController.addScriptMessageHandler(self, name: "doneLoading")
@@ -105,15 +105,10 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         //None of the content loaded after this point is necessary (images, videos, etc.)
         if message.name == "doneLoading" && loadMediaContent == false {
-            webView.stopLoading()
             if let url = webView.URL where renderResponse == nil {
                 renderResponse = NSHTTPURLResponse(URL: url, statusCode: 200, HTTPVersion: nil, headerFields: nil)
             }
-            if let postAction = postAction {
-                handlePostAction(postAction)
-            } else {
-                finishedLoading(webView)
-            }
+            webView.stopLoading()
         }
     }
     
@@ -125,10 +120,13 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     }
     
     func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        if let _ = renderCompletion {
-            renderError = error
+        if let renderResponse = renderResponse as? NSHTTPURLResponse, _ = renderCompletion {
+            let successRange = 200..<300
+            if !successRange.contains(renderResponse.statusCode) {
+                renderError = error
+                callRenderCompletion(nil)
+            }
         }
-        callRenderCompletion(nil)
     }
     
     private func callRenderCompletion(renderResult: String?) {
@@ -180,7 +178,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
             if let postAction = postAction {
                 handlePostAction(postAction)
             } else {
-                validate("document.readyState == 'complete';", webView: webView)
+                finishedLoading(webView)
             }
         }
     }
