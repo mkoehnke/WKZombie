@@ -33,7 +33,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
     
-    private var loadMediaContent : Bool = true
+    var loadMediaContent : Bool = true
     
     private var renderCompletion : Completion?
     private var renderResponse : NSURLResponse?
@@ -104,6 +104,17 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         //None of the content loaded after this point is necessary (images, videos, etc.)
+        if message.name == "doneLoading" && loadMediaContent == false {
+            webView.stopLoading()
+            if let url = webView.URL where renderResponse == nil {
+                renderResponse = NSHTTPURLResponse(URL: url, statusCode: 200, HTTPVersion: nil, headerFields: nil)
+            }
+            if let postAction = postAction {
+                handlePostAction(postAction)
+            } else {
+                finishedLoading(webView)
+            }
+        }
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
@@ -130,10 +141,8 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     }
     
     func finishedLoading(webView: WKWebView) {
-        print("Finish loading")
         webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
             print(result)
-            print("isLoading: \(webView.loading)")
             self?.callRenderCompletion(result as? String)
         }
     }
@@ -156,16 +165,20 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         }
     }
     
+    func handlePostAction(postAction: PostAction) {
+        switch postAction.type {
+        case .Validate: validate(postAction.value as! String, webView: webView)
+        case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
+        }
+        self.postAction = nil
+    }
+    
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "loading" && webView.loading == false {
             if let postAction = postAction {
-                switch postAction.type {
-                case .Validate: validate(postAction.value as! String, webView: webView)
-                case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
-                }
-                self.postAction = nil
+                handlePostAction(postAction)
             } else {
                 validate("document.readyState == 'complete';", webView: webView)
             }
