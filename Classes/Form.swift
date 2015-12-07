@@ -30,33 +30,8 @@ public class Form : Element {
     public var name : String? {
         return objectForKey("name")
     }
-    
-    public func actionRequest(customURL: NSURL? = nil) -> NSURLRequest? {
-        if let customURL = customURL {
-            return createURLRequest(customURL, parameters: inputs)
-        } else {
-            if hasJavascriptAction() {
-                NSLog("Javascript in HTTP form actions is not supported.")
-                return nil
-            }
-            
-            if let action = action where action.characters.count > 0 {
-                var url : NSURL?
-                if action.lowercaseString.hasPrefix("/") {
-                    url = NSURL(string: action, relativeToURL: pageURL?.baseURL ?? pageURL)
-                } else if action.lowercaseString.hasPrefix("http://") {
-                    url = NSURL(string: action)
-                } else {
-                    url = pageURL?.URLByDeletingLastPathComponent?.URLByAppendingPathComponent(action)
-                }
-                return createURLRequest(url, parameters: inputs)
-            } else {
-                return (pageURL == nil) ? nil : createURLRequest(pageURL!, parameters: inputs)
-            }
-        }
-    }
- 
-    subscript(input: String) -> String? {
+     
+    public subscript(input: String) -> String? {
         get {
             return inputs[input]
         }
@@ -65,7 +40,7 @@ public class Form : Element {
         }
     }
     
-    func collectInputs(element: Element) {
+    private func collectInputs(element: Element) {
         if let tagName = element.tagName as String? where tagName == "input" {
             if let name = element.objectForKey("name") {
                 inputs[name] = element.objectForKey("value")
@@ -76,24 +51,5 @@ public class Form : Element {
                 collectInputs(child)
             }
         }
-    }
-
-    private func createURLRequest(url: NSURL?, parameters: [String : String]) -> NSURLRequest? {
-        if let url = url {
-            let request = NSMutableURLRequest(URL: url)
-            request.encodeParameters(parameters)
-            return request
-        }
-        return nil
-    }
-    
-    private func hasJavascriptAction() -> Bool {
-        if let _ = onSubmit {
-            return true
-        }
-        if let action = action where action.lowercaseString.beginsWith("javascript") {
-            return true
-        }
-        return false
     }
 }

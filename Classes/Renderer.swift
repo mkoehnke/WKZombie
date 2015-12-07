@@ -32,7 +32,9 @@ internal struct PostAction {
 internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate {
     
     typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
-
+    
+    var loadMediaContent : Bool = true
+    
     private var renderCompletion : Completion?
     private var renderResponse : NSURLResponse?
     private var renderError : NSError?
@@ -42,25 +44,18 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     override init() {
         super.init()
+        let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
+        let userScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
         
-        let jsScrapingString = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
-        
-        //Make the script be injected when the main document is done loading
-        let userScript = WKUserScript(source: jsScrapingString, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
-        
-        //Create a content controller and add the script and message handler
         let contentController = WKUserContentController()
         contentController.addUserScript(userScript)
         contentController.addScriptMessageHandler(self, name: "doneLoading")
         
-        //Create a configuration for the web view
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
         
-        //Re-initialize the web view and load the page
         webView = WKWebView(frame: CGRectZero, configuration: config)
         webView.navigationDelegate = self
-        
         webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
     }
     
@@ -109,7 +104,12 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     func userContentController(userContentController: WKUserContentController, didReceiveScriptMessage message: WKScriptMessage) {
         //None of the content loaded after this point is necessary (images, videos, etc.)
-        //print("Received script message: \(message.body)")
+        if message.name == "doneLoading" && loadMediaContent == false {
+            if let url = webView.URL where renderResponse == nil {
+                renderResponse = NSHTTPURLResponse(URL: url, statusCode: 200, HTTPVersion: nil, headerFields: nil)
+            }
+            webView.stopLoading()
+        }
     }
     
     func webView(webView: WKWebView, decidePolicyForNavigationResponse navigationResponse: WKNavigationResponse, decisionHandler: (WKNavigationResponsePolicy) -> Void) {
@@ -120,10 +120,13 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     }
     
     func webView(webView: WKWebView, didFailNavigation navigation: WKNavigation!, withError error: NSError) {
-        if let _ = renderCompletion {
-            renderError = error
+        if let renderResponse = renderResponse as? NSHTTPURLResponse, _ = renderCompletion {
+            let successRange = 200..<300
+            if !successRange.contains(renderResponse.statusCode) {
+                renderError = error
+                callRenderCompletion(nil)
+            }
         }
-        callRenderCompletion(nil)
     }
     
     private func callRenderCompletion(renderResult: String?) {
@@ -135,14 +138,9 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         renderError = nil
     }
     
-    
-    // TODO: Observe webview.loading for getting a more reliable finished state
-    // also check document.readyState == 'complete';
     func finishedLoading(webView: WKWebView) {
-        print("Finish loading")
         webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
             print(result)
-            print("isLoading: \(webView.loading)")
             self?.callRenderCompletion(result as? String)
         }
     }
@@ -165,18 +163,22 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         }
     }
     
+    func handlePostAction(postAction: PostAction) {
+        switch postAction.type {
+        case .Validate: validate(postAction.value as! String, webView: webView)
+        case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
+        }
+        self.postAction = nil
+    }
+    
     // MARK: KVO
     
     override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
         if keyPath == "loading" && webView.loading == false {
             if let postAction = postAction {
-                switch postAction.type {
-                case .Validate: validate(postAction.value as! String, webView: webView)
-                case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
-                }
-                self.postAction = nil
+                handlePostAction(postAction)
             } else {
-                validate("document.readyState == 'complete';", webView: webView)
+                finishedLoading(webView)
             }
         }
     }
@@ -184,7 +186,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
 
 // MARK: Helper
 
-func delay(time: NSTimeInterval, completion: () -> Void) {
+private func delay(time: NSTimeInterval, completion: () -> Void) {
     let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
     dispatch_after(delayTime, dispatch_get_main_queue()) {
         completion()

@@ -9,12 +9,17 @@
 import Foundation
 
 
-public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate {
+public class Headless : NSObject {
     
     private var renderer : Renderer!
+    
     public private(set) var name : String!
     public var allowRedirects : Bool = true
-    
+    public var loadMediaContent : Bool = true {
+        didSet {
+            renderer.loadMediaContent = loadMediaContent
+        }
+    }
     
     public init(name: String? = "Headless") {
         super.init()
@@ -119,7 +124,7 @@ public class Headless : NSObject, NSURLSessionDelegate, NSURLSessionTaskDelegate
     private func formSubmitScript(name: String, values: [String: String]?) -> String {
         var script = String()
         for (key, value) in values! {
-            script += "document.\(name).\(key).value='\(value)';\n"
+            script += "document.\(name)['\(key)'].value='\(value)';"
         }
         script += "document.\(name).submit();"
         return script
