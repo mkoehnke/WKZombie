@@ -12,9 +12,14 @@ import Foundation
 public class Headless : NSObject {
     
     private var renderer : Renderer!
+    
     public private(set) var name : String!
     public var allowRedirects : Bool = true
-    
+    public var loadMediaContent : Bool = true {
+        didSet {
+            renderer.loadMediaContent = loadMediaContent
+        }
+    }
     
     public init(name: String? = "Headless") {
         super.init()
