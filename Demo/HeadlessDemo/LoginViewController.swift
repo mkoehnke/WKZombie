@@ -34,11 +34,11 @@ class LoginViewController : UIViewController {
     
     // MARK: HTML Navigation
     
-    func getProvisioningProfiles(url: NSURL) -> Future<Table, Error> {
+    func getProvisioningProfiles(url: NSURL) -> Future<HTMLTable, Error> {
         return headless.get(url) >>> submitLoginForm >>> getAccountOverview >>> getProfilesPage >>> getProfilesTable
     }
     
-    func submitLoginForm(page: Page) -> Future<Page, Error> {
+    func submitLoginForm(page: HTMLPage) -> Future<HTMLPage, Error> {
         let result = page.formWithName("form2")
         switch result {
         case .Success(let form):
@@ -49,23 +49,23 @@ class LoginViewController : UIViewController {
         }
     }
     
-    func getAccountOverview(page: Page) -> Future<Page, Error> {
+    func getAccountOverview(page: HTMLPage) -> Future<HTMLPage, Error> {
         let link = Future(result: page.firstLinkWithAttribute("href", value: "/account/"))
         return link >>> headless.click
     }
     
-    func getProfilesPage(page: Page) -> Future<Page, Error> {
+    func getProfilesPage(page: HTMLPage) -> Future<HTMLPage, Error> {
         let link = Future(result: page.firstLinkWithAttribute("href", value: "/account/ios/profile/profileList.action"))
         return link >>> headless.click(0.5)
     }
     
-    func getProfilesTable(page: Page) -> Future<Table, Error> {
+    func getProfilesTable(page: HTMLPage) -> Future<HTMLTable, Error> {
         return Future(result: page.firstTableWithAttribute("id", value: "grid-table"))
     }
     
     // MARK: Handle Result
     
-    func handleSuccess(table: Table) {
+    func handleSuccess(table: HTMLTable) {
         let columns = table.columnsWithPattern("aria-describedby", value: "grid-table_name")
         performSegueWithIdentifier("detailSegue", sender: columns)
     }
@@ -81,7 +81,7 @@ class LoginViewController : UIViewController {
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "detailSegue" {
             let vc = segue.destinationViewController as? ViewController
-            vc?.items = sender as? [TableColumn]
+            vc?.items = sender as? [HTMLTableColumn]
         }
     }
 }

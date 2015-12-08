@@ -29,7 +29,7 @@ public class Headless : NSObject {
  
     // MARK: Get Page
     
-    private func get(url: NSURL, postAction: PostAction? = nil) -> Future<Page, Error> {
+    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Future<T, Error> {
         return Future() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
@@ -38,21 +38,21 @@ public class Headless : NSObject {
         }
     }
     
-    public func get(url: NSURL) -> Future<Page, Error> {
+    public func get<T: Page>(url: NSURL) -> Future<T, Error> {
         return get(url, postAction: nil)
     }
     
-    public func get(condition: String)(url: NSURL) -> Future<Page, Error> {
+    public func get<T: Page>(condition: String)(url: NSURL) -> Future<T, Error> {
         return get(url, postAction: PostAction(type: .Validate, script: condition))
     }
 
-    public func get(wait: NSTimeInterval)(url: NSURL) -> Future<Page, Error> {
+    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Future<T, Error> {
         return get(url, postAction: PostAction(type: .Wait, wait: wait))
     }
     
     // MARK: Submit Form
     
-    private func submit(form: Form, postAction: PostAction? = nil) -> Future<Page, Error> {
+    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Future<T, Error> {
         return Future() { [unowned self] completion in
             if let name = form.name {
                 let script = self.formSubmitScript(name, values: form.inputs)
@@ -65,22 +65,22 @@ public class Headless : NSObject {
         }
     }
     
-    public func submit(form: Form) -> Future<Page, Error> {
+    public func submit<T: Page>(form: HTMLForm) -> Future<T, Error> {
         return submit(form, postAction: nil)
     }
     
-    public func submit(condition: String)(form: Form) -> Future<Page, Error> {
+    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Future<T, Error> {
         return submit(form, postAction: PostAction(type: .Validate, script: condition))
     }
 
-    public func submit(wait: NSTimeInterval)(form: Form) -> Future<Page, Error> {
+    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Future<T, Error> {
         return submit(form, postAction: PostAction(type: .Wait, wait: wait))
     }
     
     
     // MARK: Click Event
     
-    private func click(link : Link, postAction: PostAction? = nil) -> Future<Page, Error> {
+    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Future<T, Error> {
         return Future() { [unowned self] completion in
             if let url = link.href {
                 let script = self.clickLinkScript(url)
@@ -93,15 +93,15 @@ public class Headless : NSObject {
         }
     }
     
-    public func click(link : Link) -> Future<Page, Error> {
+    public func click<T: Page>(link : HTMLLink) -> Future<T, Error> {
         return click(link, postAction: nil)
     }
     
-    public func click(condition: String)(link : Link) -> Future<Page, Error> {
+    public func click<T: Page>(condition: String)(link : HTMLLink) -> Future<T, Error> {
         return click(link, postAction: PostAction(type: .Validate, script: condition))
     }
     
-    public func click(wait: NSTimeInterval)(link : Link) -> Future<Page, Error> {
+    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Future<T, Error> {
         return click(link, postAction: PostAction(type: .Wait, wait: wait))
     }
     
@@ -109,7 +109,7 @@ public class Headless : NSObject {
     //
     // MARK: Private
     //
-    private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<Page, Error> {
+    private func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T, Error> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }

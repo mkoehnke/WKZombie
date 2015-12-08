@@ -18,11 +18,18 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/mkoehnke/Headless.git", :tag => s.version.to_s }
 
-  s.source_files  = "Classes", "Classes/**/*.{swift}"
+  s.subspec 'HTML' do |ss|
+    ss.source_files = "Classes/HTML/*.{swift}"
+  end
+
+  s.subspec 'JSON' do |ss|
+    ss.source_files = "Classes/JSON/*.{swift}"
+  end
+
+  s.source_files  = "Classes/*.{swift}"
   s.exclude_files = "Classes/Exclude"
 
   s.requires_arc = true
 
   s.dependency 'hpple', '0.2.0'
-
 end

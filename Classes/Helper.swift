@@ -184,6 +184,6 @@ internal func resultFromOptional<A>(optional: A?, error: Error) -> Result<A, Err
     }
 }
 
-internal func decodeResult(url: NSURL? = nil)(data: NSData?) -> Result<Page, Error> {
-    return resultFromOptional((data == nil) ? nil : Page(data: data!, url: url), error: .NetworkRequestFailure)
+internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<T, Error> {
+    return resultFromOptional(T.pageWithData(data, url: url) as? T, error: .NetworkRequestFailure)
 }

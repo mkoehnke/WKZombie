@@ -11,13 +11,22 @@ import hpple
 
 public class Parser : NSObject {
     
-    private var doc : TFHpple?
     public private(set) var url : NSURL?
     
-    init(data: NSData, url: NSURL? = nil) {
+    required public init(data: NSData, url: NSURL? = nil) {
         super.init()
-        self.doc = TFHpple(HTMLData: data)
         self.url = url
+    }
+    
+}
+
+public class HTMLParser : Parser {
+    
+    private var doc : TFHpple?
+    
+    required public init(data: NSData, url: NSURL? = nil) {
+        super.init(data: data, url: url)
+        self.doc = TFHpple(HTMLData: data)
     }
     
     public func searchWithXPathQuery(xPathOrCSS: String) -> [AnyObject]? {
@@ -34,8 +43,16 @@ public class Parser : NSObject {
 }
 
 
+public class JSONParser : Parser {
+    
+    required public init(data: NSData, url: NSURL? = nil) {
+        super.init(data: data, url: url)
+    }
 
-public class ParserElement : NSObject {
+}
+
+
+public class HTMLParserElement : NSObject {
     private var element : TFHppleElement?
     public internal(set) var pageURL : NSURL?
     
@@ -69,11 +86,11 @@ public class ParserElement : NSObject {
         return element?.objectForKey(key) as String?
     }
     
-    public func childrenWithTagName<T: Element>(tagName: String) -> [T]? {
+    public func childrenWithTagName<T: HTMLElement>(tagName: String) -> [T]? {
         return element?.childrenWithTagName(tagName).flatMap { T(element: $0, pageURL: pageURL) }
     }
         
-    public func children<T: Element>() -> [T]? {
+    public func children<T: HTMLElement>() -> [T]? {
         return element?.children.flatMap { T(element:$0, pageURL: pageURL) }
     }
     
