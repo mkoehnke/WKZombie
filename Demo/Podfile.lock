@@ -1,5 +1,11 @@
 PODS:
   - Headless (1.0.0):
+    - Headless/HTML (= 1.0.0)
+    - Headless/JSON (= 1.0.0)
+    - hpple (= 0.2.0)
+  - Headless/HTML (1.0.0):
+    - hpple (= 0.2.0)
+  - Headless/JSON (1.0.0):
     - hpple (= 0.2.0)
   - hpple (0.2.0)
 
@@ -11,7 +17,7 @@ EXTERNAL SOURCES:
     :path: ../
 
 SPEC CHECKSUMS:
-  Headless: 22aeafada4a3b26cc5f5817362ec07951666e178
+  Headless: 72c2e9b34fc3c6443011ff1525c11f081e6c44d0
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
 
 COCOAPODS: 0.39.0

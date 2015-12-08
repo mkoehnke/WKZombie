@@ -8,34 +8,34 @@
 
 import Foundation
 
-public class TableRow : Element {
-    var columns : [TableColumn]? {
+public class HTMLTableRow : HTMLElement {
+    var columns : [HTMLTableColumn]? {
         return children()
     }
 }
 
-public class TableColumn : Element {
+public class HTMLTableColumn : HTMLElement {
     
 }
 
-public class Table : Element {
+public class HTMLTable : HTMLElement {
     
-    var rows : [TableRow]? {
-        let rows : [TableRow]? = children()
+    var rows : [HTMLTableRow]? {
+        let rows : [HTMLTableRow]? = children()
         return (rows?.first?.tagName == "tbody") ? rows?.first?.children() : rows
     }
     
 
-    func columnsWithPattern(key: String, value: String) -> [TableColumn]? {
+    func columnsWithPattern(key: String, value: String) -> [HTMLTableColumn]? {
         
-        var elements = [TableColumn]()
-        func findColumns(column: TableColumn) {
+        var elements = [HTMLTableColumn]()
+        func findColumns(column: HTMLTableColumn) {
             if let tagName = column.tagName as String? where tagName == "td" {
                 if let _value = column.objectForKey(key) where value == _value  {
                     elements.append(column)
                 }
             }
-            if let children = column.children() as [TableColumn]? where children.count > 0 {
+            if let children = column.children() as [HTMLTableColumn]? where children.count > 0 {
                 for child in children {
                     findColumns(child)
                 }

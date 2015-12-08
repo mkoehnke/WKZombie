@@ -8,6 +8,20 @@
 
 import Foundation
 
+//========================================
+// MARK: Logging
+//========================================
+
+func HLLog(message: String, function: String = __FUNCTION__) {
+    #if DEBUG
+        print("\(function): \(message)")
+    #endif
+}
+
+//========================================
+// MARK: Result
+//========================================
+
 public enum Result<T, E: ErrorType> {
     case Success(T)
     case Error(E)
@@ -32,11 +46,64 @@ extension Result: CustomDebugStringConvertible {
     }
 }
 
-//
+//========================================
+// MARK: Response
+//========================================
+
+internal struct Response {
+    var data: NSData?
+    var statusCode: Int = 500
+    
+    init(data: NSData?, urlResponse: NSURLResponse) {
+        self.data = data
+        if let httpResponse = urlResponse as? NSHTTPURLResponse {
+            self.statusCode = httpResponse.statusCode
+        }
+    }
+}
+
+infix operator >>> { associativity left precedence 150 }
+internal func >>><A, B>(a: Result<A, Error>, f: A -> Result<B, Error>) -> Result<B, Error> {
+    switch a {
+    case let .Success(x):   return f(x)
+    case let .Error(error): return .Error(error)
+    }
+}
+
+public func >>><T, U, E: ErrorType>(a: Future<T, E>, f: T -> Future<U, E>) -> Future<U, E> {
+    return a.andThen(f)
+}
+
+internal func parseResponse(response: Response) -> Result<NSData, Error> {
+    guard let data = response.data else {
+        return .Error(.NetworkRequestFailure)
+    }
+    
+    let successRange = 200..<300
+    if !successRange.contains(response.statusCode) {
+        return .Error(.NetworkRequestFailure)
+    }
+    return Result(nil, data)
+}
+
+internal func resultFromOptional<A>(optional: A?, error: Error) -> Result<A, Error> {
+    if let a = optional {
+        return .Success(a)
+    } else {
+        return .Error(error)
+    }
+}
+
+internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<T, Error> {
+    return resultFromOptional(T.pageWithData(data, url: url) as? T, error: .NetworkRequestFailure)
+}
+
+
+//========================================
 // MARK: Futures
 // Borrowed from Javier Soto's 'Back to the Futures' Talk
 // https://speakerdeck.com/javisoto/back-to-the-futures
-//
+//========================================
 
 public struct Future<T, E: ErrorType> {
     public typealias ResultType = Result<T, E>
@@ -107,9 +174,10 @@ extension Future {
     }
 }
 
-//
+
+//========================================
 // MARK: Repeat andThen
-//
+//========================================
 
 extension Future {
     
@@ -135,55 +203,38 @@ extension Future {
     }
 }
 
-//
-// MARK: Response
-//
 
+//========================================
+// MARK: JSON
+// Borrowed from Tony DiPasquale 
+// https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
+//========================================
 
-internal struct Response {
-    var data: NSData?
-    var statusCode: Int = 500
+public typealias JSON = AnyObject
+public typealias JSONObject = [String:AnyObject]
+public typealias JSONArray = [AnyObject]
+
+internal func _JSONParse<A>(object: JSON) -> A? {
+    return object as? A
+}
+
+internal func parseJSON(data: NSData) -> Result<JSON, Error> {
+    var jsonOptional: JSON
+    var __error = Error.ParsingFailure
     
-    init(data: NSData?, urlResponse: NSURLResponse) {
-        self.data = data
-        if let httpResponse = urlResponse as? NSHTTPURLResponse {
-            self.statusCode = httpResponse.statusCode
-        }
-    }
-}
-
-infix operator >>> { associativity left precedence 150 }
-internal func >>><A, B>(a: Result<A, Error>, f: A -> Result<B, Error>) -> Result<B, Error> {
-    switch a {
-    case let .Success(x):   return f(x)
-    case let .Error(error): return .Error(error)
-    }
-}
-
-public func >>><T, U, E: ErrorType>(a: Future<T, E>, f: T -> Future<U, E>) -> Future<U, E> {
-    return a.andThen(f)
-}
-
-internal func parseResponse(response: Response) -> Result<NSData, Error> {
-    guard let data = response.data else {
-        return .Error(.NetworkRequestFailure)
+    do {
+        let htmlString = NSString(data: data, encoding: NSUTF8StringEncoding)!
+        let jsonString = htmlString.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: NSMakeRange(0, htmlString.length))
+        let jsonData = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
+        jsonOptional = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions(rawValue: 0))
+    } catch _ as NSError {
+        __error = .ParsingFailure
+        jsonOptional = []
     }
     
-    let successRange = 200..<300
-    if !successRange.contains(response.statusCode) {
-        return .Error(.NetworkRequestFailure)
-    }
-    return Result(nil, data)
+    return resultFromOptional(jsonOptional, error: __error)
 }
 
-internal func resultFromOptional<A>(optional: A?, error: Error) -> Result<A, Error> {
-    if let a = optional {
-        return .Success(a)
-    } else {
-        return .Error(error)
-    }
-}
-
-internal func decodeResult(url: NSURL? = nil)(data: NSData?) -> Result<Page, Error> {
-    return resultFromOptional((data == nil) ? nil : Page(data: data!, url: url), error: .NetworkRequestFailure)
+internal func decodeJSONObject<U: JSONDecodable>(json: JSON) -> Result<U, Error> {
+    return resultFromOptional(U.decode(json), error: .ParsingFailure)
 }

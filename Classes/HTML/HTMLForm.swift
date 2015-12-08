@@ -8,13 +8,13 @@
 
 import Foundation
 
-public class Form : Element {
+public class HTMLForm : HTMLElement {
 
     var inputs = [String : String]()
     
     required public init?(element: AnyObject, pageURL: NSURL? = nil) {
         super.init(element: element, pageURL: pageURL)
-        if let element = Element(element: element) {
+        if let element = HTMLElement(element: element) {
             self.collectInputs(element)
         }
     }
@@ -40,13 +40,13 @@ public class Form : Element {
         }
     }
     
-    private func collectInputs(element: Element) {
+    private func collectInputs(element: HTMLElement) {
         if let tagName = element.tagName as String? where tagName == "input" {
             if let name = element.objectForKey("name") {
                 inputs[name] = element.objectForKey("value")
             }
         }
-        if let children = element.children() as [Element]? where children.count > 0 {
+        if let children = element.children() as [HTMLElement]? where children.count > 0 {
             for child in children {
                 collectInputs(child)
             }

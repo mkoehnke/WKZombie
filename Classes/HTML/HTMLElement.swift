@@ -8,6 +8,6 @@
 
 import Foundation
 
-public class Element : ParserElement {
+public class HTMLElement : HTMLParserElement {
 
 }

@@ -8,7 +8,7 @@
 
 import Foundation
 
-public class Link : Element {
+public class HTMLLink : HTMLElement {
     
     private var baseURL : NSURL? {
         return pageURL?.baseURL ?? pageURL

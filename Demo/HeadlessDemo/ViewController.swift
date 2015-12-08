@@ -10,7 +10,7 @@ import UIKit
 
 class ViewController: UITableViewController {
 
-    var items : [TableColumn]?
+    var items : [HTMLTableColumn]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
