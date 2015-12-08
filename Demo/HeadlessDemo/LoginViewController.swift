@@ -22,23 +22,14 @@ class LoginViewController : UIViewController {
     }()
     
     @IBAction func loginButtonTouched(button: UIButton) {
-        
-        headless.get(NSURL(string: "https://api.github.com/users/mkoehnke")!).start { (result : Result<JSONPage, Error>) in
+        button.enabled = false
+        activityIndicator.startAnimating()
+        getProvisioningProfiles(url).start { [weak self] result in
             switch result {
-            case .Success(let page): print(page)
-            case .Error(let error): print(error)
+            case .Success(let table): self?.handleSuccess(table)
+            case .Error(let error): self?.handleError(error)
             }
         }
-        
-        
-//        button.enabled = false
-//        activityIndicator.startAnimating()
-//        getProvisioningProfiles(url).start { [weak self] result in
-//            switch result {
-//            case .Success(let table): self?.handleSuccess(table)
-//            case .Error(let error): self?.handleError(error)
-//            }
-//        }
     }
     
     // MARK: HTML Navigation
