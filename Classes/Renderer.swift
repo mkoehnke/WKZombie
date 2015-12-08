@@ -140,7 +140,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     
     func finishedLoading(webView: WKWebView) {
         webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
-            print(result)
+            HLLog("\(result)")
             self?.callRenderCompletion(result as? String)
         }
     }

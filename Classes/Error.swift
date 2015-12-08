@@ -17,6 +17,7 @@ extension NSError: ErrorType { }
 public enum Error: ErrorType {
     case NetworkRequestFailure
     case NotFound
+    case ParsingFailure
 }
 
 extension Error: CustomDebugStringConvertible {
@@ -24,6 +25,7 @@ extension Error: CustomDebugStringConvertible {
         switch self {
         case .NetworkRequestFailure: return "NetworkRequestFailure"
         case .NotFound: return "NotFound"
+        case .ParsingFailure: return "ParsingFailure"
         }
     }
 }

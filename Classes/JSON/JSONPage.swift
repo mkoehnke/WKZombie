@@ -7,3 +7,18 @@
 //
 
 import Foundation
+
+public protocol JSONDecodable {
+    static func decode(json: JSON) -> Self?
+}
+
+public class JSONPage : JSONParser, Page {
+    
+    public static func pageWithData(data: NSData?, url: NSURL?) -> Page? {
+        if let data = data {
+            return JSONPage(data: data, url: url)
+        }
+        return nil
+    }
+    
+}

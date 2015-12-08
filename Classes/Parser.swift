@@ -45,10 +45,27 @@ public class HTMLParser : Parser {
 
 public class JSONParser : Parser {
     
+    private var json : JSON?
+    
     required public init(data: NSData, url: NSURL? = nil) {
         super.init(data: data, url: url)
+        let result = parseJSON(data)
+        switch result {
+        case .Success(let json): self.json = json
+        case .Error: print("Error parsing JSON!")
+        }
     }
-
+    
+    public func decodeObject<T: JSONDecodable>() -> Result<T, Error> {
+        if let json = json {
+            return decodeJSONObject(json)
+        }
+        return Result.Error(.ParsingFailure)
+    }
+    
+    override public var description : String {
+        return "\(json)"
+    }
 }
 
 
