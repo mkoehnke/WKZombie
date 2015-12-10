@@ -105,11 +105,7 @@ public class Headless : NSObject {
         return click(link, postAction: PostAction(type: .Wait, wait: wait))
     }
     
-    
-    //
-    // MARK: Private
-    //
-    private func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T, Error> {
+    public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T, Error> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
