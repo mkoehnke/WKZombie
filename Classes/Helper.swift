@@ -216,9 +216,9 @@ extension Future {
                     case .Error(let error): completion(Result.Error(error))
                     }
                 })
-                dispatch_group_notify(group, dispatch_get_main_queue()) {
-                    completion(Result.Success(results))
-                }
+            }
+            dispatch_group_notify(group, dispatch_get_main_queue()) {
+                completion(Result.Success(results))
             }
         })
     }
