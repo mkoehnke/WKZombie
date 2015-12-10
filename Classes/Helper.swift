@@ -181,7 +181,7 @@ extension Future {
 
 extension Future {
     
-    public func andThen(f: T -> Future<T, E>, until: T -> Bool) -> Future<[T], E> {
+    public static func collect(initial: T, f: T -> Future<T, E>, until: T -> Bool) -> Future<[T], E> {
         var values = [T]()
         func loop(future: Future<T, E>) -> Future<[T], E> {
             return Future<[T], E>(operation: { completion in
@@ -199,7 +199,28 @@ extension Future {
                 }
             })
         }
-        return loop(self)
+        return loop(f(initial))
+    }
+    
+    public static func batch<U>(elements: [T], f: T -> Future<U, E>) -> Future<[U], E> {
+        return Future<[U], E>(operation: { completion in
+            let group = dispatch_group_create()
+            var results = [U]()
+            for element in elements {
+                dispatch_group_enter(group)
+                f(element).start({ result in
+                    switch result {
+                    case .Success(let value):
+                        results.append(value)
+                        dispatch_group_leave(group)
+                    case .Error(let error): completion(Result.Error(error))
+                    }
+                })
+                dispatch_group_notify(group, dispatch_get_main_queue()) {
+                    completion(Result.Success(results))
+                }
+            }
+        })
     }
 }
 
