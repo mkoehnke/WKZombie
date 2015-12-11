@@ -72,7 +72,7 @@ public class Headless : NSObject {
      The *Future* operation will load and return a page for the specified URL.
      
      - parameter condition: a JavaScript expression/script that returns 
-     - parameter url: 
+     - parameter url:
      
      - returns: <#return value description#>
      */
@@ -150,6 +150,11 @@ public class Headless : NSObject {
     public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Future<T, Error> {
         return click(link, postAction: PostAction(type: .Wait, wait: wait))
     }
+    
+    
+    //========================================
+    // MARK: Response Handling
+    //========================================
     
     public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T, Error> {
         guard let response = response else {
