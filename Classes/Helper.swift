@@ -39,9 +39,9 @@ func HLLog(message: String, function: String = __FUNCTION__) {
 
 public enum Result<T> {
     case Success(T)
-    case Error(HeadlessError)
+    case Error(ActionError)
     
-    init(_ error: HeadlessError?, _ value: T) {
+    init(_ error: ActionError?, _ value: T) {
         if let err = error {
             self = .Error(err)
         } else {
@@ -101,7 +101,7 @@ internal func parseResponse(response: Response) -> Result<NSData> {
     return Result(nil, data)
 }
 
-internal func resultFromOptional<A>(optional: A?, error: HeadlessError) -> Result<A> {
+internal func resultFromOptional<A>(optional: A?, error: ActionError) -> Result<A> {
     if let a = optional {
         return .Success(a)
     } else {
@@ -137,7 +137,7 @@ public struct Action<T> {
         self.init(result: .Success(value))
     }
     
-    public init(error: HeadlessError) {
+    public init(error: ActionError) {
         self.init(result: .Error(error))
     }
     
@@ -245,7 +245,7 @@ internal func _JSONParse<A>(object: JSON) -> A? {
 
 internal func parseJSON(data: NSData) -> Result<JSON> {
     var jsonOptional: JSON
-    var __error = HeadlessError.ParsingFailure
+    var __error = ActionError.ParsingFailure
     
     do {
         let htmlString = NSString(data: data, encoding: NSUTF8StringEncoding)!

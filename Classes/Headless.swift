@@ -58,23 +58,23 @@ public class Headless : NSObject {
     //========================================
     
     /**
-    The *Future* operation will load and return a page for the specified URL.
+    The Headless action will load and return a page for the specified URL.
     
     - parameter url: an URL referencing a HTML or JSON page
     
-    - returns: the *Future* operation
+    - returns: the Headless action
     */
     public func get<T: Page>(url: NSURL) -> Action<T> {
         return get(url, postAction: nil)
     }
     
     /**
-     The *Future* operation will load and return a page for the specified URL.
+     The Headless action will load and return a page for the specified URL.
      
-     - parameter condition: a JavaScript expression/script that returns 
-     - parameter url:
+     - parameter condition: a JavaScript expression/script that returns 'true' if
+     - parameter url: an URL referencing a HTML or JSON page
      
-     - returns: <#return value description#>
+     - returns: the Headless action
      */
     public func get<T: Page>(condition: String)(url: NSURL) -> Action<T> {
         return get(url, postAction: PostAction(type: .Validate, script: condition))
@@ -160,7 +160,7 @@ public class Headless : NSObject {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
-        let errorDomain : HeadlessError? = (error == nil) ? nil : .NetworkRequestFailure
+        let errorDomain : ActionError? = (error == nil) ? nil : .NetworkRequestFailure
         let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
         return responseResult >>> parseResponse >>> decodeResult(response.URL)
     }

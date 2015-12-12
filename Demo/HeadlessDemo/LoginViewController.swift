@@ -85,7 +85,7 @@ class LoginViewController : UIViewController {
         performSegueWithIdentifier("detailSegue", sender: columns)
     }
     
-    func handleError(error: HeadlessError) {
+    func handleError(error: ActionError) {
         loginButton.enabled = true
         activityIndicator.stopAnimating()
         print(error)
