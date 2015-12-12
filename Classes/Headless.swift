@@ -64,7 +64,7 @@ public class Headless : NSObject {
     
     - returns: the *Future* operation
     */
-    public func get<T: Page>(url: NSURL) -> Future<T, Error> {
+    public func get<T: Page>(url: NSURL) -> Action<T> {
         return get(url, postAction: nil)
     }
     
@@ -76,16 +76,16 @@ public class Headless : NSObject {
      
      - returns: <#return value description#>
      */
-    public func get<T: Page>(condition: String)(url: NSURL) -> Future<T, Error> {
+    public func get<T: Page>(condition: String)(url: NSURL) -> Action<T> {
         return get(url, postAction: PostAction(type: .Validate, script: condition))
     }
     
-    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Future<T, Error> {
+    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Action<T> {
         return get(url, postAction: PostAction(type: .Wait, wait: wait))
     }
     
-    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Future<T, Error> {
-        return Future() { [unowned self] completion in
+    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Action<T> {
+        return Action() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
                 completion(self.handleResponse(data as? NSData, response: response, error: error))
@@ -97,8 +97,8 @@ public class Headless : NSObject {
     // MARK: Submit Form
     //========================================
     
-    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Future<T, Error> {
-        return Future() { [unowned self] completion in
+    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Action<T> {
+        return Action() { [unowned self] completion in
             if let name = form.name {
                 let script = self.formSubmitScript(name, values: form.inputs)
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
@@ -110,15 +110,15 @@ public class Headless : NSObject {
         }
     }
     
-    public func submit<T: Page>(form: HTMLForm) -> Future<T, Error> {
+    public func submit<T: Page>(form: HTMLForm) -> Action<T> {
         return submit(form, postAction: nil)
     }
     
-    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Future<T, Error> {
+    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Action<T> {
         return submit(form, postAction: PostAction(type: .Validate, script: condition))
     }
 
-    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Future<T, Error> {
+    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Action<T> {
         return submit(form, postAction: PostAction(type: .Wait, wait: wait))
     }
     
@@ -126,8 +126,8 @@ public class Headless : NSObject {
     // MARK: Click Event
     //========================================
 
-    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Future<T, Error> {
-        return Future() { [unowned self] completion in
+    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Action<T> {
+        return Action() { [unowned self] completion in
             if let url = link.href {
                 let script = self.clickLinkScript(url)
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
@@ -139,15 +139,15 @@ public class Headless : NSObject {
         }
     }
     
-    public func click<T: Page>(link : HTMLLink) -> Future<T, Error> {
+    public func click<T: Page>(link : HTMLLink) -> Action<T> {
         return click(link, postAction: nil)
     }
     
-    public func click<T: Page>(condition: String)(link : HTMLLink) -> Future<T, Error> {
+    public func click<T: Page>(condition: String)(link : HTMLLink) -> Action<T> {
         return click(link, postAction: PostAction(type: .Validate, script: condition))
     }
     
-    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Future<T, Error> {
+    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Action<T> {
         return click(link, postAction: PostAction(type: .Wait, wait: wait))
     }
     
@@ -156,12 +156,12 @@ public class Headless : NSObject {
     // MARK: Response Handling
     //========================================
     
-    public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T, Error> {
+    public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
-        let errorDomain : Error? = (error == nil) ? nil : .NetworkRequestFailure
-        let responseResult: Result<Response, Error> = Result(errorDomain, Response(data: data, urlResponse: response))
+        let errorDomain : HeadlessError? = (error == nil) ? nil : .NetworkRequestFailure
+        let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
         return responseResult >>> parseResponse >>> decodeResult(response.URL)
     }
     

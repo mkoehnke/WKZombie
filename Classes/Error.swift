@@ -29,13 +29,13 @@ public enum NoError: ErrorType { }
 
 extension NSError: ErrorType { }
 
-public enum Error: ErrorType {
+public enum HeadlessError: ErrorType {
     case NetworkRequestFailure
     case NotFound
     case ParsingFailure
 }
 
-extension Error: CustomDebugStringConvertible {
+extension HeadlessError: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .NetworkRequestFailure: return "NetworkRequestFailure"

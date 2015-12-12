@@ -49,33 +49,33 @@ class LoginViewController : UIViewController {
     
     // MARK: HTML Navigation
     
-    func getProvisioningProfiles(url: NSURL) -> Future<HTMLTable, Error> {
+    func getProvisioningProfiles(url: NSURL) -> Action<HTMLTable> {
         return headless.get(url) >>> submitLoginForm >>> getAccountOverview >>> getProfilesPage >>> getProfilesTable
     }
     
-    func submitLoginForm(page: HTMLPage) -> Future<HTMLPage, Error> {
+    func submitLoginForm(page: HTMLPage) -> Action<HTMLPage> {
         let result = page.formWithName("form2")
         switch result {
         case .Success(let form):
             form["appleId"] = nameTextField.text
             form["accountPassword"] = passwordTextField.text
             return headless.submit(2.0)(form: form)
-        case .Error(let error): return Future(error: error)
+        case .Error(let error): return Action(error: error)
         }
     }
     
-    func getAccountOverview(page: HTMLPage) -> Future<HTMLPage, Error> {
-        let link = Future(result: page.firstLinkWithAttribute("href", value: "/account/"))
+    func getAccountOverview(page: HTMLPage) -> Action<HTMLPage> {
+        let link = Action(result: page.firstLinkWithAttribute("href", value: "/account/"))
         return link >>> headless.click
     }
     
-    func getProfilesPage(page: HTMLPage) -> Future<HTMLPage, Error> {
-        let link = Future(result: page.firstLinkWithAttribute("href", value: "/account/ios/profile/profileList.action"))
+    func getProfilesPage(page: HTMLPage) -> Action<HTMLPage> {
+        let link = Action(result: page.firstLinkWithAttribute("href", value: "/account/ios/profile/profileList.action"))
         return link >>> headless.click(0.5)
     }
     
-    func getProfilesTable(page: HTMLPage) -> Future<HTMLTable, Error> {
-        return Future(result: page.firstTableWithAttribute("id", value: "grid-table"))
+    func getProfilesTable(page: HTMLPage) -> Action<HTMLTable> {
+        return Action(result: page.firstTableWithAttribute("id", value: "grid-table"))
     }
     
     // MARK: Handle Result
@@ -85,7 +85,7 @@ class LoginViewController : UIViewController {
         performSegueWithIdentifier("detailSegue", sender: columns)
     }
     
-    func handleError(error: Error) {
+    func handleError(error: HeadlessError) {
         loginButton.enabled = true
         activityIndicator.stopAnimating()
         print(error)

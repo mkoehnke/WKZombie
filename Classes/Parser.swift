@@ -130,7 +130,7 @@ public class JSONParser : Parser {
         }
     }
     
-    public func decodeObject<T: JSONDecodable>() -> Result<T, Error> {
+    public func decodeObject<T: JSONDecodable>() -> Result<T> {
         if let json = json {
             return decodeJSONObject(json)
         }

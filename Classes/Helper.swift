@@ -37,11 +37,11 @@ func HLLog(message: String, function: String = __FUNCTION__) {
 // MARK: Result
 //========================================
 
-public enum Result<T, E: ErrorType> {
+public enum Result<T> {
     case Success(T)
-    case Error(E)
+    case Error(HeadlessError)
     
-    init(_ error: E?, _ value: T) {
+    init(_ error: HeadlessError?, _ value: T) {
         if let err = error {
             self = .Error(err)
         } else {
@@ -78,18 +78,18 @@ internal struct Response {
 }
 
 infix operator >>> { associativity left precedence 150 }
-internal func >>><A, B>(a: Result<A, Error>, f: A -> Result<B, Error>) -> Result<B, Error> {
+internal func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
     case let .Success(x):   return f(x)
     case let .Error(error): return .Error(error)
     }
 }
 
-public func >>><T, U, E: ErrorType>(a: Future<T, E>, f: T -> Future<U, E>) -> Future<U, E> {
+public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
-internal func parseResponse(response: Response) -> Result<NSData, Error> {
+internal func parseResponse(response: Response) -> Result<NSData> {
     guard let data = response.data else {
         return .Error(.NetworkRequestFailure)
     }
@@ -101,7 +101,7 @@ internal func parseResponse(response: Response) -> Result<NSData, Error> {
     return Result(nil, data)
 }
 
-internal func resultFromOptional<A>(optional: A?, error: Error) -> Result<A, Error> {
+internal func resultFromOptional<A>(optional: A?, error: HeadlessError) -> Result<A> {
     if let a = optional {
         return .Success(a)
     } else {
@@ -109,7 +109,7 @@ internal func resultFromOptional<A>(optional: A?, error: Error) -> Result<A, Err
     }
 }
 
-internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<T, Error> {
+internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<T> {
     return resultFromOptional(T.pageWithData(data, url: url) as? T, error: .NetworkRequestFailure)
 }
 
@@ -120,8 +120,8 @@ internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<
 // https://speakerdeck.com/javisoto/back-to-the-futures
 //========================================
 
-public struct Future<T, E: ErrorType> {
-    public typealias ResultType = Result<T, E>
+public struct Action<T> {
+    public typealias ResultType = Result<T>
     public typealias Completion = ResultType -> ()
     public typealias AsyncOperation = Completion -> ()
     
@@ -137,7 +137,7 @@ public struct Future<T, E: ErrorType> {
         self.init(result: .Success(value))
     }
     
-    public init(error: E) {
+    public init(error: HeadlessError) {
         self.init(result: .Error(error))
     }
     
@@ -152,11 +152,11 @@ public struct Future<T, E: ErrorType> {
     }
 }
 
-extension Future {
+extension Action {
     // TODO - implement flatMap
     
-    public func map<U>(f: T -> U) -> Future<U, E> {
-        return Future<U, E>(operation: { completion in
+    public func map<U>(f: T -> U) -> Action<U> {
+        return Action<U>(operation: { completion in
             self.start { result in
                 switch result {
                 case .Success(let value): completion(Result.Success(f(value)))
@@ -166,19 +166,8 @@ extension Future {
         })
     }
     
-    public func mapError<F>(f: E -> F) -> Future<T, F> {
-        return Future<T, F>(operation: { completion in
-            self.start { result in
-                switch result {
-                case .Success(let value): completion(Result.Success(value))
-                case .Error(let error): completion(Result.Error(f(error)))
-                }
-            }
-        })
-    }
-    
-    public func andThen<U>(f: T -> Future<U, E>) -> Future<U, E> {
-        return Future<U, E>(operation: { completion in
+    public func andThen<U>(f: T -> Action<U>) -> Action<U> {
+        return Action<U>(operation: { completion in
             self.start { firstFutureResult in
                 switch firstFutureResult {
                 case .Success(let value): f(value).start(completion)
@@ -194,12 +183,12 @@ extension Future {
 // MARK: Convenience Methods
 //========================================
 
-extension Future {
+extension Action {
     
-    public static func collect(initial: T, f: T -> Future<T, E>, until: T -> Bool) -> Future<[T], E> {
+    public static func collect(initial: T, f: T -> Action<T>, until: T -> Bool) -> Action<[T]> {
         var values = [T]()
-        func loop(future: Future<T, E>) -> Future<[T], E> {
-            return Future<[T], E>(operation: { completion in
+        func loop(future: Action<T>) -> Action<[T]> {
+            return Action<[T]>(operation: { completion in
                 future.start { result in
                     switch result {
                     case .Success(let newValue):
@@ -217,8 +206,8 @@ extension Future {
         return loop(f(initial))
     }
     
-    public static func batch<U>(elements: [T], f: T -> Future<U, E>) -> Future<[U], E> {
-        return Future<[U], E>(operation: { completion in
+    public static func batch<U>(elements: [T], f: T -> Action<U>) -> Action<[U]> {
+        return Action<[U]>(operation: { completion in
             let group = dispatch_group_create()
             var results = [U]()
             for element in elements {
@@ -254,9 +243,9 @@ internal func _JSONParse<A>(object: JSON) -> A? {
     return object as? A
 }
 
-internal func parseJSON(data: NSData) -> Result<JSON, Error> {
+internal func parseJSON(data: NSData) -> Result<JSON> {
     var jsonOptional: JSON
-    var __error = Error.ParsingFailure
+    var __error = HeadlessError.ParsingFailure
     
     do {
         let htmlString = NSString(data: data, encoding: NSUTF8StringEncoding)!
@@ -271,6 +260,6 @@ internal func parseJSON(data: NSData) -> Result<JSON, Error> {
     return resultFromOptional(jsonOptional, error: __error)
 }
 
-internal func decodeJSONObject<U: JSONDecodable>(json: JSON) -> Result<U, Error> {
+internal func decodeJSONObject<U: JSONDecodable>(json: JSON) -> Result<U> {
     return resultFromOptional(U.decode(json), error: .ParsingFailure)
 }
