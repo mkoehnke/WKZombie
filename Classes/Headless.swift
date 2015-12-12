@@ -1,10 +1,25 @@
 //
-//  Headless.swift
-//  HeadlessDemo
+// Headless.swift
 //
-//  Created by Mathias Köhnke on 23/11/15.
-//  Copyright © 2015 Mathias Köhnke. All rights reserved.
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import Foundation
 
@@ -13,24 +28,64 @@ public class Headless : NSObject {
     
     private var renderer : Renderer!
     
+    /// Returns the name of this headless session.
     public private(set) var name : String!
-    public var allowRedirects : Bool = true
+    
+    /// If false, the loading progress will finish once the 'raw' HTML data
+    /// has been transmitted. Media content such as videos or images won't
+    /// be loaded.
     public var loadMediaContent : Bool = true {
         didSet {
             renderer.loadMediaContent = loadMediaContent
         }
     }
     
+    /**
+     The designated initializer.
+     
+     - parameter name: The name of the headless session.
+     
+     - returns: a headless instance
+     */
     public init(name: String? = "Headless") {
         super.init()
         self.name = name
         self.renderer = Renderer()
     }
  
+    //========================================
     // MARK: Get Page
+    //========================================
     
-    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Future<T, Error> {
-        return Future() { [unowned self] completion in
+    /**
+    The Headless action will load and return a page for the specified URL.
+    
+    - parameter url: an URL referencing a HTML or JSON page
+    
+    - returns: the Headless action
+    */
+    public func get<T: Page>(url: NSURL) -> Action<T> {
+        return get(url, postAction: nil)
+    }
+    
+    /**
+     The Headless action will load and return a page for the specified URL.
+     
+     - parameter condition: a JavaScript expression/script that returns 'true' if
+     - parameter url: an URL referencing a HTML or JSON page
+     
+     - returns: the Headless action
+     */
+    public func get<T: Page>(condition: String)(url: NSURL) -> Action<T> {
+        return get(url, postAction: PostAction(type: .Validate, script: condition))
+    }
+    
+    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Action<T> {
+        return get(url, postAction: PostAction(type: .Wait, wait: wait))
+    }
+    
+    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Action<T> {
+        return Action() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
                 completion(self.handleResponse(data as? NSData, response: response, error: error))
@@ -38,22 +93,12 @@ public class Headless : NSObject {
         }
     }
     
-    public func get<T: Page>(url: NSURL) -> Future<T, Error> {
-        return get(url, postAction: nil)
-    }
-    
-    public func get<T: Page>(condition: String)(url: NSURL) -> Future<T, Error> {
-        return get(url, postAction: PostAction(type: .Validate, script: condition))
-    }
-
-    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Future<T, Error> {
-        return get(url, postAction: PostAction(type: .Wait, wait: wait))
-    }
-    
+    //========================================
     // MARK: Submit Form
+    //========================================
     
-    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Future<T, Error> {
-        return Future() { [unowned self] completion in
+    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Action<T> {
+        return Action() { [unowned self] completion in
             if let name = form.name {
                 let script = self.formSubmitScript(name, values: form.inputs)
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
@@ -65,23 +110,24 @@ public class Headless : NSObject {
         }
     }
     
-    public func submit<T: Page>(form: HTMLForm) -> Future<T, Error> {
+    public func submit<T: Page>(form: HTMLForm) -> Action<T> {
         return submit(form, postAction: nil)
     }
     
-    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Future<T, Error> {
+    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Action<T> {
         return submit(form, postAction: PostAction(type: .Validate, script: condition))
     }
 
-    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Future<T, Error> {
+    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Action<T> {
         return submit(form, postAction: PostAction(type: .Wait, wait: wait))
     }
     
-    
+    //========================================
     // MARK: Click Event
-    
-    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Future<T, Error> {
-        return Future() { [unowned self] completion in
+    //========================================
+
+    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Action<T> {
+        return Action() { [unowned self] completion in
             if let url = link.href {
                 let script = self.clickLinkScript(url)
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
@@ -93,38 +139,43 @@ public class Headless : NSObject {
         }
     }
     
-    public func click<T: Page>(link : HTMLLink) -> Future<T, Error> {
+    public func click<T: Page>(link : HTMLLink) -> Action<T> {
         return click(link, postAction: nil)
     }
     
-    public func click<T: Page>(condition: String)(link : HTMLLink) -> Future<T, Error> {
+    public func click<T: Page>(condition: String)(link : HTMLLink) -> Action<T> {
         return click(link, postAction: PostAction(type: .Validate, script: condition))
     }
     
-    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Future<T, Error> {
+    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Action<T> {
         return click(link, postAction: PostAction(type: .Wait, wait: wait))
     }
     
     
-    //
-    // MARK: Private
-    //
-    private func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T, Error> {
+    //========================================
+    // MARK: Response Handling
+    //========================================
+    
+    public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
-        let errorDomain : Error? = (error == nil) ? nil : .NetworkRequestFailure
-        let responseResult: Result<Response, Error> = Result(errorDomain, Response(data: data, urlResponse: response))
+        let errorDomain : ActionError? = (error == nil) ? nil : .NetworkRequestFailure
+        let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
         return responseResult >>> parseResponse >>> decodeResult(response.URL)
     }
     
     
-    // MARK : Scripts
-    
+    //========================================
+    // MARK: Scripts
+    //========================================
+
     private func formSubmitScript(name: String, values: [String: String]?) -> String {
         var script = String()
-        for (key, value) in values! {
-            script += "document.\(name)['\(key)'].value='\(value)';"
+        if let values = values {
+            for (key, value) in values {
+                script += "document.\(name)['\(key)'].value='\(value)';"
+            }
         }
         script += "document.\(name).submit();"
         return script

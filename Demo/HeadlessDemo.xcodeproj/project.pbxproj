@@ -13,7 +13,6 @@
 		BF0C9FC81C1756BF00B3AD79 /* Helper.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FB91C1756BF00B3AD79 /* Helper.swift */; };
 		BF0C9FC91C1756BF00B3AD79 /* HTMLElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FBB1C1756BF00B3AD79 /* HTMLElement.swift */; };
 		BF0C9FCA1C1756BF00B3AD79 /* HTMLForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FBC1C1756BF00B3AD79 /* HTMLForm.swift */; };
-		BF0C9FCB1C1756BF00B3AD79 /* HTMLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FBD1C1756BF00B3AD79 /* HTMLImage.swift */; };
 		BF0C9FCC1C1756BF00B3AD79 /* HTMLLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FBE1C1756BF00B3AD79 /* HTMLLink.swift */; };
 		BF0C9FCD1C1756BF00B3AD79 /* HTMLPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FBF1C1756BF00B3AD79 /* HTMLPage.swift */; };
 		BF0C9FCE1C1756BF00B3AD79 /* HTMLTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FC01C1756BF00B3AD79 /* HTMLTable.swift */; };
@@ -39,7 +38,6 @@
 		BF0C9FB91C1756BF00B3AD79 /* Helper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Helper.swift; sourceTree = "<group>"; };
 		BF0C9FBB1C1756BF00B3AD79 /* HTMLElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLElement.swift; sourceTree = "<group>"; };
 		BF0C9FBC1C1756BF00B3AD79 /* HTMLForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLForm.swift; sourceTree = "<group>"; };
-		BF0C9FBD1C1756BF00B3AD79 /* HTMLImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLImage.swift; sourceTree = "<group>"; };
 		BF0C9FBE1C1756BF00B3AD79 /* HTMLLink.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLLink.swift; sourceTree = "<group>"; };
 		BF0C9FBF1C1756BF00B3AD79 /* HTMLPage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLPage.swift; sourceTree = "<group>"; };
 		BF0C9FC01C1756BF00B3AD79 /* HTMLTable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLTable.swift; sourceTree = "<group>"; };
@@ -109,7 +107,6 @@
 			children = (
 				BF0C9FBB1C1756BF00B3AD79 /* HTMLElement.swift */,
 				BF0C9FBC1C1756BF00B3AD79 /* HTMLForm.swift */,
-				BF0C9FBD1C1756BF00B3AD79 /* HTMLImage.swift */,
 				BF0C9FBE1C1756BF00B3AD79 /* HTMLLink.swift */,
 				BF0C9FBF1C1756BF00B3AD79 /* HTMLPage.swift */,
 				BF0C9FC01C1756BF00B3AD79 /* HTMLTable.swift */,
@@ -303,7 +300,6 @@
 				BF0C9FCA1C1756BF00B3AD79 /* HTMLForm.swift in Sources */,
 				BFAE16D71C02888B00AA3DA0 /* AppDelegate.swift in Sources */,
 				BF0C9FD11C1756BF00B3AD79 /* Parser.swift in Sources */,
-				BF0C9FCB1C1756BF00B3AD79 /* HTMLImage.swift in Sources */,
 				BF0C9FCE1C1756BF00B3AD79 /* HTMLTable.swift in Sources */,
 				BF0C9FCF1C1756BF00B3AD79 /* JSONPage.swift in Sources */,
 				BF0C9FCC1C1756BF00B3AD79 /* HTMLLink.swift in Sources */,

@@ -1,10 +1,25 @@
 //
 //  HTMLPage.swift
-//  HeadlessDemo
 //
-//  Created by Mathias Köhnke on 08/12/15.
-//  Copyright © 2015 Mathias Köhnke. All rights reserved.
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import Foundation
 
@@ -17,43 +32,43 @@ public class HTMLPage : HTMLParser, Page {
         return nil
     }
     
-    public func formWithName(name: String) -> Result<HTMLForm, Error> {
+    public func formWithName(name: String) -> Result<HTMLForm> {
         return firstElementFromResult(formsWithQuery("//form[@name='\(name)']"))
     }
     
-    public func formsWithQuery(xPathQuery: String) -> Result<[HTMLForm], Error> {
+    public func formsWithQuery(xPathQuery: String) -> Result<[HTMLForm]> {
         return elementsWithQuery(xPathQuery)
     }
     
-    public func linkWithName(name: String) -> Result<HTMLLink, Error> {
+    public func linkWithName(name: String) -> Result<HTMLLink> {
         return firstElementFromResult(linksWithQuery("//a[text()='\(name)']/@href"))
     }
     
-    public func firstLinkWithAttribute(key: String, value: String) -> Result<HTMLLink, Error> {
+    public func firstLinkWithAttribute(key: String, value: String) -> Result<HTMLLink> {
         return firstElementFromResult(linksWithAttribute(key, value: value))
     }
     
-    public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink], Error> {
+    public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
         return linksWithQuery("//a[@\(key)='\(value)']/@href")
     }
     
-    public func linksWithQuery(xPathQuery: String) -> Result<[HTMLLink], Error> {
+    public func linksWithQuery(xPathQuery: String) -> Result<[HTMLLink]> {
         return elementsWithQuery(xPathQuery)
     }
     
-    public func firstTableWithAttribute(key: String, value: String) -> Result<HTMLTable, Error> {
+    public func firstTableWithAttribute(key: String, value: String) -> Result<HTMLTable> {
         return firstElementFromResult(tablesWithAttribute(key, value: value))
     }
     
-    public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable], Error> {
+    public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
         return tablesWithQuery("//table[@\(key)='\(value)']")
     }
     
-    public func tablesWithQuery(xPathQuery: String) -> Result<[HTMLTable], Error> {
+    public func tablesWithQuery(xPathQuery: String) -> Result<[HTMLTable]> {
         return elementsWithQuery(xPathQuery)
     }
     
-    public func elementsWithQuery<T: HTMLElement>(xPathQuery: String) -> Result<[T], Error> {
+    public func elementsWithQuery<T: HTMLElement>(xPathQuery: String) -> Result<[T]> {
         if let parsedObjects = searchWithXPathQuery(xPathQuery) where parsedObjects.count > 0 {
             return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
         }
@@ -62,17 +77,10 @@ public class HTMLPage : HTMLParser, Page {
     
     // MARK: Helper Methods
     
-    private func firstElementFromResult<T: HTMLElement>(result: Result<[T], Error>) -> Result<T, Error> {
+    private func firstElementFromResult<T: HTMLElement>(result: Result<[T]>) -> Result<T> {
         switch result {
         case .Success(let result): return resultFromOptional(result.first, error: .NotFound)
         case .Error(let error): return Result.Error(error)
         }
     }
-    
-    // images
-    // imageWith(criteria)
-    // linkWith(criteria)
-    // links
-    // title
-    
 }

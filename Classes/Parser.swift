@@ -1,10 +1,25 @@
 //
-//  Parser.swift
-//  HeadlessDemo
+// Parser.swift
 //
-//  Created by Mathias Köhnke on 28/11/15.
-//  Copyright © 2015 Mathias Köhnke. All rights reserved.
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the "Software"), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+//
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software.
+//
+// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
 
 import Foundation
 import hpple
@@ -19,6 +34,10 @@ public class Parser : NSObject {
     }
     
 }
+
+//========================================
+// MARK: HTML
+//========================================
 
 public class HTMLParser : Parser {
     
@@ -41,33 +60,6 @@ public class HTMLParser : Parser {
         return (NSString(data: doc?.data ?? NSData(), encoding: NSUTF8StringEncoding) ?? "") as String
     }
 }
-
-
-public class JSONParser : Parser {
-    
-    private var json : JSON?
-    
-    required public init(data: NSData, url: NSURL? = nil) {
-        super.init(data: data, url: url)
-        let result = parseJSON(data)
-        switch result {
-        case .Success(let json): self.json = json
-        case .Error: print("Error parsing JSON!")
-        }
-    }
-    
-    public func decodeObject<T: JSONDecodable>() -> Result<T, Error> {
-        if let json = json {
-            return decodeJSONObject(json)
-        }
-        return Result.Error(.ParsingFailure)
-    }
-    
-    override public var description : String {
-        return "\(json)"
-    }
-}
-
 
 public class HTMLParserElement : NSObject {
     private var element : TFHppleElement?
@@ -106,7 +98,7 @@ public class HTMLParserElement : NSObject {
     public func childrenWithTagName<T: HTMLElement>(tagName: String) -> [T]? {
         return element?.childrenWithTagName(tagName).flatMap { T(element: $0, pageURL: pageURL) }
     }
-        
+    
     public func children<T: HTMLElement>() -> [T]? {
         return element?.children.flatMap { T(element:$0, pageURL: pageURL) }
     }
@@ -119,3 +111,36 @@ public class HTMLParserElement : NSObject {
         return element?.raw ?? ""
     }
 }
+
+
+//========================================
+// MARK: JSON
+//========================================
+
+public class JSONParser : Parser {
+    
+    private var json : JSON?
+    
+    required public init(data: NSData, url: NSURL? = nil) {
+        super.init(data: data, url: url)
+        let result = parseJSON(data)
+        switch result {
+        case .Success(let json): self.json = json
+        case .Error: print("Error parsing JSON!")
+        }
+    }
+    
+    public func decodeObject<T: JSONDecodable>() -> Result<T> {
+        if let json = json {
+            return decodeJSONObject(json)
+        }
+        return Result.Error(.ParsingFailure)
+    }
+    
+    override public var description : String {
+        return "\(json)"
+    }
+}
+
+
+
