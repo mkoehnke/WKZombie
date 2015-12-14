@@ -147,10 +147,12 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
     private func callRenderCompletion(renderResult: String?) {
         let data = renderResult?.dataUsingEncoding(NSUTF8StringEncoding)
         let completion = renderCompletion
+        let response = renderResponse
+        let error = renderError
         renderCompletion = nil
-        completion?(result: data, response: renderResponse, error: renderError)
         renderResponse = nil
         renderError = nil
+        completion?(result: data, response: response, error: error)
     }
     
     func finishedLoading(webView: WKWebView) {
