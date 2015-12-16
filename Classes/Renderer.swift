@@ -71,11 +71,6 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         
         webView = WKWebView(frame: CGRectZero, configuration: config)
         webView.navigationDelegate = self
-        webView.addObserver(self, forKeyPath: "loading", options: .New, context: nil)
-    }
-    
-    deinit {
-        webView.removeObserver(self, forKeyPath: "loading", context: nil)
     }
     
     //
@@ -124,6 +119,7 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
                 renderResponse = NSHTTPURLResponse(URL: url, statusCode: 200, HTTPVersion: nil, headerFields: nil)
             }
             webView.stopLoading()
+            webView(webView, didFinishNavigation: nil)
         }
     }
     
@@ -141,6 +137,14 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
                 renderError = error
                 callRenderCompletion(nil)
             }
+        }
+    }
+    
+    func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
+        if let postAction = postAction {
+            handlePostAction(postAction)
+        } else {
+            finishedLoading(webView)
         }
     }
     
@@ -186,18 +190,6 @@ internal class Renderer : NSObject, WKScriptMessageHandler, WKNavigationDelegate
         case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
         }
         self.postAction = nil
-    }
-    
-    // MARK: KVO
-    
-    override func observeValueForKeyPath(keyPath: String?, ofObject object: AnyObject?, change: [String : AnyObject]?, context: UnsafeMutablePointer<Void>) {
-        if keyPath == "loading" && webView.loading == false {
-            if let postAction = postAction {
-                handlePostAction(postAction)
-            } else {
-                finishedLoading(webView)
-            }
-        }
     }
 }
 
