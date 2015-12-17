@@ -23,6 +23,7 @@
 
 import Foundation
 
+// TODO: Documentation, Action Completion won't be executed on the main thread
 
 public class Headless : NSObject {
     
