@@ -84,27 +84,21 @@ internal class Renderer : NSObject {
     }
     
     private func enqueueOperationForRequest(request: NSURLRequest, postAction: PostAction? = nil, completionHandler: Completion) {
-        let operation = RenderOperation()
+        let operation = RenderOperation(webView: webView)
         operation.name = "Request : \(request.URL?.absoluteString)"
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction
         operation.completionBlock = { [weak operation] in
             completionHandler(result: operation?.result, response: operation?.response, error: operation?.error)
         }
-        operation.requestBlock = { [weak self, weak operation] in
-            if let strongSelf = self, strongOperation = operation {
-                strongSelf.webView.configuration.userContentController.addScriptMessageHandler(strongOperation, name: "doneLoading")
-                strongSelf.webView.navigationDelegate = strongOperation
-                strongSelf.webView.loadRequest(request)
-            } else {
-                operation?.completeRendering(nil)
-            }
+        operation.requestBlock = { [weak operation] in
+            operation?.webView?.loadRequest(request)
         }
         renderQueue.addOperation(operation)
     }
     
     private func enqueueOperationForScript(script: String, willLoadPage: Bool? = false, postAction: PostAction? = nil, completionHandler: Completion?) {
-        let operation = RenderOperation()
+        let operation = RenderOperation(webView: webView)
         operation.name = "Script : \(script)"
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction
@@ -113,27 +107,19 @@ internal class Renderer : NSObject {
             operation.completionBlock = { [weak operation] in
                 completionHandler?(result: operation?.result, response: operation?.response, error: operation?.error)
             }
-            operation.requestBlock = { [weak self, weak operation] in
-                if let strongSelf = self, strongOperation = operation {
-                    strongSelf.webView.configuration.userContentController.addScriptMessageHandler(strongOperation, name: "doneLoading")
-                    strongSelf.webView.navigationDelegate = strongOperation
-                    strongSelf.webView.evaluateJavaScript(script, completionHandler: nil)
-                } else {
-                    operation?.completeRendering(nil)
-                }
+            operation.requestBlock = { [weak operation] in
+                operation?.webView?.evaluateJavaScript(script, completionHandler: { result, error in
+                    print("\(result) - \(error)")
+                })
             }
         } else {
             operation.completionBlock = { [weak operation] in
                 completionHandler?(result: operation?.result, response: operation?.response, error: operation?.error)
             }
-            operation.requestBlock = { [weak self, weak operation] in
-                self?.webView.evaluateJavaScript(script, completionHandler: { result, error in
-                    if let webView = self?.webView {
-                        let data = result?.dataUsingEncoding(NSUTF8StringEncoding)
-                        operation?.completeRendering(webView, result: data, error: error)
-                    } else {
-                        operation?.completeRendering(nil)
-                    }
+            operation.requestBlock = { [weak operation] in
+                operation?.webView?.evaluateJavaScript(script, completionHandler: { result, error in
+                    let data = result?.dataUsingEncoding(NSUTF8StringEncoding)
+                    operation?.completeRendering(operation?.webView, result: data, error: error)
                 })
             }
         }

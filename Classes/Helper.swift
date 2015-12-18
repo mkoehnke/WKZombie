@@ -129,7 +129,9 @@ public struct Action<T> {
     
     public init(result: ResultType) {
         self.init(operation: { completion in
-            completion(result)
+            dispatch_async(dispatch_get_main_queue(), {
+                completion(result)
+            })
         })
     }
     
@@ -147,7 +149,9 @@ public struct Action<T> {
     
     public func start(completion: Completion) {
         self.operation() { result in
-            completion(result)
+            dispatch_async(dispatch_get_main_queue(), {
+                completion(result)
+            })
         }
     }
 }

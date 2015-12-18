@@ -13,11 +13,15 @@ internal class RenderOperation : NSOperation {
     
     typealias RequestBlock = () -> Void
 
+    private(set) weak var webView : WKWebView?
+    private var timeout : NSTimer?
+    private let timeoutInSeconds : NSTimeInterval = 600
+    
     var loadMediaContent : Bool = true
     var requestBlock : RequestBlock?
     var postAction: PostAction?
     
-    var timeout : NSTimer?
+    
     
     internal private(set) var result : NSData?
     internal private(set) var response : NSURLResponse?
@@ -51,47 +55,72 @@ internal class RenderOperation : NSOperation {
         }
     }
     
+    init(webView: WKWebView) {
+        super.init()
+        self.webView = webView
+    }
+    
     override func main() {
         if self.cancelled {
             return
         } else {
             HLLog("Starting Rendering - \(name)")
             executing = true
-            timeout = NSTimer(timeInterval: 20.0, target: self, selector: Selector("cancel"), userInfo: nil, repeats: false)
+            setupReferences()
+            startTimeout()
             requestBlock?()
+            print("...")
         }
     }
     
     func completeRendering(webView: WKWebView?, result: NSData? = nil, error: NSError? = nil) {
-        timeout?.invalidate()
+        stopTimeout()
         
         if executing == true && finished == false {
             self.result = result ?? self.result
             self.error = error ?? self.error
-            
-            webView?.navigationDelegate = nil
-            webView?.configuration.userContentController.removeScriptMessageHandlerForName("doneLoading")
+
+            cleanupReferences()
             
             executing = false
             finished = true
             
-            if(finished) {
-                NSLog("completed")
-            } else {
-                NSLog("Not completed")
-            }
+            HLLog("completed")
         }
     }
     
     override func cancel() {
         HLLog("Cancelling Rendering - \(name)")
-        timeout?.invalidate()
         super.cancel()
+        stopTimeout()
+        cleanupReferences()
         executing = false
         finished = true
     }
     
+    // MARK: Helper Methods
     
+    private func startTimeout() {
+        timeout = NSTimer(timeInterval: timeoutInSeconds, target: self, selector: Selector("cancel"), userInfo: nil, repeats: false)
+        NSRunLoop.mainRunLoop().addTimer(timeout!, forMode: NSDefaultRunLoopMode)
+    }
+    
+    private func stopTimeout() {
+        timeout?.invalidate()
+        timeout = nil
+    }
+    
+    private func setupReferences() {
+        webView?.configuration.userContentController.addScriptMessageHandler(self, name: "doneLoading")
+        webView?.navigationDelegate = self
+
+    }
+    
+    private func cleanupReferences() {
+        webView?.navigationDelegate = nil
+        webView?.configuration.userContentController.removeScriptMessageHandlerForName("doneLoading")
+        webView = nil
+    }
 }
 
 
@@ -143,7 +172,7 @@ extension RenderOperation {
         
     func finishedLoading(webView: WKWebView) {
         webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
-            //HLLog("\(result)")
+            HLLog("\(result)")
             self?.result = result?.dataUsingEncoding(NSUTF8StringEncoding)
             self?.completeRendering(webView)
         }

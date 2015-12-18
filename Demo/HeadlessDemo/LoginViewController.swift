@@ -82,17 +82,13 @@ class LoginViewController : UIViewController {
     
     func handleSuccess(table: HTMLTable) {
         let columns = table.columnsWithPattern("aria-describedby", value: "grid-table_name")
-        dispatch_async(dispatch_get_main_queue()) {
-             self.performSegueWithIdentifier("detailSegue", sender: columns)
-        }
+        self.performSegueWithIdentifier("detailSegue", sender: columns)
     }
     
     func handleError(error: ActionError) {
-        dispatch_async(dispatch_get_main_queue()) {
-            self.loginButton.enabled = true
-            self.activityIndicator.stopAnimating()
-            print(error)
-        }
+        self.loginButton.enabled = true
+        self.activityIndicator.stopAnimating()
+        print(error)
     }
     
     // MARK: Segue

@@ -23,8 +23,7 @@
 
 import Foundation
 
-// TODO: Documentation, Action Completion won't be executed on the main thread
-// FIXME: Batch Issue
+// FIXME: Demo doesn't work on Simulator (Threading issue)
 
 public class Headless : NSObject {
     
@@ -158,7 +157,7 @@ public class Headless : NSObject {
     // MARK: Response Handling
     //========================================
     
-    public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
+    private func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
