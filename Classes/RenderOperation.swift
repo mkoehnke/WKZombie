@@ -17,6 +17,8 @@ internal class RenderOperation : NSOperation {
     var requestBlock : RequestBlock?
     var postAction: PostAction?
     
+    var timeout : NSTimer?
+    
     internal private(set) var result : NSData?
     internal private(set) var response : NSURLResponse?
     internal private(set) var error : NSError?
@@ -55,26 +57,41 @@ internal class RenderOperation : NSOperation {
         } else {
             HLLog("Starting Rendering - \(name)")
             executing = true
+            timeout = NSTimer(timeInterval: 20.0, target: self, selector: Selector("cancel"), userInfo: nil, repeats: false)
             requestBlock?()
         }
     }
     
     func completeRendering(webView: WKWebView?, result: NSData? = nil, error: NSError? = nil) {
-        self.result = result ?? self.result
-        self.error = error ?? self.error
-    
-        webView?.navigationDelegate = nil
-        webView?.configuration.userContentController.removeScriptMessageHandlerForName("doneLoading")
+        timeout?.invalidate()
         
-        executing = false
-        finished = true
-        
-        if(finished) {
-            NSLog("completed")
-        } else {
-            NSLog("Not completed")
+        if executing == true && finished == false {
+            self.result = result ?? self.result
+            self.error = error ?? self.error
+            
+            webView?.navigationDelegate = nil
+            webView?.configuration.userContentController.removeScriptMessageHandlerForName("doneLoading")
+            
+            executing = false
+            finished = true
+            
+            if(finished) {
+                NSLog("completed")
+            } else {
+                NSLog("Not completed")
+            }
         }
     }
+    
+    override func cancel() {
+        HLLog("Cancelling Rendering - \(name)")
+        timeout?.invalidate()
+        super.cancel()
+        executing = false
+        finished = true
+    }
+    
+    
 }
 
 
@@ -133,13 +150,15 @@ extension RenderOperation {
     }
     
     func validate(condition: String, webView: WKWebView) {
-        webView.evaluateJavaScript(condition) { [weak self] result, error in
-            if let result = result as? Bool where result == true {
-                self?.finishedLoading(webView)
-            } else {
-                delay(0.5, completion: {
-                    self?.validate(condition, webView: webView)
-                })
+        if finished == false && cancelled == false {
+            webView.evaluateJavaScript(condition) { [weak self] result, error in
+                if let result = result as? Bool where result == true {
+                    self?.finishedLoading(webView)
+                } else {
+                    delay(0.5, completion: {
+                        self?.validate(condition, webView: webView)
+                    })
+                }
             }
         }
     }
@@ -163,8 +182,12 @@ extension RenderOperation {
 // MARK: Helper
 
 private func delay(time: NSTimeInterval, completion: () -> Void) {
-    let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
-    dispatch_after(delayTime, dispatch_get_main_queue()) {
+    if let currentQueue = NSOperationQueue.currentQueue()?.underlyingQueue {
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, currentQueue) {
+            completion()
+        }
+    } else {
         completion()
     }
 }

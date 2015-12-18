@@ -24,6 +24,7 @@
 import Foundation
 
 // TODO: Documentation, Action Completion won't be executed on the main thread
+// FIXME: Batch Issue
 
 public class Headless : NSObject {
     
