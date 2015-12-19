@@ -72,7 +72,14 @@ internal class Renderer : NSObject {
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
         
-        webView = WKWebView(frame: CGRectZero, configuration: config)
+        /// Note: ...
+        let bounds = UIScreen.mainScreen().bounds
+        let frame = CGRectOffset(bounds, 0, bounds.size.height)
+        webView = WKWebView(frame: frame, configuration: config)
+        if let window = UIApplication.sharedApplication().windows.first {
+            webView.alpha = 0.01
+            window.insertSubview(webView, atIndex: 0)
+        }
     }
     
     //

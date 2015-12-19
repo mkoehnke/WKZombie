@@ -16,6 +16,7 @@ internal class RenderOperation : NSOperation {
     private(set) weak var webView : WKWebView?
     private var timeout : NSTimer?
     private let timeoutInSeconds : NSTimeInterval = 600
+    private var stopRunLoop : Bool = false
     
     var loadMediaContent : Bool = true
     var requestBlock : RequestBlock?
@@ -60,7 +61,7 @@ internal class RenderOperation : NSOperation {
         self.webView = webView
     }
     
-    override func main() {
+    override func start() {
         if self.cancelled {
             return
         } else {
@@ -69,7 +70,13 @@ internal class RenderOperation : NSOperation {
             setupReferences()
             startTimeout()
             requestBlock?()
-            print("...")
+            
+            let updateInterval : NSTimeInterval = 0.1
+            var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
+            while !stopRunLoop && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
+                loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
+                print("...")
+            }
         }
     }
     
@@ -101,19 +108,20 @@ internal class RenderOperation : NSOperation {
     // MARK: Helper Methods
     
     private func startTimeout() {
+        stopRunLoop = false
         timeout = NSTimer(timeInterval: timeoutInSeconds, target: self, selector: Selector("cancel"), userInfo: nil, repeats: false)
-        NSRunLoop.mainRunLoop().addTimer(timeout!, forMode: NSDefaultRunLoopMode)
+        NSRunLoop.currentRunLoop().addTimer(timeout!, forMode: NSDefaultRunLoopMode)
     }
     
     private func stopTimeout() {
         timeout?.invalidate()
         timeout = nil
+        stopRunLoop = true
     }
     
     private func setupReferences() {
         webView?.configuration.userContentController.addScriptMessageHandler(self, name: "doneLoading")
         webView?.navigationDelegate = self
-
     }
     
     private func cleanupReferences() {
