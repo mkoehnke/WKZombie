@@ -75,7 +75,7 @@ internal class RenderOperation : NSOperation {
             var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
             while !stopRunLoop && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
                 loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
-                print("...")
+                HLLog(".", lineBreak: false)
             }
         }
     }

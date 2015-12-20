@@ -27,9 +27,13 @@ import Foundation
 // MARK: Logging
 //========================================
 
-func HLLog(message: String, function: String = __FUNCTION__) {
+func HLLog(message: String, lineBreak: Bool = true) {
     #if DEBUG
-        print("\(function): \(message)")
+        if lineBreak {
+            print("\(__FUNCTION__): \(message)")
+        } else {
+            print("\(message)", terminator: "")
+        }
     #endif
 }
 
@@ -162,10 +166,12 @@ extension Action {
     public func map<U>(f: T -> U) -> Action<U> {
         return Action<U>(operation: { completion in
             self.start { result in
-                switch result {
-                case .Success(let value): completion(Result.Success(f(value)))
-                case .Error(let error): completion(Result.Error(error))
-                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    switch result {
+                    case .Success(let value): completion(Result.Success(f(value)))
+                    case .Error(let error): completion(Result.Error(error))
+                    }
+                })
             }
         })
     }
@@ -175,7 +181,10 @@ extension Action {
             self.start { firstFutureResult in
                 switch firstFutureResult {
                 case .Success(let value): f(value).start(completion)
-                case .Error(let error): completion(Result.Error(error))
+                case .Error(let error):
+                    dispatch_async(dispatch_get_main_queue(), {
+                        completion(Result.Error(error))
+                    })
                 }
             }
         })
@@ -200,9 +209,14 @@ extension Action {
                         if until(newValue) == true {
                             loop(f(newValue)).start(completion)
                         } else {
-                            completion(Result.Success(values))
+                            dispatch_async(dispatch_get_main_queue(), {
+                                completion(Result.Success(values))
+                            })
                         }
-                    case .Error(let error): completion(Result.Error(error))
+                    case .Error(let error):
+                        dispatch_async(dispatch_get_main_queue(), {
+                            completion(Result.Error(error))
+                        })
                     }
                 }
             })
@@ -221,7 +235,10 @@ extension Action {
                     case .Success(let value):
                         results.append(value)
                         dispatch_group_leave(group)
-                    case .Error(let error): completion(Result.Error(error))
+                    case .Error(let error):
+                        dispatch_async(dispatch_get_main_queue(), {
+                            completion(Result.Error(error))
+                        })
                     }
                 })
             }
