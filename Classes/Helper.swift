@@ -198,6 +198,16 @@ extension Action {
 
 extension Action {
     
+    /**
+     Executes the specified action (with the result of the previous action execution as input parameter) until
+     a certain condition is met. Afterwards, it will return the collected action results.
+     
+     - parameter initial: The initial input parameter for the Action.
+     - parameter f:       The Action which will be executed.
+     - parameter until:   If 'true', the execution of the specified Action will stop.
+     
+     - returns: The collected Sction results.
+     */
     public static func collect(initial: T, f: T -> Action<T>, until: T -> Bool) -> Action<[T]> {
         var values = [T]()
         func loop(future: Action<T>) -> Action<[T]> {
@@ -224,6 +234,15 @@ extension Action {
         return loop(f(initial))
     }
     
+    /**
+     Makes a bulk execution of the specified action with the provided input values. Once all actions have
+     finished, the collected results will be returned.
+     
+     - parameter elements: An array containing the input value for the Action.
+     - parameter f:        The Action.
+     
+     - returns: The collected Action results.
+     */
     public static func batch<U>(elements: [T], f: T -> Action<U>) -> Action<[U]> {
         return Action<[U]>(operation: { completion in
             let group = dispatch_group_create()
