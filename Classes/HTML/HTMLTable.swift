@@ -23,27 +23,27 @@
 
 import Foundation
 
-public class HTMLTableRow : HTMLElement {
-    var columns : [HTMLTableColumn]? {
-        return children()
-    }
-}
-
-public class HTMLTableColumn : HTMLElement {
-    
-}
-
+/// HTML Table class, which represents the <table> element in the DOM.
 public class HTMLTable : HTMLElement {
     
+    /// Returns all row elements within this table
     var rows : [HTMLTableRow]? {
         let rows : [HTMLTableRow]? = children()
         return (rows?.first?.tagName == "tbody") ? rows?.first?.children() : rows
     }
     
-
-    func columnsWithPattern(key: String, value: String) -> [HTMLTableColumn]? {
-        
+    /**
+     Finds all table columns that match the specified key-value pattern.
+     
+     - parameter key:   The attribute name.
+     - parameter value: The attribute value.
+     
+     - returns: An Array containing table columns.
+     */
+    func findColumnsWithPattern(key: String, value: String) -> [HTMLTableColumn]? {
         var elements = [HTMLTableColumn]()
+        
+        // Helper: Search recursively for columns with pattern
         func findColumns(column: HTMLTableColumn) {
             if let tagName = column.tagName as String? where tagName == "td" {
                 if let _value = column.objectForKey(key) where value == _value  {
@@ -57,6 +57,7 @@ public class HTMLTable : HTMLElement {
             }
         }
 
+        // Call helper function for each column
         if let rows = rows {
             for row in rows {
                 if let columns = row.columns {
@@ -69,4 +70,19 @@ public class HTMLTable : HTMLElement {
 
         return elements
     }
+}
+
+
+/// HTML Table Row Class, which represents the <tr> element in the DOM.
+public class HTMLTableRow : HTMLElement {
+    
+    /// Returns all columns within this row.
+    var columns : [HTMLTableColumn]? {
+        return children()
+    }
+}
+
+/// HTML Table Column class, which represents the <td> element in the DOM.
+public class HTMLTableColumn : HTMLElement {
+    
 }

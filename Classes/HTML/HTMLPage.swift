@@ -23,8 +23,21 @@
 
 import Foundation
 
+/// HTMLPage class, which represents the DOM of a HTML page.
 public class HTMLPage : HTMLParser, Page {
     
+    //========================================
+    // MARK: Initializer
+    //========================================
+    
+    /**
+    Returns a HTML page instance for the specified HTML DOM data.
+    
+    - parameter data: The HTML DOM data.
+    - parameter url:  The URL of the page.
+    
+    - returns: A HTML page.
+    */
     public static func pageWithData(data: NSData?, url: NSURL?) -> Page? {
         if let data = data {
             return HTMLPage(data: data, url: url)
@@ -32,50 +45,135 @@ public class HTMLPage : HTMLParser, Page {
         return nil
     }
     
+    //========================================
+    // MARK: Forms
+    //========================================
+    
+    /**
+    Returns the first HTML form in the DOM with the specified name.
+    
+    - parameter name: The form name.
+    
+    - returns: A result containing either a form or an error.
+    */
     public func formWithName(name: String) -> Result<HTMLForm> {
         return firstElementFromResult(formsWithQuery("//form[@name='\(name)']"))
     }
     
-    public func formsWithQuery(xPathQuery: String) -> Result<[HTMLForm]> {
-        return elementsWithQuery(xPathQuery)
+    /**
+     Returns all HTML forms in the DOM matching the specified XPath query.
+     
+     - parameter XPathQuery: The XPath query.
+     
+     - returns: A result containing either an array of forms o an error.
+     */
+    public func formsWithQuery(XPathQuery: String) -> Result<[HTMLForm]> {
+        return elementsWithQuery(XPathQuery)
     }
     
+    
+    //========================================
+    // MARK: Links
+    //========================================
+    
+    /**
+    Returns the first HTML link in the DOM with the specified name.
+    
+    - parameter name: The link name.
+    
+    - returns: A result containing either a link or an error.
+    */
     public func linkWithName(name: String) -> Result<HTMLLink> {
         return firstElementFromResult(linksWithQuery("//a[text()='\(name)']/@href"))
     }
     
+    /**
+     Returns the first HTML link in the DOM matching the specified key-value pattern.
+     
+     - parameter key:   The attribute name.
+     - parameter value: The attribute value.
+     
+     - returns: A result containing either a link or an error.
+     */
     public func firstLinkWithAttribute(key: String, value: String) -> Result<HTMLLink> {
         return firstElementFromResult(linksWithAttribute(key, value: value))
     }
     
+    /**
+     Returns all HTML links in the DOM matching the specified key-value pattern.
+     
+     - parameter key:   The attribute name.
+     - parameter value: The attribute value.
+     
+     - returns: A result containing either an array of links or an error.
+     */
     public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
         return linksWithQuery("//a[@\(key)='\(value)']/@href")
     }
     
-    public func linksWithQuery(xPathQuery: String) -> Result<[HTMLLink]> {
-        return elementsWithQuery(xPathQuery)
+    /**
+     Returns all HTML links in the DOM matching the specified XPath query.
+     
+     - parameter XPathQuery: The XPath query.
+     
+     - returns: A result containing either an array of links o an error.
+     */
+    public func linksWithQuery(XPathQuery: String) -> Result<[HTMLLink]> {
+        return elementsWithQuery(XPathQuery)
     }
     
+    
+    //========================================
+    // MARK: Tables
+    //========================================
+    
+    /**
+    Returns the first HTML table in the DOM matching the specified key-value pattern.
+    
+    - parameter key:   The attribute name.
+    - parameter value: The attribute value.
+    
+    - returns: A result containing either a table or an error.
+    */
+
     public func firstTableWithAttribute(key: String, value: String) -> Result<HTMLTable> {
         return firstElementFromResult(tablesWithAttribute(key, value: value))
     }
     
+    /**
+     Returns all HTML tables in the DOM matching the specified key-value pattern.
+     
+     - parameter key:   The attribute name.
+     - parameter value: The attribute value.
+     
+     - returns: A result containing either an array of tables or an error.
+     */
     public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
         return tablesWithQuery("//table[@\(key)='\(value)']")
     }
     
-    public func tablesWithQuery(xPathQuery: String) -> Result<[HTMLTable]> {
-        return elementsWithQuery(xPathQuery)
+    /**
+     Returns all HTML tables in the DOM matching the specified XPath query.
+     
+     - parameter XPathQuery: The XPath query.
+     
+     - returns: A result containing either an array of tables o an error.
+     */
+    public func tablesWithQuery(XPathQuery: String) -> Result<[HTMLTable]> {
+        return elementsWithQuery(XPathQuery)
     }
     
-    public func elementsWithQuery<T: HTMLElement>(xPathQuery: String) -> Result<[T]> {
-        if let parsedObjects = searchWithXPathQuery(xPathQuery) where parsedObjects.count > 0 {
+    
+    //========================================
+    // MARK: Helper Methods
+    //========================================
+    
+    public func elementsWithQuery<T: HTMLElement>(XPathQuery: String) -> Result<[T]> {
+        if let parsedObjects = searchWithXPathQuery(XPathQuery) where parsedObjects.count > 0 {
             return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
         }
         return Result.Error(.NotFound)
     }
-    
-    // MARK: Helper Methods
     
     private func firstElementFromResult<T: HTMLElement>(result: Result<[T]>) -> Result<T> {
         switch result {

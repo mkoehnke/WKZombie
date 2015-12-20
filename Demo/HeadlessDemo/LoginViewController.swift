@@ -47,7 +47,9 @@ class LoginViewController : UIViewController {
         }
     }
     
+    //========================================
     // MARK: HTML Navigation
+    //========================================
     
     func getProvisioningProfiles(url: NSURL) -> Action<HTMLTable> {
         return headless.get(url) >>> submitLoginForm >>> getAccountOverview >>> getProfilesPage >>> getProfilesTable
@@ -78,10 +80,12 @@ class LoginViewController : UIViewController {
         return Action(result: page.firstTableWithAttribute("id", value: "grid-table"))
     }
     
+    //========================================
     // MARK: Handle Result
+    //========================================
     
     func handleSuccess(table: HTMLTable) {
-        let columns = table.columnsWithPattern("aria-describedby", value: "grid-table_name")
+        let columns = table.findColumnsWithPattern("aria-describedby", value: "grid-table_name")
         self.performSegueWithIdentifier("detailSegue", sender: columns)
     }
     
@@ -91,7 +95,9 @@ class LoginViewController : UIViewController {
         print(error)
     }
     
+    //========================================
     // MARK: Segue
+    //========================================
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "detailSegue" {

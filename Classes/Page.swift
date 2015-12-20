@@ -23,8 +23,18 @@
 
 import Foundation
 
-
+/**
+ *  Protocol, which is implemented by the HTMLPage and JSONPage classes.
+ */
 public protocol Page {
+    /**
+     Returns a (HTML or JSON) page instance for the specified data.
+     
+     - parameter data: The encoded data.
+     - parameter url:  The URL of the page.
+     
+     - returns: A HTML or JSON page.
+     */
     static func pageWithData(data: NSData?, url: NSURL?) -> Page?
 }
 

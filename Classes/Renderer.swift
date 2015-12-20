@@ -72,72 +72,72 @@ internal class Renderer : NSObject {
         let config = WKWebViewConfiguration()
         config.userContentController = contentController
         
-        /// Note: ...
+        /// Note: The WKWebView behaves very unreliable when rendering offscreen
+        /// on a device. This is especially true with JavaScript, which simply 
+        /// won't be executed sometimes.
+        /// Therefore, I decided to add this very ugly hack where the rendering
+        /// webview will be added to the view hierarchy (between the 
+        /// rootViewController's view and the key window.
+        /// Until there's no better solution, we'll have to roll with this.
         let bounds = UIScreen.mainScreen().bounds
-        let frame = CGRectOffset(bounds, 0, bounds.size.height)
-        webView = WKWebView(frame: frame, configuration: config)
-        if let window = UIApplication.sharedApplication().windows.first {
+        webView = WKWebView(frame: bounds, configuration: config)
+        if let window = UIApplication.sharedApplication().keyWindow {
             webView.alpha = 0.01
             window.insertSubview(webView, atIndex: 0)
         }
     }
     
-    //
-    // MARK: Render Page
-    //
-    
-    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction? = nil, completionHandler: Completion) {
-        enqueueOperationForRequest(request, postAction: postAction, completionHandler: completionHandler)
+    deinit {
+        webView.removeFromSuperview()
     }
     
-    private func enqueueOperationForRequest(request: NSURLRequest, postAction: PostAction? = nil, completionHandler: Completion) {
-        let operation = RenderOperation(webView: webView)
+    //========================================
+    // MARK: Render Page
+    //========================================
+    
+    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction? = nil, completionHandler: Completion) {
+        let requestBlock : (operation: RenderOperation) -> Void = { operation in
+            operation.webView?.loadRequest(request)
+        }
+        let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
         operation.name = "Request : \(request.URL?.absoluteString)"
+        renderQueue.addOperation(operation)
+    }
+    
+    
+    //========================================
+    // MARK: Execute JavaScript
+    //========================================
+    
+    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction? = nil, completionHandler: Completion?) {
+        var requestBlock : (operation : RenderOperation) -> Void
+        if let willLoadPage = willLoadPage where willLoadPage == true {
+            requestBlock = { $0.webView?.evaluateJavaScript(script, completionHandler: nil) }
+        } else {
+            requestBlock = { operation in
+                operation.webView?.evaluateJavaScript(script, completionHandler: { result, error in
+                    let data = result?.dataUsingEncoding(NSUTF8StringEncoding)
+                    operation.completeRendering(operation.webView, result: data, error: error)
+                })
+            }
+        }
+        let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
+        operation.name = "Script : \(script)"
+        renderQueue.addOperation(operation)
+    }
+    
+    //========================================
+    // MARK: Helper Methods
+    //========================================
+    
+    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction? = nil, completionHandler: Completion?) -> NSOperation {
+        let operation = RenderOperation(webView: webView)
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction
         operation.completionBlock = { [weak operation] in
-            completionHandler(result: operation?.result, response: operation?.response, error: operation?.error)
+            completionHandler?(result: operation?.result, response: operation?.response, error: operation?.error)
         }
-        operation.requestBlock = { [weak operation] in
-            operation?.webView?.loadRequest(request)
-        }
-        renderQueue.addOperation(operation)
-    }
-    
-    private func enqueueOperationForScript(script: String, willLoadPage: Bool? = false, postAction: PostAction? = nil, completionHandler: Completion?) {
-        let operation = RenderOperation(webView: webView)
-        operation.name = "Script : \(script)"
-        operation.loadMediaContent = loadMediaContent
-        operation.postAction = postAction
-        
-        if let willLoadPage = willLoadPage where willLoadPage == true {
-            operation.completionBlock = { [weak operation] in
-                completionHandler?(result: operation?.result, response: operation?.response, error: operation?.error)
-            }
-            operation.requestBlock = { [weak operation] in
-                operation?.webView?.evaluateJavaScript(script, completionHandler: { result, error in
-                    print("\(result) - \(error)")
-                })
-            }
-        } else {
-            operation.completionBlock = { [weak operation] in
-                completionHandler?(result: operation?.result, response: operation?.response, error: operation?.error)
-            }
-            operation.requestBlock = { [weak operation] in
-                operation?.webView?.evaluateJavaScript(script, completionHandler: { result, error in
-                    let data = result?.dataUsingEncoding(NSUTF8StringEncoding)
-                    operation?.completeRendering(operation?.webView, result: data, error: error)
-                })
-            }
-        }
-        renderQueue.addOperation(operation)
-    }
-    
-    //
-    // MARK: Execute Script
-    //
-    
-    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction? = nil, completionHandler: Completion?) {
-        enqueueOperationForScript(script, willLoadPage: willLoadPage, postAction: postAction, completionHandler: completionHandler)
+        operation.requestBlock = requestBlock
+        return operation
     }
 }

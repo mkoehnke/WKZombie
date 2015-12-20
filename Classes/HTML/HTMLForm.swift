@@ -23,29 +23,36 @@
 
 import Foundation
 
+/// HTML Form class, which represents the <form> element in the DOM.
 public class HTMLForm : HTMLElement {
 
+    /// All inputs fields (keys and values) of this form.
     var inputs = [String : String]()
     
     required public init?(element: AnyObject, pageURL: NSURL? = nil) {
         super.init(element: element, pageURL: pageURL)
         if let element = HTMLElement(element: element) {
-            self.collectInputs(element)
+            retrieveAllInputs(element)
         }
     }
     
+    /// Returns the value for the name attribute.
+    public var name : String? {
+        return objectForKey("name")
+    }
+    
+    /// Returns the value for the action attribute.
     public var action : String? {
         return objectForKey("action")
     }
     
-    private var onSubmit : String? {
-        return objectForKey("onSubmit")
-    }
-    
-    public var name : String? {
-        return objectForKey("name")
-    }
+    /**
+     Enables subscripting for modifying the input field values.
      
+     - parameter input: The Input field attribute name.
+     
+     - returns: The Input field attribute value.
+     */
     public subscript(input: String) -> String? {
         get {
             return inputs[input]
@@ -55,7 +62,11 @@ public class HTMLForm : HTMLElement {
         }
     }
     
-    private func collectInputs(element: HTMLElement) {
+    //========================================
+    // MARK: Private Methods
+    //========================================
+    
+    private func retrieveAllInputs(element: HTMLElement) {
         if let tagName = element.tagName as String? where tagName == "input" {
             if let name = element.objectForKey("name") {
                 inputs[name] = element.objectForKey("value")
@@ -63,7 +74,7 @@ public class HTMLForm : HTMLElement {
         }
         if let children = element.children() as [HTMLElement]? where children.count > 0 {
             for child in children {
-                collectInputs(child)
+                retrieveAllInputs(child)
             }
         }
     }
