@@ -1,7 +1,7 @@
 # Headless
+Headless is an *experimental* iOS web browser without a graphical user interface. It was written in Swift, incorporating functional concepts such as *Futures/Promises* and *Function Currying*.  
 
-
-## What is it?
+## What is a headless browser?
 link of all headless browsers
 
 * HTML and rudimentary JSON support
