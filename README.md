@@ -18,7 +18,28 @@ link of all headless browsers
 * etc.
 
 # Setup
-## Cocoapods
+## CocoaPods
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+To integrate the Headless into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
+use_frameworks!
+
+pod 'Headless'
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
 
 
 
