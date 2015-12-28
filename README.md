@@ -1,6 +1,9 @@
 # Headless
 Headless is an *experimental* iOS web browser without a graphical user interface. It was written in Swift, incorporating functional concepts such as *Futures/Promises* and *Function Currying*.  
 
+
+Easy navigation by linking actions >>> (demo)
+
 ## What is a headless browser?
 link of all headless browsers
 
@@ -41,7 +44,66 @@ Then, run the following command:
 $ pod install
 ```
 
+# Usage
+* Create an instance of headless
+```swift
+let headless = Headless(name: "Demo")
+```
 
+## Basic Actions
+### Open a Website
+
+```swift
+headless.get(url).start { result in
+    switch result {
+    case .Success(let page): // process page
+    case .Error(let error):  // handle error
+    }
+}
+```
+
+### Submit a Form
+
+```swift
+func submitLoginForm(page: HTMLPage) -> Action<HTMLPage> {
+    switch page.formWithName("form2") {
+    case .Success(let form):
+        form["username"] = "username"
+        form["password"] = "password"
+        return headless.submit(form)
+
+    case .Error(let error):
+        return Action(error: error)
+    }
+}
+
+submitLoginForm.start { result in
+  // handle result
+}
+```
+
+### Click a Link
+
+```swift
+let result = page.firstLinkWithAttribute("href", value: "/account/")
+switch result {
+case .Success(let link):
+    headless.click(link).start { // handle result }
+case .Error(let error):
+    // handle error
+}
+```
+
+## Advanced Actions
+
+### Batch
+
+### Repeat
+
+## Linking Actions
+
+
+## Conditions
 
 * experimenting with functional concepts such as Futures/Promises and Function Currying. This is far from feature complete, but it works great and functionality can be easily added.
 
