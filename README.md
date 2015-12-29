@@ -1,7 +1,7 @@
 # Headless
 Headless is an *experimental* iOS web browser without a graphical user interface. It was written in Swift, incorporating functional concepts such as *Futures/Promises* and *Function Currying*.  
 
-<img style="border:1px solid #ccc;" src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Demo.gif?token=ABXNjUcwbtcVss8fZsUBqGS58S8skQx0ks5Wip8TwA%3D%3D">
+<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjUcwbtcVss8fZsUBqGS58S8skQx0ks5Wip8TwA%3D%3D">
 
 
 Easy navigation by linking actions >>> (demo)
