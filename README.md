@@ -5,10 +5,20 @@ Headless is an *experimental* iOS web browser without a graphical user interface
 
 ### Web-Browser Navigation
 
-<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjfam11l2jWAHXADeARCGeuMnKTI5ks5Wi8zrwA%3D%3D" alt="Web-Browser Navigation" border="10" />
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjfam11l2jWAHXADeARCGeuMnKTI5ks5Wi8zrwA%3D%3D" />
+</p>
+
 
 ### Automation with Headless
-![Headless Automation](https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjTsRwVOmj1xb8Qzfp9-UvXKoVgzGks5Wi803wA%3D%3D "Automation with Headless")
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjTsRwVOmj1xb8Qzfp9-UvXKoVgzGks5Wi803wA%3D%3D" />
+</p>
 
 Easy navigation by linking actions >>> (demo)
 
@@ -28,35 +38,40 @@ link of all headless browsers
 * Tests
 * etc.
 
-# Setup
-## CocoaPods
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
-
-```bash
-$ gem install cocoapods
-```
-
-To integrate the Headless into your Xcode project using CocoaPods, specify it in your `Podfile`:
-
-```ruby
-source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
-use_frameworks!
-
-pod 'Headless'
-```
-
-Then, run the following command:
-
-```bash
-$ pod install
-```
 
 # Usage
-* Create an instance of headless
+A web session equates to a headless instance, which can be created using the following line:
+
 ```swift
 let headless = Headless(name: "Demo")
 ```
+
+Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
+
+```swift
+let action : Action<HTMLPage> = headless.get(url)
+
+action.start { result in
+    switch result {
+    case .Success(let page): // process page
+    case .Error(let error):  // handle error
+    }
+}
+```
+
+or implicitly when linking actions using the **>>>** operator
+
+```swift
+// Helper method
+func getLink(page: HTMLPage) -> Action<HTMLLink> {
+  return Action(result: page.firstLinkWithAttribute("href", value: "/account/"))
+}
+
+// Linking actions
+let combined : Action<HTMLPage> = headless.get(url) >>> getLink >>> headless.click
+```
+Starting *combined* will implicitly execute all chained actions passing each result to the next action.
+
 
 ## Basic Actions
 ### Open a Website
@@ -116,6 +131,33 @@ case .Error(let error):
 * experimenting with functional concepts such as Futures/Promises and Function Currying. This is far from feature complete, but it works great and functionality can be easily added.
 
 * Condition / Wait
+
+
+# Setup
+## CocoaPods
+[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
+
+```bash
+$ gem install cocoapods
+```
+
+To integrate the Headless into your Xcode project using CocoaPods, specify it in your `Podfile`:
+
+```ruby
+source 'https://github.com/CocoaPods/Specs.git'
+platform :ios, '9.0'
+use_frameworks!
+
+pod 'Headless'
+```
+
+Then, run the following command:
+
+```bash
+$ pod install
+```
+
+
 
 
 # What can be improved?
