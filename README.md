@@ -5,9 +5,9 @@ Headless is an *experimental* iOS web browser without a graphical user interface
 
 ### Web-Browser Navigation
 
-![Headless Web](https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjfam11l2jWAHXADeARCGeuMnKTI5ks5Wi8zrwA%3D%3D "Web-Browser Navigation")
+<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjfam11l2jWAHXADeARCGeuMnKTI5ks5Wi8zrwA%3D%3D" alt="Web-Browser Navigation" border="10" />
 
-### Automation with Headless :tada:
+### Automation with Headless
 ![Headless Automation](https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjTsRwVOmj1xb8Qzfp9-UvXKoVgzGks5Wi803wA%3D%3D "Automation with Headless")
 
 Easy navigation by linking actions >>> (demo)
