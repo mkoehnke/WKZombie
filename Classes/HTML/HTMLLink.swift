@@ -47,6 +47,14 @@ public class HTMLLink : HTMLElement {
     override public var description : String {
         return href ?? ""
     }
+    
+    //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//a[@\(key)='\(value)']/@href"
+    }
 }
 
 

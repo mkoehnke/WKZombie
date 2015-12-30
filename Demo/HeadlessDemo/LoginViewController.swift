@@ -33,7 +33,7 @@ class LoginViewController : UIViewController {
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
     lazy var headless : Headless = {
-        return Headless(name: "DeveloperPortal")
+        return Headless(name: "Developer Portal")
     }()
     
     @IBAction func loginButtonTouched(button: UIButton) {
@@ -41,7 +41,7 @@ class LoginViewController : UIViewController {
         activityIndicator.startAnimating()
         getProvisioningProfiles(url).start { [weak self] result in
             switch result {
-            case .Success(let table): self?.handleSuccess(table)
+            case .Success(let columns): self?.handleSuccess(columns)
             case .Error(let error): self?.handleError(error)
             }
         }
@@ -51,41 +51,28 @@ class LoginViewController : UIViewController {
     // MARK: HTML Navigation
     //========================================
     
-    func getProvisioningProfiles(url: NSURL) -> Action<HTMLTable> {
-        return headless.get(url) >>> submitLoginForm >>> getAccountOverview >>> getProfilesPage >>> getProfilesTable
+    func getProvisioningProfiles(url: NSURL) -> Action<[HTMLTableColumn]> {
+        return headless.get(url)
+           >>> headless.find("name", "form2")
+           >>> submitForm
+           >>> headless.find("href", "/account/")
+           >>> headless.click
+           >>> headless.find("href", "/account/ios/profile/profileList.action")
+           >>> headless.click(0.5)
+           >>> headless.findAll("aria-describedby", "grid-table_name")
     }
     
-    func submitLoginForm(page: HTMLPage) -> Action<HTMLPage> {
-        let result = page.formWithName("form2")
-        switch result {
-        case .Success(let form):
-            form["appleId"] = nameTextField.text
-            form["accountPassword"] = passwordTextField.text
-            return headless.submit(2.0)(form: form)
-        case .Error(let error): return Action(error: error)
-        }
-    }
-    
-    func getAccountOverview(page: HTMLPage) -> Action<HTMLPage> {
-        let link = Action(result: page.firstLinkWithAttribute("href", value: "/account/"))
-        return link >>> headless.click
-    }
-    
-    func getProfilesPage(page: HTMLPage) -> Action<HTMLPage> {
-        let link = Action(result: page.firstLinkWithAttribute("href", value: "/account/ios/profile/profileList.action"))
-        return link >>> headless.click(0.5)
-    }
-    
-    func getProfilesTable(page: HTMLPage) -> Action<HTMLTable> {
-        return Action(result: page.firstTableWithAttribute("id", value: "grid-table"))
+    func submitForm(form: HTMLForm) -> Action<HTMLPage> {
+        form["appleId"] = nameTextField.text
+        form["accountPassword"] = passwordTextField.text
+        return headless.submit(2.0)(form: form)
     }
     
     //========================================
     // MARK: Handle Result
     //========================================
     
-    func handleSuccess(table: HTMLTable) {
-        let columns = table.findColumnsWithPattern("aria-describedby", value: "grid-table_name")
+    func handleSuccess(columns: [HTMLTableColumn]) {
         self.performSegueWithIdentifier("detailSegue", sender: columns)
     }
     

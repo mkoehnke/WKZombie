@@ -54,6 +54,15 @@ public enum Result<T> {
     }
 }
 
+extension Result where T:CollectionType {
+    public func first<A>() -> Result<A> {
+        switch self {
+        case .Success(let result): return resultFromOptional(result.first as? A, error: .NotFound)
+        case .Error(let error): return resultFromOptional(nil, error: error)
+        }
+    }
+}
+
 extension Result: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
@@ -208,7 +217,7 @@ extension Action {
      
      - returns: The collected Sction results.
      */
-    public static func collect(initial: T, f: T -> Action<T>, until: T -> Bool) -> Action<[T]> {
+    internal static func collect(initial: T, f: T -> Action<T>, until: T -> Bool) -> Action<[T]> {
         var values = [T]()
         func loop(future: Action<T>) -> Action<[T]> {
             return Action<[T]>(operation: { completion in
@@ -243,7 +252,7 @@ extension Action {
      
      - returns: The collected Action results.
      */
-    public static func batch<U>(elements: [T], f: T -> Action<U>) -> Action<[U]> {
+    internal static func batch<U>(elements: [T], f: T -> Action<U>) -> Action<[U]> {
         return Action<[U]>(operation: { completion in
             let group = dispatch_group_create()
             var results = [U]()

@@ -57,7 +57,7 @@ public class HTMLPage : HTMLParser, Page {
     - returns: A result containing either a form or an error.
     */
     public func formWithName(name: String) -> Result<HTMLForm> {
-        return firstElementFromResult(formsWithQuery("//form[@name='\(name)']"))
+        return formsWithQuery(HTMLForm.keyValueQuery("name", value: name)).first()
     }
     
     /**
@@ -84,19 +84,7 @@ public class HTMLPage : HTMLParser, Page {
     - returns: A result containing either a link or an error.
     */
     public func linkWithName(name: String) -> Result<HTMLLink> {
-        return firstElementFromResult(linksWithQuery("//a[text()='\(name)']/@href"))
-    }
-    
-    /**
-     Returns the first HTML link in the DOM matching the specified key-value pattern.
-     
-     - parameter key:   The attribute name.
-     - parameter value: The attribute value.
-     
-     - returns: A result containing either a link or an error.
-     */
-    public func firstLinkWithAttribute(key: String, value: String) -> Result<HTMLLink> {
-        return firstElementFromResult(linksWithAttribute(key, value: value))
+        return linksWithQuery("//a[text()='\(name)']/@href").first()
     }
     
     /**
@@ -108,7 +96,7 @@ public class HTMLPage : HTMLParser, Page {
      - returns: A result containing either an array of links or an error.
      */
     public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
-        return linksWithQuery("//a[@\(key)='\(value)']/@href")
+        return linksWithQuery(HTMLLink.keyValueQuery(key, value: value))
     }
     
     /**
@@ -128,19 +116,6 @@ public class HTMLPage : HTMLParser, Page {
     //========================================
     
     /**
-    Returns the first HTML table in the DOM matching the specified key-value pattern.
-    
-    - parameter key:   The attribute name.
-    - parameter value: The attribute value.
-    
-    - returns: A result containing either a table or an error.
-    */
-
-    public func firstTableWithAttribute(key: String, value: String) -> Result<HTMLTable> {
-        return firstElementFromResult(tablesWithAttribute(key, value: value))
-    }
-    
-    /**
      Returns all HTML tables in the DOM matching the specified key-value pattern.
      
      - parameter key:   The attribute name.
@@ -149,7 +124,7 @@ public class HTMLPage : HTMLParser, Page {
      - returns: A result containing either an array of tables or an error.
      */
     public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
-        return tablesWithQuery("//table[@\(key)='\(value)']")
+        return tablesWithQuery(HTMLTable.keyValueQuery(key, value: value))
     }
     
     /**
@@ -165,7 +140,7 @@ public class HTMLPage : HTMLParser, Page {
     
     
     //========================================
-    // MARK: Helper Methods
+    // MARK: Generic Method
     //========================================
     
     public func elementsWithQuery<T: HTMLElement>(XPathQuery: String) -> Result<[T]> {
@@ -173,12 +148,5 @@ public class HTMLPage : HTMLParser, Page {
             return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
         }
         return Result.Error(.NotFound)
-    }
-    
-    private func firstElementFromResult<T: HTMLElement>(result: Result<[T]>) -> Result<T> {
-        switch result {
-        case .Success(let result): return resultFromOptional(result.first, error: .NotFound)
-        case .Error(let error): return Result.Error(error)
-        }
     }
 }

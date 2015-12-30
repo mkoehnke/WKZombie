@@ -63,6 +63,14 @@ public class HTMLForm : HTMLElement {
     }
     
     //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//form[@\(key)='\(value)']"
+    }
+    
+    //========================================
     // MARK: Private Methods
     //========================================
     

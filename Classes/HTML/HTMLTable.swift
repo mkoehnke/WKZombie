@@ -31,44 +31,13 @@ public class HTMLTable : HTMLElement {
         let rows : [HTMLTableRow]? = children()
         return (rows?.first?.tagName == "tbody") ? rows?.first?.children() : rows
     }
-    
-    /**
-     Finds all table columns that match the specified key-value pattern.
-     
-     - parameter key:   The attribute name.
-     - parameter value: The attribute value.
-     
-     - returns: An Array containing table columns.
-     */
-    func findColumnsWithPattern(key: String, value: String) -> [HTMLTableColumn]? {
-        var elements = [HTMLTableColumn]()
         
-        // Helper: Search recursively for columns with pattern
-        func findColumns(column: HTMLTableColumn) {
-            if let tagName = column.tagName as String? where tagName == "td" {
-                if let _value = column.objectForKey(key) where value == _value  {
-                    elements.append(column)
-                }
-            }
-            if let children = column.children() as [HTMLTableColumn]? where children.count > 0 {
-                for child in children {
-                    findColumns(child)
-                }
-            }
-        }
-
-        // Call helper function for each column
-        if let rows = rows {
-            for row in rows {
-                if let columns = row.columns {
-                    for column in columns {
-                        findColumns(column)
-                    }
-                }
-            }
-        }
-
-        return elements
+    //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//table[@\(key)='\(value)']"
     }
 }
 
@@ -80,9 +49,24 @@ public class HTMLTableRow : HTMLElement {
     var columns : [HTMLTableColumn]? {
         return children()
     }
+    
+    //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//tr[@\(key)='\(value)']"
+    }
 }
 
 /// HTML Table Column class, which represents the <td> element in the DOM.
 public class HTMLTableColumn : HTMLElement {
     
+    //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//td[@\(key)='\(value)']"
+    }
 }
