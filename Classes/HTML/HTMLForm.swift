@@ -46,6 +46,12 @@ public class HTMLForm : HTMLElement {
         return objectForKey("action")
     }
     
+    
+    public func updateValue(value: String?, forKey: String) -> HTMLForm {
+        inputs.updateValue(value ?? "", forKey: forKey)
+        return self
+    }
+    
     /**
      Enables subscripting for modifying the input field values.
      
@@ -53,12 +59,12 @@ public class HTMLForm : HTMLElement {
      
      - returns: The Input field attribute value.
      */
-    public subscript(input: String) -> String? {
+    public subscript(key: String) -> String? {
         get {
-            return inputs[input]
+            return inputs[key]
         }
         set (newValue) {
-            inputs[input] = newValue
+            inputs[key] = newValue
         }
     }
     
@@ -66,8 +72,8 @@ public class HTMLForm : HTMLElement {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(key: String, value: String) -> String {
-        return "//form[@\(key)='\(value)']"
+    internal override class func keyValueQuery(dictionary: [String : String]) -> String {
+        return "//form[\(dictionaryToKeyValues(dictionary))]"
     }
     
     //========================================

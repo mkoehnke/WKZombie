@@ -32,14 +32,15 @@ class LoginViewController : UIViewController {
     
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
-    lazy var headless : Headless = {
+    lazy var browser : Headless = {
         return Headless(name: "Developer Portal")
     }()
     
     @IBAction func loginButtonTouched(button: UIButton) {
+        guard let user = nameTextField.text, password = passwordTextField.text else { return }
         button.enabled = false
         activityIndicator.startAnimating()
-        getProvisioningProfiles(url).start { [weak self] result in
+        getProvisioningProfiles(url, user: user, password: password).start { [weak self] result in
             switch result {
             case .Success(let columns): self?.handleSuccess(columns)
             case .Error(let error): self?.handleError(error)
@@ -51,21 +52,17 @@ class LoginViewController : UIViewController {
     // MARK: HTML Navigation
     //========================================
     
-    func getProvisioningProfiles(url: NSURL) -> Action<[HTMLTableColumn]> {
-        return headless.get(url)
-           >>> headless.find("name", "form2")
-           >>> submitForm
-           >>> headless.find("href", "/account/")
-           >>> headless.click
-           >>> headless.find("href", "/account/ios/profile/profileList.action")
-           >>> headless.click(0.5)
-           >>> headless.findAll("aria-describedby", "grid-table_name")
-    }
-    
-    func submitForm(form: HTMLForm) -> Action<HTMLPage> {
-        form["appleId"] = nameTextField.text
-        form["accountPassword"] = passwordTextField.text
-        return headless.submit(2.0)(form: form)
+    func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
+        return browser.open(url)
+           >>> browser.find(withAttributes: ["name" : "form2"])
+           >>> browser.modify { $0.updateValue(user, forKey: "appleId") }
+           >>> browser.modify { $0.updateValue(password, forKey: "accountPassword") }
+           >>> browser.submit(then: .Wait(2.0))
+           >>> browser.find(withAttributes: ["href" : "/account/"])
+           >>> browser.click
+           >>> browser.find(withAttributes: ["href" : "/account/ios/profile/profileList.action"])
+           >>> browser.click(then: .Wait(0.5))
+           >>> browser.findAll(withAttributes: ["aria-describedby" : "grid-table_name"])
     }
     
     //========================================

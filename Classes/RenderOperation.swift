@@ -39,7 +39,7 @@ internal class RenderOperation : NSOperation {
     
     var loadMediaContent : Bool = true
     var requestBlock : RequestBlock?
-    var postAction: PostAction?
+    var postAction: PostAction = .None
     
     
     
@@ -192,10 +192,9 @@ extension RenderOperation : WKNavigationDelegate {
     }
     
     func webView(webView: WKWebView, didFinishNavigation navigation: WKNavigation!) {
-        if let postAction = postAction {
-            handlePostAction(postAction, webView: webView)
-        } else {
-            finishedLoading(webView)
+        switch postAction {
+        case .Wait, .Validate: handlePostAction(postAction, webView: webView)
+        case .None: finishedLoading(webView)
         }
     }
     
@@ -236,11 +235,12 @@ extension RenderOperation {
     }
     
     func handlePostAction(postAction: PostAction, webView: WKWebView) {
-        switch postAction.type {
-        case .Validate: validate(postAction.value as! String, webView: webView)
-        case .Wait: waitAndFinish(postAction.value as! NSTimeInterval, webView: webView)
+        switch postAction {
+        case .Validate(let script): validate(script, webView: webView)
+        case .Wait(let time): waitAndFinish(time, webView: webView)
+        default: HLLog("Something went wrong!")
         }
-        self.postAction = nil
+        self.postAction = .None
     }
     
 }

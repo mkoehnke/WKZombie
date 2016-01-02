@@ -128,7 +128,7 @@ internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<
 
 
 //========================================
-// MARK: Futures
+// MARK: Actions
 // Borrowed from Javier Soto's 'Back to the Futures' Talk
 // https://speakerdeck.com/javisoto/back-to-the-futures
 //========================================
@@ -279,6 +279,17 @@ extension Action {
 
 
 //========================================
+// MARK: Post Action
+//========================================
+
+public enum PostAction {
+    case Wait(NSTimeInterval)
+    case Validate(String)
+    case None
+}
+
+
+//========================================
 // MARK: JSON
 // Borrowed from Tony DiPasquale's Article 
 // https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
@@ -312,3 +323,16 @@ internal func parseJSON(data: NSData) -> Result<JSON> {
 internal func decodeJSONObject<U: JSONDecodable>(json: JSON) -> Result<U> {
     return resultFromOptional(U.decode(json), error: .ParsingFailure)
 }
+
+
+//========================================
+// MARK: Dictionary Helper
+//========================================
+
+internal func += <K,V> (inout left: Dictionary<K,V>, right: Dictionary<K,V>?) {
+    guard let right = right else { return }
+    right.forEach { key, value in
+        left.updateValue(value, forKey: key)
+    }
+}
+

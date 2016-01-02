@@ -27,27 +27,6 @@ import WebKit
 
 typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
 
-
-internal enum PostActionType {
-    case Wait
-    case Validate
-}
-
-internal struct PostAction {
-    var type : PostActionType
-    var value : AnyObject
-    
-    init(type: PostActionType, script: String) {
-        self.type = type
-        self.value = script
-    }
-    
-    init(type: PostActionType, wait: NSTimeInterval) {
-        self.type = type
-        self.value = wait
-    }
-}
-
 internal class Renderer : NSObject {
     
     var loadMediaContent : Bool = true
@@ -95,7 +74,7 @@ internal class Renderer : NSObject {
     // MARK: Render Page
     //========================================
     
-    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction? = nil, completionHandler: Completion) {
+    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: Completion) {
         let requestBlock : (operation: RenderOperation) -> Void = { operation in
             operation.webView?.loadRequest(request)
         }
@@ -109,7 +88,7 @@ internal class Renderer : NSObject {
     // MARK: Execute JavaScript
     //========================================
     
-    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction? = nil, completionHandler: Completion?) {
+    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction = .None, completionHandler: Completion?) {
         var requestBlock : (operation : RenderOperation) -> Void
         if let willLoadPage = willLoadPage where willLoadPage == true {
             requestBlock = { $0.webView?.evaluateJavaScript(script, completionHandler: nil) }
@@ -130,7 +109,7 @@ internal class Renderer : NSObject {
     // MARK: Helper Methods
     //========================================
     
-    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction? = nil, completionHandler: Completion?) -> NSOperation {
+    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction = .None, completionHandler: Completion?) -> NSOperation {
         let operation = RenderOperation(webView: webView)
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction

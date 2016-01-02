@@ -23,7 +23,11 @@
 
 import Foundation
 
+// TODO - Move scripts to classes
+
 public class Headless : NSObject {
+    
+    static let defaultInstance = Headless(name: "Default")
     
     private var renderer : Renderer!
     
@@ -84,6 +88,19 @@ public class Headless : NSObject {
 }
 
 
+extension Headless {
+    
+    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
+        return Action(result: resultFromOptional(f(element), error: .NotFound))
+    }
+    
+    public func modify<T: HTMLElement>(f: T -> T)(element: T) -> Action<T> {
+        return Action(result: resultFromOptional(f(element), error: .NotFound))
+    }
+    
+}
+
+
 //========================================
 // MARK: Get Page
 //========================================
@@ -96,8 +113,12 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func get<T: Page>(url: NSURL) -> Action<T> {
-        return get(url, postAction: nil)
+    public func open<T: Page>(url: NSURL) -> Action<T> {
+        return open(url, postAction: .None)
+    }
+    
+    public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
+        return open(url, postAction: postAction)
     }
     
     /**
@@ -109,9 +130,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func get<T: Page>(condition: String)(url: NSURL) -> Action<T> {
-        return get(url, postAction: PostAction(type: .Validate, script: condition))
-    }
+
     
     /**
      The returned Headless Action will load and return a page for the specified URL.
@@ -123,12 +142,10 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Action<T> {
-        return get(url, postAction: PostAction(type: .Wait, wait: wait))
-    }
+
     
     /// Helper Method
-    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Action<T> {
+    private func open<T: Page>(url: NSURL, postAction: PostAction = .None) -> Action<T> {
         return Action() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
@@ -152,7 +169,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func submit<T: Page>(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: nil)
+        return submit(form, postAction: .None)
     }
     
     /**
@@ -164,8 +181,8 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: PostAction(type: .Validate, script: condition))
+    public func submit<T: Page>(then postAction: PostAction)(form: HTMLForm) -> Action<T> {
+        return submit(form, postAction: postAction)
     }
     
     /**
@@ -178,12 +195,9 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: PostAction(type: .Wait, wait: wait))
-    }
     
     /// Helper Method
-    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Action<T> {
+    private func submit<T: Page>(form: HTMLForm, postAction: PostAction = .None) -> Action<T> {
         return Action() { [unowned self] completion in
             if let name = form.name {
                 let script = self.formSubmitScript(name, values: form.inputs)
@@ -211,7 +225,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func click<T: Page>(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: nil)
+        return click(link, postAction: .None)
     }
     
     /**
@@ -223,8 +237,8 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func click<T: Page>(condition: String)(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: PostAction(type: .Validate, script: condition))
+    public func click<T: Page>(then postAction: PostAction)(link : HTMLLink) -> Action<T> {
+        return click(link, postAction: postAction)
     }
     
     /**
@@ -237,12 +251,9 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: PostAction(type: .Wait, wait: wait))
-    }
     
     /// Helper Method
-    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Action<T> {
+    private func click<T: Page>(link : HTMLLink, postAction: PostAction = .None) -> Action<T> {
         return Action() { [unowned self] completion in
             if let url = link.href {
                 let script = self.clickLinkScript(url)
@@ -274,8 +285,8 @@ extension Headless {
         return Action(result: page.elementsWithQuery(query))
     }
     
-    public func findAll<T: HTMLElement>(key: String, _ value: String)(page: HTMLPage) -> Action<[T]> {
-        let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(key, value: value))
+    public func findAll<T: HTMLElement>(withAttributes attributesAndValues: [String : String])(page: HTMLPage) -> Action<[T]> {
+        let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(attributesAndValues))
         return Action(result: elements)
     }
     
@@ -284,11 +295,12 @@ extension Headless {
         return Action(result: elements.first())
     }
     
-    public func find<T: HTMLElement>(key: String, _ value: String)(page: HTMLPage) -> Action<T> {
-        let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(key, value: value))
+    public func find<T: HTMLElement>(withAttributes attributesAndValues: [String : String])(page: HTMLPage) -> Action<T> {
+        let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(attributesAndValues))
         return Action(result: elements.first())
     }
 }
+
 
 //========================================
 // MARK: Advanced Actions
