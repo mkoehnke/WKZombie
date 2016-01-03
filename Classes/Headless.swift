@@ -27,8 +27,6 @@ import Foundation
 
 public class Headless : NSObject {
     
-    static let defaultInstance = Headless(name: "Default")
-    
     private var renderer : Renderer!
     
     /// Returns the name of this headless session.
@@ -94,10 +92,9 @@ extension Headless {
         return Action(result: resultFromOptional(f(element), error: .NotFound))
     }
     
-    public func modify<T: HTMLElement>(f: T -> T)(element: T) -> Action<T> {
-        return Action(result: resultFromOptional(f(element), error: .NotFound))
+    public func modify<T: HTMLModifiable>(key: String, withValue value: String?)(element: T) -> Action<T> {
+        return Action(result: resultFromOptional(element.updateValue(value, forKey: key), error: .NotFound))
     }
-    
 }
 
 

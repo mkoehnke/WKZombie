@@ -24,7 +24,7 @@
 import Foundation
 
 /// HTML Form class, which represents the <form> element in the DOM.
-public class HTMLForm : HTMLElement {
+public class HTMLForm : HTMLElement, HTMLModifiable {
 
     /// All inputs fields (keys and values) of this form.
     var inputs = [String : String]()
@@ -46,12 +46,6 @@ public class HTMLForm : HTMLElement {
         return objectForKey("action")
     }
     
-    
-    public func updateValue(value: String?, forKey: String) -> HTMLForm {
-        inputs.updateValue(value ?? "", forKey: forKey)
-        return self
-    }
-    
     /**
      Enables subscripting for modifying the input field values.
      
@@ -66,6 +60,15 @@ public class HTMLForm : HTMLElement {
         set (newValue) {
             inputs[key] = newValue
         }
+    }
+    
+    //========================================
+    // MARK: Modifiable Protocol
+    //========================================
+    
+    public func updateValue(value: String?, forKey: String) -> Self {
+        inputs.updateValue(value ?? "", forKey: forKey)
+        return self
     }
     
     //========================================

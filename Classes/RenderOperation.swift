@@ -84,7 +84,8 @@ internal class RenderOperation : NSOperation {
         if self.cancelled {
             return
         } else {
-            HLLog("Starting Rendering - \(name)")
+            HLLog("\(name ?? String())")
+            HLLog("[", lineBreak: false)
             executing = true
             setupReferences()
             startTimeout()
@@ -111,7 +112,7 @@ internal class RenderOperation : NSOperation {
             executing = false
             finished = true
             
-            HLLog("completed")
+            HLLog("]\n")
         }
     }
     
@@ -208,7 +209,9 @@ extension RenderOperation {
         
     func finishedLoading(webView: WKWebView) {
         webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
+#if VERBOSE
             HLLog("\(result)")
+#endif
             self?.result = result?.dataUsingEncoding(NSUTF8StringEncoding)
             self?.completeRendering(webView)
         }

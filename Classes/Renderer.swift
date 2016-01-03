@@ -79,7 +79,7 @@ internal class Renderer : NSObject {
             operation.webView?.loadRequest(request)
         }
         let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
-        operation.name = "Request : \(request.URL?.absoluteString)"
+        operation.name = "Request".uppercaseString + "\n\(request.URL?.absoluteString ?? String())"
         renderQueue.addOperation(operation)
     }
     
@@ -101,7 +101,7 @@ internal class Renderer : NSObject {
             }
         }
         let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
-        operation.name = "Script : \(script)"
+        operation.name = "Script".uppercaseString + "\n\(script ?? String())"
         renderQueue.addOperation(operation)
     }
     

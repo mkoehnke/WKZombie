@@ -55,8 +55,8 @@ class LoginViewController : UIViewController {
     func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
         return browser.open(url)
            >>> browser.find(withAttributes: ["name" : "form2"])
-           >>> browser.modify { $0.updateValue(user, forKey: "appleId") }
-           >>> browser.modify { $0.updateValue(password, forKey: "accountPassword") }
+           >>> browser.modify("appleId", withValue: user)
+           >>> browser.modify("accountPassword", withValue: password)
            >>> browser.submit(then: .Wait(2.0))
            >>> browser.find(withAttributes: ["href" : "/account/"])
            >>> browser.click

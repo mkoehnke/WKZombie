@@ -23,6 +23,7 @@
 		BF13347E1C235D750093A135 /* RenderOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF13347D1C235D750093A135 /* RenderOperation.swift */; };
 		BF5C09A51C144D0700DDE306 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C09A41C144D0700DDE306 /* Button.swift */; };
 		BF822BF11C0925F2008518C7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF822BF01C0925F2008518C7 /* LoginViewController.swift */; };
+		BFA857301C393D0D004A2A29 /* HTMLModifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFA8572F1C393D0D004A2A29 /* HTMLModifiable.swift */; };
 		BFAE16D71C02888B00AA3DA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAE16D61C02888B00AA3DA0 /* AppDelegate.swift */; };
 		BFAE16D91C02888B00AA3DA0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAE16D81C02888B00AA3DA0 /* ViewController.swift */; };
 		BFAE16DC1C02888B00AA3DA0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAE16DA1C02888B00AA3DA0 /* Main.storyboard */; };
@@ -50,6 +51,7 @@
 		BF5C09A41C144D0700DDE306 /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		BF75B5E81C064BD9004BFE06 /* HeadlessDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "HeadlessDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF822BF01C0925F2008518C7 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		BFA8572F1C393D0D004A2A29 /* HTMLModifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLModifiable.swift; sourceTree = "<group>"; };
 		BFAE16D31C02888B00AA3DA0 /* HeadlessDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HeadlessDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFAE16D61C02888B00AA3DA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFAE16D81C02888B00AA3DA0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 				BF0C9FBE1C1756BF00B3AD79 /* HTMLLink.swift */,
 				BF0C9FBF1C1756BF00B3AD79 /* HTMLPage.swift */,
 				BF0C9FC01C1756BF00B3AD79 /* HTMLTable.swift */,
+				BFA8572F1C393D0D004A2A29 /* HTMLModifiable.swift */,
 			);
 			path = HTML;
 			sourceTree = "<group>";
@@ -302,6 +305,7 @@
 				BF0C9FC81C1756BF00B3AD79 /* Definitions.swift in Sources */,
 				BF0C9FCA1C1756BF00B3AD79 /* HTMLForm.swift in Sources */,
 				BFAE16D71C02888B00AA3DA0 /* AppDelegate.swift in Sources */,
+				BFA857301C393D0D004A2A29 /* HTMLModifiable.swift in Sources */,
 				BF0C9FD11C1756BF00B3AD79 /* Parser.swift in Sources */,
 				BF0C9FCE1C1756BF00B3AD79 /* HTMLTable.swift in Sources */,
 				BF0C9FCF1C1756BF00B3AD79 /* JSONPage.swift in Sources */,

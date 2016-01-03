@@ -30,7 +30,7 @@ import Foundation
 func HLLog(message: String, lineBreak: Bool = true) {
     #if DEBUG
         if lineBreak {
-            print("\(__FUNCTION__): \(message)")
+            print("\(message)")
         } else {
             print("\(message)", terminator: "")
         }
