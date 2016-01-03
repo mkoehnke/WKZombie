@@ -23,8 +23,6 @@
 
 import Foundation
 
-// TODO - Move scripts to classes
-
 public class Headless : NSObject {
     
     private var renderer : Renderer!
@@ -66,35 +64,6 @@ public class Headless : NSObject {
         let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
         return responseResult >>> parseResponse >>> decodeResult(response.URL)
     }
-    
-    
-    //========================================
-    // MARK: Scripts
-    //========================================
-
-    private func formSubmitScript(name: String, values: [String: String]?) -> String {
-        var script = String()
-        let fields = values?.map { (key, value) in "document.\(name)['\(key)'].value='\(value)';" }
-        if let fields = fields { script += fields.joinWithSeparator("") }
-        script += "document.\(name).submit();"
-        return script
-    }
-    
-    private func clickLinkScript(href: String) -> String {
-        return "window.location.href='\(href)';"
-    }
-}
-
-
-extension Headless {
-    
-    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
-        return Action(result: resultFromOptional(f(element), error: .NotFound))
-    }
-    
-    public func modify<T: HTMLModifiable>(key: String, withValue value: String?)(element: T) -> Action<T> {
-        return Action(result: resultFromOptional(element.updateValue(value, forKey: key), error: .NotFound))
-    }
 }
 
 
@@ -114,33 +83,24 @@ extension Headless {
         return open(url, postAction: .None)
     }
     
+    /**
+     The returned Headless Action will load and return a page for the specified URL.
+     
+     - parameter postAction: 
+       <b>.Wait(seconds)</b>    The time in seconds that the action will wait (after the page has been loaded) before returning.
+                                This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
+                                is still in progress.<br/><br/>
+       <b>.Validate(script)</b> The action will complete if the specified JavaScript expression/script returns 'true'
+                                or a timeout occurs.
+     
+     - parameter url: An URL referencing a HTML or JSON page.
+     
+     - returns: The Headless Action.
+     */
     public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
         return open(url, postAction: postAction)
     }
-    
-    /**
-     The returned Headless Action will load and return a page for the specified URL.
-     
-     - parameter condition: The action will complete if the specified JavaScript expression/script returns 'true'
-     or a timeout occurs.
-     - parameter url: An URL referencing a HTML or JSON page.
-     
-     - returns: The Headless Action.
-     */
 
-    
-    /**
-     The returned Headless Action will load and return a page for the specified URL.
-     
-     - parameter wait: The time in seconds that the action will wait (after the page has been loaded) before returning.
-     This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
-     is still in progress.
-     - parameter url: An URL referencing a HTML or JSON page.
-     
-     - returns: The Headless Action.
-     */
-
-    
     /// Helper Method
     private func open<T: Page>(url: NSURL, postAction: PostAction = .None) -> Action<T> {
         return Action() { [unowned self] completion in
@@ -172,9 +132,14 @@ extension Headless {
     /**
      Submits the specified HTML form.
      
-     - parameter condition: After submitting the form, the action will complete if the specified JavaScript
-     expression/script returns 'true' or a timeout occurs.
-     - parameter form: A HTML form.
+     - parameter postAction:
+       <b>.Wait(seconds)</b>    The time in seconds that the action will wait (after the page has been loaded) before returning.
+                                This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
+                                is still in progress.<br/><br/>
+       <b>.Validate(script)</b> The action will complete if the specified JavaScript expression/script returns 'true'
+                                or a timeout occurs.
+     
+     - parameter url: An URL referencing a HTML or JSON page.
      
      - returns: The Headless Action.
      */
@@ -182,22 +147,10 @@ extension Headless {
         return submit(form, postAction: postAction)
     }
     
-    /**
-     Submits the specified HTML form.
-     
-     - parameter wait: After submitting the form, this is the time in seconds that the action will wait
-     (after the page has been loaded) before returning. This is useful in cases where the
-     page loading has been completed, but some JavaScript/Image loading is still in progress.
-     - parameter form: A HTML form.
-     
-     - returns: The Headless Action.
-     */
-    
     /// Helper Method
     private func submit<T: Page>(form: HTMLForm, postAction: PostAction = .None) -> Action<T> {
         return Action() { [unowned self] completion in
-            if let name = form.name {
-                let script = self.formSubmitScript(name, values: form.inputs)
+            if let script = form.actionScript() {
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
                     completion(self.handleResponse(result as? NSData, response: response, error: error))
                 })
@@ -228,32 +181,25 @@ extension Headless {
     /**
      Simulates the click of a HTML link.
      
-     - parameter condition: After clicking the link, the action will complete if the specified JavaScript
-     expression/script returns 'true' or a timeout occurs.
-     - parameter link: The HTML link.
+     - parameter postAction:
+       <b>.Wait(seconds)</b>    The time in seconds that the action will wait (after the page has been loaded) before returning.
+                                This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
+                                is still in progress.<br/><br/>
+       <b>.Validate(script)</b> The action will complete if the specified JavaScript expression/script returns 'true'
+                                or a timeout occurs.
+     
+     - parameter url: An URL referencing a HTML or JSON page.
      
      - returns: The Headless Action.
      */
     public func click<T: Page>(then postAction: PostAction)(link : HTMLLink) -> Action<T> {
         return click(link, postAction: postAction)
     }
-    
-    /**
-     Simulates the click of a HTML link.
-     
-     - parameter wait: After clickling the link, this is the time in seconds that the action will wait
-     (after the page has been loaded) before returning. This is useful in cases where the
-     page loading has been completed, but some JavaScript/Image loading is still in progress.
-     - parameter link: The HTML link.
-     
-     - returns: The Headless Action.
-     */
-    
+
     /// Helper Method
     private func click<T: Page>(link : HTMLLink, postAction: PostAction = .None) -> Action<T> {
         return Action() { [unowned self] completion in
-            if let url = link.href {
-                let script = self.clickLinkScript(url)
+            if let script = link.actionScript() {
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
                     completion(self.handleResponse(result as? NSData, response: response, error: error))
                 })
@@ -270,28 +216,56 @@ extension Headless {
 //========================================
 
 extension Headless {
-    /**
-     Returns a function that searches for a __link__ with the specified key/value pair.
+     /**
+     The returned Headless Action will search a page and return all elements matching the generic HTML element type and
+     the passed XPath Query.
      
-     - parameter key:   key
-     - parameter value: value
+     - parameter query: A XPath Query.
+     - parameter page: A HTML page.
      
-     - returns: return
+     - returns: The Headless Action.
      */
     public func findAll<T: HTMLElement>(query: String)(page: HTMLPage) -> Action<[T]> {
         return Action(result: page.elementsWithQuery(query))
     }
     
+    /**
+     The returned Headless Action will search a page and return all elements matching the generic HTML element type and
+     the passed key/value attributes.
+     
+     - parameter withAttributes: Key/Value Pairs.
+     - parameter page: A HTML page.
+     
+     - returns: The Headless Action.
+     */
     public func findAll<T: HTMLElement>(withAttributes attributesAndValues: [String : String])(page: HTMLPage) -> Action<[T]> {
         let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(attributesAndValues))
         return Action(result: elements)
     }
     
+    /**
+     The returned Headless Action will search a page and return the first element matching the generic HTML element type and
+     the passed XPath Query.
+     
+     - parameter query: A XPath Query.
+     - parameter page: A HTML page.
+     
+     - returns: The Headless Action.
+     */
     public func find<T: HTMLElement>(query: String)(page: HTMLPage) -> Action<T> {
         let elements : Result<[T]> = page.elementsWithQuery(query)
         return Action(result: elements.first())
     }
     
+    /**
+     The returned Headless Action will search a page and return the first element matching the generic HTML element type and
+     the passed key/value attributes.
+     
+     - parameter withAttributes: Key/Value Pairs.
+     - parameter page: A HTML page.
+     
+     - returns: The Headless Action.
+     */
     public func find<T: HTMLElement>(withAttributes attributesAndValues: [String : String])(page: HTMLPage) -> Action<T> {
         let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(attributesAndValues))
         return Action(result: elements.first())
@@ -300,15 +274,64 @@ extension Headless {
 
 
 //========================================
+// MARK: Transform Actions
+//========================================
+
+extension Headless {
+    /**
+     The returned Headless Action will transform a HTMLElement into another HTMLElement using the specified function.
+     
+     - parameter f: The function that takes a certain HTMLElement as parameter and transforms it into another HTMLElement.
+     - parameter element: A HTML element.
+     
+     - returns: The Headless Action.
+     */
+    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
+        return Action(result: resultFromOptional(f(element), error: .NotFound))
+    }
+    
+    /**
+     The returned Headless Action will update a key/value pair on the specified HTMLElement.
+     
+     - parameter key:   A Key.
+     - parameter value: A Value.
+     - parameter element: A HTML element.
+     
+     - returns: The Headless Action.
+     */
+    public func modify<T: HTMLModifiable>(key: String, withValue value: String?)(element: T) -> Action<T> {
+        return Action(result: resultFromOptional(element.updateValue(value, forKey: key), error: .NotFound))
+    }
+}
+
+//========================================
 // MARK: Advanced Actions
 //========================================
 
 extension Headless {
-    
+    /**
+     Executes the specified action (with the result of the previous action execution as input parameter) until
+     a certain condition is met. Afterwards, it will return the collected action results.
+     
+     - parameter f:       The Action which will be executed.
+     - parameter until:   If 'true', the execution of the specified Action will stop.
+     - parameter initial: The initial input parameter for the Action.
+     
+     - returns: The collected Sction results.
+     */
     public func collect<T>(f: T -> Action<T>, until: T -> Bool)(initial: T) -> Action<[T]> {
         return Action.collect(initial, f: f, until: until)
     }
     
+    /**
+     Makes a bulk execution of the specified action with the provided input values. Once all actions have
+     finished, the collected results will be returned.
+     
+     - parameter f:        The Action.
+     - parameter elements: An array containing the input value for the Action.
+     
+     - returns: The collected Action results.
+     */
     public func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]> {
         return Action.batch(elements, f: f)
     }

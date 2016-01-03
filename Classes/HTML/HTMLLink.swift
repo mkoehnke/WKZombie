@@ -49,6 +49,17 @@ public class HTMLLink : HTMLElement {
     }
     
     //========================================
+    // MARK: Link Click Script
+    //========================================
+    
+    internal func actionScript() -> String? {
+        if let href = href {
+           return "window.location.href='\(href)';"
+        }
+        return nil
+    }
+    
+    //========================================
     // MARK: Overrides
     //========================================
     

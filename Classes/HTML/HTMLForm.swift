@@ -72,6 +72,21 @@ public class HTMLForm : HTMLElement, HTMLModifiable {
     }
     
     //========================================
+    // MARK: Form Submit Script
+    //========================================
+    
+    internal func actionScript() -> String? {
+        if let name = name {
+            var script = String()
+            let fields = inputs.map { (key, value) in "document.\(name)['\(key)'].value='\(value)';" }
+            script += fields.joinWithSeparator("")
+            script += "document.\(name).submit();"
+            return script
+        }
+        return nil
+    }
+    
+    //========================================
     // MARK: Overrides
     //========================================
     
