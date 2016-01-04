@@ -90,8 +90,8 @@ public class HTMLForm : HTMLElement, HTMLModifiable {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(dictionary: [String : String]) -> String {
-        return "//form[\(dictionaryToKeyValues(dictionary))]"
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//form[@\(key)='\(value)']"
     }
     
     //========================================

@@ -57,7 +57,7 @@ public class HTMLPage : HTMLParser, Page {
     - returns: A result containing either a form or an error.
     */
     public func formWithName(name: String) -> Result<HTMLForm> {
-        return formsWithQuery(HTMLForm.keyValueQuery(["name" : name])).first()
+        return formsWithQuery(HTMLForm.keyValueQuery("name", value: name)).first()
     }
     
     /**
@@ -96,7 +96,7 @@ public class HTMLPage : HTMLParser, Page {
      - returns: A result containing either an array of links or an error.
      */
     public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
-        return linksWithQuery(HTMLLink.keyValueQuery([key : value]))
+        return linksWithQuery(HTMLLink.keyValueQuery(key, value: value))
     }
     
     /**
@@ -124,7 +124,7 @@ public class HTMLPage : HTMLParser, Page {
      - returns: A result containing either an array of tables or an error.
      */
     public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
-        return tablesWithQuery(HTMLTable.keyValueQuery([key : value]))
+        return tablesWithQuery(HTMLTable.keyValueQuery(key, value: value))
     }
     
     /**

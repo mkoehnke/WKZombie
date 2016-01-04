@@ -54,15 +54,15 @@ class LoginViewController : UIViewController {
     
     func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
         return browser.open(url)
-           >>> browser.find(withAttributes: ["name" : "form2"])
+           >>> browser.find(matchBy: .Attribute("name", "form2"))
            >>> browser.modify("appleId", withValue: user)
            >>> browser.modify("accountPassword", withValue: password)
            >>> browser.submit(then: .Wait(2.0))
-           >>> browser.find(withAttributes: ["href" : "/account/"])
+           >>> browser.find(matchBy: .Attribute("href", "/account/"))
            >>> browser.click
-           >>> browser.find(withAttributes: ["href" : "/account/ios/profile/profileList.action"])
+           >>> browser.find(matchBy: .Attribute("href", "/account/ios/profile/profileList.action"))
            >>> browser.click(then: .Wait(0.5))
-           >>> browser.findAll(withAttributes: ["aria-describedby" : "grid-table_name"])
+           >>> browser.findAll(matchBy: .Attribute("aria-describedby", "grid-table_name"))
     }
     
     //========================================
@@ -77,6 +77,7 @@ class LoginViewController : UIViewController {
         self.loginButton.enabled = true
         self.activityIndicator.stopAnimating()
         print(error)
+        browser.dump()
     }
     
     //========================================

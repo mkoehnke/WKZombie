@@ -86,13 +86,7 @@ extension Headless {
     /**
      The returned Headless Action will load and return a page for the specified URL.
      
-     - parameter postAction: 
-       <b>.Wait(seconds)</b>    The time in seconds that the action will wait (after the page has been loaded) before returning.
-                                This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
-                                is still in progress.<br/><br/>
-       <b>.Validate(script)</b> The action will complete if the specified JavaScript expression/script returns 'true'
-                                or a timeout occurs.
-     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
      - parameter url: An URL referencing a HTML or JSON page.
      
      - returns: The Headless Action.
@@ -132,13 +126,7 @@ extension Headless {
     /**
      Submits the specified HTML form.
      
-     - parameter postAction:
-       <b>.Wait(seconds)</b>    The time in seconds that the action will wait (after the page has been loaded) before returning.
-                                This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
-                                is still in progress.<br/><br/>
-       <b>.Validate(script)</b> The action will complete if the specified JavaScript expression/script returns 'true'
-                                or a timeout occurs.
-     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
      - parameter url: An URL referencing a HTML or JSON page.
      
      - returns: The Headless Action.
@@ -181,13 +169,7 @@ extension Headless {
     /**
      Simulates the click of a HTML link.
      
-     - parameter postAction:
-       <b>.Wait(seconds)</b>    The time in seconds that the action will wait (after the page has been loaded) before returning.
-                                This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
-                                is still in progress.<br/><br/>
-       <b>.Validate(script)</b> The action will complete if the specified JavaScript expression/script returns 'true'
-                                or a timeout occurs.
-     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
      - parameter url: An URL referencing a HTML or JSON page.
      
      - returns: The Headless Action.
@@ -215,20 +197,7 @@ extension Headless {
 // MARK: Find Methods
 //========================================
 
-extension Headless {
-     /**
-     The returned Headless Action will search a page and return all elements matching the generic HTML element type and
-     the passed XPath Query.
-     
-     - parameter query: A XPath Query.
-     - parameter page: A HTML page.
-     
-     - returns: The Headless Action.
-     */
-    public func findAll<T: HTMLElement>(query: String)(page: HTMLPage) -> Action<[T]> {
-        return Action(result: page.elementsWithQuery(query))
-    }
-    
+extension Headless {    
     /**
      The returned Headless Action will search a page and return all elements matching the generic HTML element type and
      the passed key/value attributes.
@@ -238,25 +207,11 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func findAll<T: HTMLElement>(withAttributes attributesAndValues: [String : String])(page: HTMLPage) -> Action<[T]> {
-        let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(attributesAndValues))
+    public func findAll<T: HTMLElement>(matchBy searchType: SearchType)(page: HTMLPage) -> Action<[T]> {
+        let elements : Result<[T]> = getElements(page, searchType: searchType)
         return Action(result: elements)
     }
-    
-    /**
-     The returned Headless Action will search a page and return the first element matching the generic HTML element type and
-     the passed XPath Query.
-     
-     - parameter query: A XPath Query.
-     - parameter page: A HTML page.
-     
-     - returns: The Headless Action.
-     */
-    public func find<T: HTMLElement>(query: String)(page: HTMLPage) -> Action<T> {
-        let elements : Result<[T]> = page.elementsWithQuery(query)
-        return Action(result: elements.first())
-    }
-    
+        
     /**
      The returned Headless Action will search a page and return the first element matching the generic HTML element type and
      the passed key/value attributes.
@@ -266,9 +221,17 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func find<T: HTMLElement>(withAttributes attributesAndValues: [String : String])(page: HTMLPage) -> Action<T> {
-        let elements : Result<[T]> = page.elementsWithQuery(T.keyValueQuery(attributesAndValues))
+    public func find<T: HTMLElement>(matchBy searchType: SearchType)(page: HTMLPage) -> Action<T> {
+        let elements : Result<[T]> = getElements(page, searchType: searchType)
         return Action(result: elements.first())
+    }
+    
+    /// Helper Method
+    private func getElements<T: HTMLElement>(page: HTMLPage, searchType: SearchType) -> Result<[T]> {
+        switch searchType {
+        case .Attribute(let key, let value): return page.elementsWithQuery(T.keyValueQuery(key, value: value ?? ""))
+        case .XPathQuery(let query): return page.elementsWithQuery(query)
+        }
     }
 }
 
@@ -334,5 +297,18 @@ extension Headless {
      */
     public func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]> {
         return Action.batch(elements, f: f)
+    }
+}
+
+//========================================
+// MARK: Debug Methods
+//========================================
+
+extension Headless {
+    /**
+     Prints the current state of the Headless browser to the console.
+     */
+    func dump() {
+        renderer.dump()
     }
 }

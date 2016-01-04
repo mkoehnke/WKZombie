@@ -35,9 +35,9 @@ public class HTMLTable : HTMLElement {
     //========================================
     // MARK: Overrides
     //========================================
-    
-    internal override class func keyValueQuery(dictionary: [String : String]) -> String {
-        return "//table[\(dictionaryToKeyValues(dictionary))]"
+
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//table[@\(key)='\(value)']"
     }
 }
 
@@ -54,8 +54,8 @@ public class HTMLTableRow : HTMLElement {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(dictionary: [String : String]) -> String {
-        return "//tr[\(dictionaryToKeyValues(dictionary))]"
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//tr[@\(key)='\(value)']"
     }
 }
 
@@ -66,7 +66,7 @@ public class HTMLTableColumn : HTMLElement {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(dictionary: [String : String]) -> String {
-        return "//td[\(dictionaryToKeyValues(dictionary))]"
+    internal override class func keyValueQuery(key: String, value: String) -> String {
+        return "//td[@\(key)='\(value)']"
     }
 }

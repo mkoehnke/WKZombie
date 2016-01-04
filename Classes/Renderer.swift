@@ -39,10 +39,11 @@ internal class Renderer : NSObject {
     }()
     
     private var webView : WKWebView!
+    internal static let scrapingCommand = "document.documentElement.outerHTML"
     
     override init() {
         super.init()
-        let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(document.documentElement.outerHTML);"
+        let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(\(Renderer.scrapingCommand));"
         let userScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
         
         let contentController = WKUserContentController()
@@ -118,5 +119,11 @@ internal class Renderer : NSObject {
         }
         operation.requestBlock = requestBlock
         return operation
+    }
+    
+    internal func dump() {
+        webView.evaluateJavaScript("\(Renderer.scrapingCommand);") { result, error in
+            HLLog((result as? String) ?? "No Output available.")
+        }
     }
 }

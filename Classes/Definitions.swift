@@ -37,6 +37,17 @@ func HLLog(message: String, lineBreak: Bool = true) {
     #endif
 }
 
+public enum SearchType {
+    /**
+     Search by matching an attribute using key/value.
+     */
+    case Attribute(String, String?)
+    /**
+     Search by using a XPath Query.
+     */
+    case XPathQuery(String)
+}
+
 //========================================
 // MARK: Result
 //========================================
@@ -282,16 +293,33 @@ extension Action {
 // MARK: Post Action
 //========================================
 
+/**
+An wait/validation action that will be performed after the page has reloaded.
+*/
 public enum PostAction {
+    /**
+     The time in seconds that the action will wait (after the page has been loaded) before returning.
+     This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
+     is still in progress.
+     
+     - returns: Time in Seconds.
+     */
     case Wait(NSTimeInterval)
+    /**
+     The action will complete if the specified JavaScript expression/script returns 'true'
+     or a timeout occurs.
+     
+     - returns: Validation Script.
+     */
     case Validate(String)
+    /// No Post Action will be performed.
     case None
 }
 
 
 //========================================
 // MARK: JSON
-// Borrowed from Tony DiPasquale's Article 
+// Inspired by Tony DiPasquale's Article 
 // https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
 //========================================
 
@@ -323,16 +351,3 @@ internal func parseJSON(data: NSData) -> Result<JSON> {
 internal func decodeJSONObject<U: JSONDecodable>(json: JSON) -> Result<U> {
     return resultFromOptional(U.decode(json), error: .ParsingFailure)
 }
-
-
-//========================================
-// MARK: Dictionary Helper
-//========================================
-
-internal func += <K,V> (inout left: Dictionary<K,V>, right: Dictionary<K,V>?) {
-    guard let right = right else { return }
-    right.forEach { key, value in
-        left.updateValue(value, forKey: key)
-    }
-}
-

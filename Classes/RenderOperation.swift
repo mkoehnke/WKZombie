@@ -208,10 +208,7 @@ extension RenderOperation : WKNavigationDelegate {
 extension RenderOperation {
         
     func finishedLoading(webView: WKWebView) {
-        webView.evaluateJavaScript("document.documentElement.outerHTML;") { [weak self] result, error in
-#if VERBOSE
-            HLLog("\(result)")
-#endif
+        webView.evaluateJavaScript("\(Renderer.scrapingCommand);") { [weak self] result, error in
             self?.result = result?.dataUsingEncoding(NSUTF8StringEncoding)
             self?.completeRendering(webView)
         }
