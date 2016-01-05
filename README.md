@@ -43,18 +43,18 @@ link of all headless browsers
 A web session equates to a headless instance, which can be created using the following line:
 
 ```javascript
-return open(url)
-   >>> 🌍.get(elementBy: .Id("accountname"))
+return 🌍.open(url)
+   >>> 🌍.get(by: .Id("accountname"))
    >>> 🌍.set(attribute: "value", value: user)
-   >>> 🌍.get(elementBy: .Id("accountpassword"))
+   >>> 🌍.get(by: .Id("accountpassword"))
    >>> 🌍.set(attribute: "value", value: password)
-   >>> 🌍.get(elementBy: .Name("form2"))
+   >>> 🌍.get(by: .Name("form2"))
    >>> 🌍.submit(then: .Wait(2.0))
-   >>> 🌍.get(elementBy: .Attribute("href", "/account/"))
+   >>> 🌍.get(by: .Attribute("href", "/account/"))
    >>> 🌍.click
-   >>> 🌍.get(elementBy: .Attribute("href", "/account/ios/profile/profileList.action"))
+   >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
    >>> 🌍.click(then: .Wait(0.5))
-   >>> 🌍.getAll(elementsBy: .Attribute("aria-describedby", "grid-table_name"))
+   >>> 🌍.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
 ```
 
 Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
