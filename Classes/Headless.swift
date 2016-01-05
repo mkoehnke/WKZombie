@@ -236,7 +236,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func getAll<T: HTMLElement>(elementsBy searchType: SearchType)(page: HTMLPage) -> Action<[T]> {
+    public func getElements<T: HTMLElement>(by searchType: SearchType)(page: HTMLPage) -> Action<[T]> {
         let elements : Result<[T]> = getElements(page, searchType: searchType)
         return Action(result: elements)
     }
@@ -250,7 +250,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func get<T: HTMLElement>(elementBy searchType: SearchType)(page: HTMLPage) -> Action<T> {
+    public func getElement<T: HTMLElement>(by searchType: SearchType)(page: HTMLPage) -> Action<T> {
         let elements : Result<[T]> = getElements(page, searchType: searchType)
         return Action(result: elements.first())
     }
