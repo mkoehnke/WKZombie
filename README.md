@@ -42,7 +42,7 @@ link of all headless browsers
 # Usage
 A web session equates to a headless instance, which can be created using the following line:
 
-```objective-c
+```javascript
 return open(url)
    >>> 🌍.get(elementBy: .Id("accountname"))
    >>> 🌍.set(attribute: "value", value: user)
@@ -52,9 +52,9 @@ return open(url)
    >>> 🌍.submit(then: .Wait(2.0))
    >>> 🌍.get(elementBy: .Attribute("href", "/account/"))
    >>> 🌍.click
-   >>> 🌍.get(elementBy: .Attribute("href", ".../profileList.action"))
+   >>> 🌍.get(elementBy: .Attribute("href", "/account/ios/profile/profileList.action"))
    >>> 🌍.click(then: .Wait(0.5))
-   >>> 🌍.getAll(elementsBy: .Attribute("aria-describedby", "..."))
+   >>> 🌍.getAll(elementsBy: .Attribute("aria-describedby", "grid-table_name"))
 ```
 
 Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
