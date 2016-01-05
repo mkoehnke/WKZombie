@@ -42,7 +42,7 @@ link of all headless browsers
 # Usage
 A web session equates to a headless instance, which can be created using the following line:
 
-```javascript
+```css
 return 🌍.open(url)
    >>> 🌍.get(by: .Id("accountname"))
    >>> 🌍.set(attribute: "value", value: user)
