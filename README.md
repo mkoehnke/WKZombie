@@ -42,19 +42,19 @@ link of all headless browsers
 # Usage
 A web session equates to a headless instance, which can be created using the following line:
 
-```swift
+```objective-c
 return open(url)
-   >>> get(elementBy: .Id("accountname"))
-   >>> set(attribute: "value", value: user)
-   >>> get(elementBy: .Id("accountpassword"))
-   >>> set(attribute: "value", value: password)
-   >>> get(elementBy: .Name("form2"))
-   >>> submit(then: .Wait(2.0))
-   >>> get(elementBy: .Attribute("href", "..."))
-   >>> click
-   >>> get(elementBy: .Attribute("href", "..."))
-   >>> click(then: .Wait(0.5))
-   >>> getAll(elementsBy: .Attribute("...", "..."))
+   >>> 🌍.get(elementBy: .Id("accountname"))
+   >>> 🌍.set(attribute: "value", value: user)
+   >>> 🌍.get(elementBy: .Id("accountpassword"))
+   >>> 🌍.set(attribute: "value", value: password)
+   >>> 🌍.get(elementBy: .Name("form2"))
+   >>> 🌍.submit(then: .Wait(2.0))
+   >>> 🌍.get(elementBy: .Attribute("href", "/account/"))
+   >>> 🌍.click
+   >>> 🌍.get(elementBy: .Attribute("href", ".../profileList.action"))
+   >>> 🌍.click(then: .Wait(0.5))
+   >>> 🌍.getAll(elementsBy: .Attribute("aria-describedby", "..."))
 ```
 
 Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
