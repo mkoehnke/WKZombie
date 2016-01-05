@@ -75,13 +75,13 @@ public class HTMLParser : Parser {
 /// A HTML Parser Element class, which wraps the functionality of the TFHppleElement class.
 public class HTMLParserElement : NSObject {
     private var element : TFHppleElement?
-    public internal(set) var pageURL : NSURL?
+    public internal(set) var XPathQuery : String?
     
-    required public init?(element: AnyObject, pageURL: NSURL? = nil) {
+    required public init?(element: AnyObject, XPathQuery : String? = nil) {
         super.init()
         if let element = element as? TFHppleElement {
             self.element = element
-            self.pageURL = pageURL
+            self.XPathQuery = XPathQuery
         } else {
             return nil
         }
@@ -108,11 +108,11 @@ public class HTMLParserElement : NSObject {
     }
     
     public func childrenWithTagName<T: HTMLElement>(tagName: String) -> [T]? {
-        return element?.childrenWithTagName(tagName).flatMap { T(element: $0, pageURL: pageURL) }
+        return element?.childrenWithTagName(tagName).flatMap { T(element: $0) }
     }
     
     public func children<T: HTMLElement>() -> [T]? {
-        return element?.children.flatMap { T(element:$0, pageURL: pageURL) }
+        return element?.children.flatMap { T(element:$0) }
     }
     
     public func hasChildren() -> Bool {

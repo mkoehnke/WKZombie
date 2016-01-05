@@ -54,15 +54,17 @@ class LoginViewController : UIViewController {
     
     func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
         return browser.open(url)
-           >>> browser.find(matchBy: .Attribute("name", "form2"))
-           >>> browser.modify("appleId", withValue: user)
-           >>> browser.modify("accountPassword", withValue: password)
+           >>> browser.get(elementBy: .Id("accountname"))
+           >>> browser.setAttribute("value", value: user)
+           >>> browser.get(elementBy: .Id("accountpassword"))
+           >>> browser.setAttribute("value", value: password)
+           >>> browser.get(elementBy: .Name("form2"))
            >>> browser.submit(then: .Wait(2.0))
-           >>> browser.find(matchBy: .Attribute("href", "/account/"))
+           >>> browser.get(elementBy: .Attribute("href", "/account/"))
            >>> browser.click
-           >>> browser.find(matchBy: .Attribute("href", "/account/ios/profile/profileList.action"))
+           >>> browser.get(elementBy: .Attribute("href", "/account/ios/profile/profileList.action"))
            >>> browser.click(then: .Wait(0.5))
-           >>> browser.findAll(matchBy: .Attribute("aria-describedby", "grid-table_name"))
+           >>> browser.getAll(elementsBy: .Attribute("aria-describedby", "grid-table_name"))
     }
     
     //========================================

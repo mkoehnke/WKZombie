@@ -145,7 +145,7 @@ public class HTMLPage : HTMLParser, Page {
     
     public func elementsWithQuery<T: HTMLElement>(XPathQuery: String) -> Result<[T]> {
         if let parsedObjects = searchWithXPathQuery(XPathQuery) where parsedObjects.count > 0 {
-            return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
+            return resultFromOptional(parsedObjects.flatMap { T(element: $0, XPathQuery: XPathQuery) }, error: .NotFound)
         }
         return Result.Error(.NotFound)
     }

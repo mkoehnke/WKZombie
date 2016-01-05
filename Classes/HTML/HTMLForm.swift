@@ -24,14 +24,14 @@
 import Foundation
 
 /// HTML Form class, which represents the <form> element in the DOM.
-public class HTMLForm : HTMLElement, HTMLModifiable {
+public class HTMLForm : HTMLElement {
 
     /// All inputs fields (keys and values) of this form.
-    var inputs = [String : String]()
+    public private(set) var inputElements = [String : String]()
     
-    required public init?(element: AnyObject, pageURL: NSURL? = nil) {
-        super.init(element: element, pageURL: pageURL)
-        if let element = HTMLElement(element: element) {
+    required public init?(element: AnyObject, XPathQuery: String? = nil) {
+        super.init(element: element, XPathQuery: XPathQuery)
+        if let element = HTMLElement(element: element, XPathQuery: XPathQuery) {
             retrieveAllInputs(element)
         }
     }
@@ -54,21 +54,7 @@ public class HTMLForm : HTMLElement, HTMLModifiable {
      - returns: The Input field attribute value.
      */
     public subscript(key: String) -> String? {
-        get {
-            return inputs[key]
-        }
-        set (newValue) {
-            inputs[key] = newValue
-        }
-    }
-    
-    //========================================
-    // MARK: Modifiable Protocol
-    //========================================
-    
-    public func updateValue(value: String?, forKey: String) -> Self {
-        inputs.updateValue(value ?? "", forKey: forKey)
-        return self
+        return inputElements[key]
     }
     
     //========================================
@@ -78,7 +64,7 @@ public class HTMLForm : HTMLElement, HTMLModifiable {
     internal func actionScript() -> String? {
         if let name = name {
             var script = String()
-            let fields = inputs.map { (key, value) in "document.\(name)['\(key)'].value='\(value)';" }
+            let fields = inputElements.map { (key, value) in "document.\(name)['\(key)'].value='\(value)';" }
             script += fields.joinWithSeparator("")
             script += "document.\(name).submit();"
             return script
@@ -101,7 +87,7 @@ public class HTMLForm : HTMLElement, HTMLModifiable {
     private func retrieveAllInputs(element: HTMLElement) {
         if let tagName = element.tagName as String? where tagName == "input" {
             if let name = element.objectForKey("name") {
-                inputs[name] = element.objectForKey("value")
+                inputElements[name] = element.objectForKey("value")
             }
         }
         if let children = element.children() as [HTMLElement]? where children.count > 0 {

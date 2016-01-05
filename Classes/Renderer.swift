@@ -44,10 +44,16 @@ internal class Renderer : NSObject {
     override init() {
         super.init()
         let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(\(Renderer.scrapingCommand));"
-        let userScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: WKUserScriptInjectionTime.AtDocumentEnd, forMainFrameOnly: true)
+        let doneLoadingUserScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
+        
+        let getElementByXPathScript = "function getElementByXpath(path) { " +
+                                      "   return document.evaluate(path, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue; " +
+                                      "}"
+        let getElementUserScript = WKUserScript(source: getElementByXPathScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: false)
         
         let contentController = WKUserContentController()
-        contentController.addUserScript(userScript)
+        contentController.addUserScript(doneLoadingUserScript)
+        contentController.addUserScript(getElementUserScript)
 
         let config = WKWebViewConfiguration()
         config.userContentController = contentController

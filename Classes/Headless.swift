@@ -192,6 +192,35 @@ extension Headless {
     }
 }
 
+//========================================
+// MARK: DOM Modification Methods
+//========================================
+
+extension Headless {
+    
+    /**
+     The returned Headless Action will update a key/value pair on the specified HTMLElement.
+     
+     - parameter key:   A Key.
+     - parameter value: A Value.
+     - parameter element: A HTML element.
+     
+     - returns: The Headless Action.
+     */
+    public func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage> {
+        return Action() { [unowned self] completion in
+            if let query = element.XPathQuery {
+                let script = "getElementByXpath(\"\(query)\").setAttribute(\"\(key)\", \"\(value ?? "")\"); \(Renderer.scrapingCommand);"
+                self.renderer.executeScript(script, willLoadPage: false, postAction: .None, completionHandler: { result, response, error in
+                    completion(decodeResult(nil)(data: result as? NSData))
+                })
+            } else {
+                completion(Result.Error(.NetworkRequestFailure))
+            }
+        }
+    }
+    
+}
 
 //========================================
 // MARK: Find Methods
@@ -207,7 +236,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func findAll<T: HTMLElement>(matchBy searchType: SearchType)(page: HTMLPage) -> Action<[T]> {
+    public func getAll<T: HTMLElement>(elementsBy searchType: SearchType)(page: HTMLPage) -> Action<[T]> {
         let elements : Result<[T]> = getElements(page, searchType: searchType)
         return Action(result: elements)
     }
@@ -221,14 +250,16 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func find<T: HTMLElement>(matchBy searchType: SearchType)(page: HTMLPage) -> Action<T> {
+    public func get<T: HTMLElement>(elementBy searchType: SearchType)(page: HTMLPage) -> Action<T> {
         let elements : Result<[T]> = getElements(page, searchType: searchType)
         return Action(result: elements.first())
     }
-    
+
     /// Helper Method
     private func getElements<T: HTMLElement>(page: HTMLPage, searchType: SearchType) -> Result<[T]> {
         switch searchType {
+        case .Id(let id): return page.elementsWithQuery("//*[@id='\(id)']")
+        case .Name(let name): return page.elementsWithQuery("//*[@name='\(name)']")
         case .Attribute(let key, let value): return page.elementsWithQuery(T.keyValueQuery(key, value: value ?? ""))
         case .XPathQuery(let query): return page.elementsWithQuery(query)
         }
@@ -251,19 +282,6 @@ extension Headless {
      */
     public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
         return Action(result: resultFromOptional(f(element), error: .NotFound))
-    }
-    
-    /**
-     The returned Headless Action will update a key/value pair on the specified HTMLElement.
-     
-     - parameter key:   A Key.
-     - parameter value: A Value.
-     - parameter element: A HTML element.
-     
-     - returns: The Headless Action.
-     */
-    public func modify<T: HTMLModifiable>(key: String, withValue value: String?)(element: T) -> Action<T> {
-        return Action(result: resultFromOptional(element.updateValue(value, forKey: key), error: .NotFound))
     }
 }
 

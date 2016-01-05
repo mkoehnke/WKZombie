@@ -38,6 +38,10 @@ func HLLog(message: String, lineBreak: Bool = true) {
 }
 
 public enum SearchType {
+    case Id(String)
+    
+    case Name(String)
+    
     /**
      Search by matching an attribute using key/value.
      */

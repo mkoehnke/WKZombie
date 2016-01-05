@@ -30,8 +30,8 @@ public class HTMLLink : HTMLElement {
     // MARK: Initializer
     //========================================
     
-    public required init?(element: AnyObject, pageURL: NSURL? = nil) {
-        super.init(element: element, pageURL: pageURL)
+    public required init?(element: AnyObject, XPathQuery: String? = nil) {
+        super.init(element: element, XPathQuery: XPathQuery)
     }
     
     /// Returns the value of the href attribute of the link.
