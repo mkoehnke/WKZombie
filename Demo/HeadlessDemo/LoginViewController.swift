@@ -32,7 +32,7 @@ class LoginViewController : UIViewController {
     
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
-    lazy var browser : Headless = {
+    lazy var 🌍 : Headless = {
         return Headless(name: "Developer Portal")
     }()
     
@@ -53,18 +53,18 @@ class LoginViewController : UIViewController {
     //========================================
     
     func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
-        return browser.open(url)
-           >>> browser.get(elementBy: .Id("accountname"))
-           >>> browser.setAttribute("value", value: user)
-           >>> browser.get(elementBy: .Id("accountpassword"))
-           >>> browser.setAttribute("value", value: password)
-           >>> browser.get(elementBy: .Name("form2"))
-           >>> browser.submit(then: .Wait(2.0))
-           >>> browser.get(elementBy: .Attribute("href", "/account/"))
-           >>> browser.click
-           >>> browser.get(elementBy: .Attribute("href", "/account/ios/profile/profileList.action"))
-           >>> browser.click(then: .Wait(0.5))
-           >>> browser.getAll(elementsBy: .Attribute("aria-describedby", "grid-table_name"))
+        return 🌍.open(url)
+           >>> 🌍.get(elementBy: .Id("accountname"))
+           >>> 🌍.setAttribute("value", value: user)
+           >>> 🌍.get(elementBy: .Id("accountpassword"))
+           >>> 🌍.setAttribute("value", value: password)
+           >>> 🌍.get(elementBy: .Name("form2"))
+           >>> 🌍.submit(then: .Wait(2.0))
+           >>> 🌍.get(elementBy: .Attribute("href", "/account/"))
+           >>> 🌍.click
+           >>> 🌍.get(elementBy: .Attribute("href", "/account/ios/profile/profileList.action"))
+           >>> 🌍.click(then: .Wait(0.5))
+           >>> 🌍.getAll(elementsBy: .Attribute("aria-describedby", "grid-table_name"))
     }
     
     //========================================
