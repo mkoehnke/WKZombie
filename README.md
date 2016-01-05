@@ -44,17 +44,17 @@ A web session equates to a headless instance, which can be created using the fol
 
 ```swift
 return 🌍.open(url)
-   >>> 🌍.getElement(by: .Id("accountname"))
-   >>> 🌍.setAttribute("value", value: user)
-   >>> 🌍.getElement(by: .Id("accountpassword"))
-   >>> 🌍.setAttribute("value", value: password)
-   >>> 🌍.getElement(by: .Name("form2"))
+   >>> 🌍.get(elementBy: .Id("accountname"))
+   >>> 🌍.set(user, forAttribute: "value")
+   >>> 🌍.get(elementBy: .Id("accountpassword"))
+   >>> 🌍.set(password, forAttribute: "value")
+   >>> 🌍.get(elementBy: .Name("form2"))
    >>> 🌍.submit(then: .Wait(2.0))
-   >>> 🌍.getElement(by: .Attribute("href", "/account/"))
+   >>> 🌍.get(elementBy: .Attribute("href", "/account/"))
    >>> 🌍.click
-   >>> 🌍.getElement(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+   >>> 🌍.get(elementBy: .Attribute("href", "/account/ios/profile/profileList.action"))
    >>> 🌍.click(then: .Wait(0.5))
-   >>> 🌍.getElements(by: .Attribute("aria-describedby", "grid-table_name"))
+   >>> 🌍.getAll(elementsBy: .Attribute("aria-describedby", "grid-table_name"))
 ```
 
 Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
