@@ -117,6 +117,15 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
+public func ===<T, U>(a: Action<T>, completion: (result: U?) -> Void) {
+    return a.start { result in
+        switch result {
+        case .Success(let value): completion(result: value as? U)
+        case .Error: completion(result: nil)
+        }
+    }
+}
+
 internal func parseResponse(response: Response) -> Result<NSData> {
     guard let data = response.data else {
         return .Error(.NetworkRequestFailure)

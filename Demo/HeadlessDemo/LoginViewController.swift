@@ -40,20 +40,15 @@ class LoginViewController : UIViewController {
         guard let user = nameTextField.text, password = passwordTextField.text else { return }
         button.enabled = false
         activityIndicator.startAnimating()
-        getProvisioningProfiles(url, user: user, password: password).start { [weak self] result in
-            switch result {
-            case .Success(let columns): self?.handleSuccess(columns)
-            case .Error(let error): self?.handleError(error)
-            }
-        }
+        getProvisioningProfiles(url, user: user, password: password)
     }
     
     //========================================
     // MARK: HTML Navigation
     //========================================
     
-    func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
-        return 🌍.open(url)
+    func getProvisioningProfiles(url: NSURL, user: String, password: String) {
+               🌍.open(url)
            >>> 🌍.get(by: .Id("accountname"))
            >>> 🌍.setAttribute("value", value: user)
            >>> 🌍.get(by: .Id("accountpassword"))
@@ -65,21 +60,21 @@ class LoginViewController : UIViewController {
            >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
            >>> 🌍.click(then: .Wait(0.5))
            >>> 🌍.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
+           === { self.showResult($0) }
     }
     
     //========================================
     // MARK: Handle Result
     //========================================
     
-    func handleSuccess(columns: [HTMLTableColumn]) {
-        self.performSegueWithIdentifier("detailSegue", sender: columns)
-    }
-    
-    func handleError(error: ActionError) {
-        self.loginButton.enabled = true
-        self.activityIndicator.stopAnimating()
-        print(error)
-        🌍.dump()
+    func showResult(columns: [HTMLTableColumn]?) {
+        if let columns = columns {
+            self.performSegueWithIdentifier("detailSegue", sender: columns)
+        } else {
+            self.loginButton.enabled = true
+            self.activityIndicator.stopAnimating()
+            🌍.dump()
+        }
     }
     
     //========================================

@@ -106,6 +106,14 @@ extension Headless {
     }
 }
 
+extension Headless {
+    
+    public func output<T>(completion: (result: T?) -> Void)(result: T?) {
+        
+    }
+    
+}
+
 
 //========================================
 // MARK: Submit Form
