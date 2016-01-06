@@ -55,9 +55,9 @@ class LoginViewController : UIViewController {
     func getProvisioningProfiles(url: NSURL, user: String, password: String) -> Action<[HTMLTableColumn]> {
         return 🌍.open(url)
            >>> 🌍.get(by: .Id("accountname"))
-           >>> 🌍.set(attribute: "value", value: user)
+           >>> 🌍.setAttribute("value", value: user)
            >>> 🌍.get(by: .Id("accountpassword"))
-           >>> 🌍.set(attribute: "value", value: password)
+           >>> 🌍.setAttribute("value", value: password)
            >>> 🌍.get(by: .Name("form2"))
            >>> 🌍.submit(then: .Wait(2.0))
            >>> 🌍.get(by: .Attribute("href", "/account/"))

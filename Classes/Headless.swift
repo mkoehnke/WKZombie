@@ -207,7 +207,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func set<T: HTMLElement>(attribute key: String, value: String?)(element: T) -> Action<HTMLPage> {
+    public func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage> {
         return Action() { [unowned self] completion in
             if let query = element.XPathQuery {
                 let script = "getElementByXpath(\"\(query)\").setAttribute(\"\(key)\", \"\(value ?? "")\"); \(Renderer.scrapingCommand);"

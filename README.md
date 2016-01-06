@@ -45,13 +45,11 @@ A web session equates to a headless instance, which can be created using the fol
 ```ruby
 return 🌍.open(url)
    >>> 🌍.get(by: .Id("accountname"))
-   >>> 🌍.set(attribute: "value", value: user)
+   >>> 🌍.setAttribute("value", value: user)
    >>> 🌍.get(by: .Id("accountpassword"))
-   >>> 🌍.set(attribute: "value", value: password)
+   >>> 🌍.setAttribute("value", value: password)
    >>> 🌍.get(by: .Name("form2"))
    >>> 🌍.submit(then: .Wait(2.0))
-   >>> 🌍.get(by: .Attribute("href", "/account/"))
-   >>> 🌍.click
    >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
    >>> 🌍.click(then: .Wait(0.5))
    >>> 🌍.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
