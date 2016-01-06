@@ -43,18 +43,19 @@ link of all headless browsers
 A web session equates to a headless instance, which can be created using the following line:
 
 ```ruby
-return 🌍.open(url)
-   >>> 🌍.get(by: .Id("accountname"))
-   >>> 🌍.setAttribute("value", value: user)
-   >>> 🌍.get(by: .Id("accountpassword"))
-   >>> 🌍.setAttribute("value", value: password)
-   >>> 🌍.get(by: .Name("form2"))
-   >>> 🌍.submit(then: .Wait(2.0))
-   >>> 🌍.get(by: .Attribute("href", "/account/"))
-   >>> 🌍.click
-   >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
-   >>> 🌍.click(then: .Wait(0.5))
-   >>> 🌍.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
+    browser.open(url)
+>>> browser.get(by: .Id("accountname"))
+>>> browser.setAttribute("value", value: user)
+>>> browser.get(by: .Id("accountpassword"))
+>>> browser.setAttribute("value", value: password)
+>>> browser.get(by: .Name("form2"))
+>>> browser.submit(then: .Wait(2.0))
+>>> browser.get(by: .Attribute("href", "/account/"))
+>>> browser.click
+>>> browser.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+>>> browser.click(then: .Wait(0.5))
+>>> browser.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
+=== output
 ```
 
 Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method

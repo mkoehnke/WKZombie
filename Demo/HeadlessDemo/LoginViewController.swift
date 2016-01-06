@@ -32,7 +32,7 @@ class LoginViewController : UIViewController {
     
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
-    lazy var 🌍 : Headless = {
+    lazy var browser : Headless = {
         return Headless(name: "Developer Portal")
     }()
     
@@ -48,32 +48,32 @@ class LoginViewController : UIViewController {
     //========================================
     
     func getProvisioningProfiles(url: NSURL, user: String, password: String) {
-               🌍.open(url)
-           >>> 🌍.get(by: .Id("accountname"))
-           >>> 🌍.setAttribute("value", value: user)
-           >>> 🌍.get(by: .Id("accountpassword"))
-           >>> 🌍.setAttribute("value", value: password)
-           >>> 🌍.get(by: .Name("form2"))
-           >>> 🌍.submit(then: .Wait(2.0))
-           >>> 🌍.get(by: .Attribute("href", "/account/"))
-           >>> 🌍.click
-           >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
-           >>> 🌍.click(then: .Wait(0.5))
-           >>> 🌍.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
-           === { self.showResult($0) }
+               browser.open(url)
+           >>> browser.get(by: .Id("accountname"))
+           >>> browser.setAttribute("value", value: user)
+           >>> browser.get(by: .Id("accountpassword"))
+           >>> browser.setAttribute("value", value: password)
+           >>> browser.get(by: .Name("form2"))
+           >>> browser.submit(then: .Wait(2.0))
+           >>> browser.get(by: .Attribute("href", "/account/"))
+           >>> browser.click
+           >>> browser.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+           >>> browser.click(then: .Wait(0.5))
+           >>> browser.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
+           === output
     }
     
     //========================================
     // MARK: Handle Result
     //========================================
     
-    func showResult(columns: [HTMLTableColumn]?) {
+    func output(columns: [HTMLTableColumn]?) {
         if let columns = columns {
-            self.performSegueWithIdentifier("detailSegue", sender: columns)
+            performSegueWithIdentifier("detailSegue", sender: columns)
         } else {
-            self.loginButton.enabled = true
-            self.activityIndicator.stopAnimating()
-            🌍.dump()
+            loginButton.enabled = true
+            activityIndicator.stopAnimating()
+            browser.dump()
         }
     }
     
