@@ -50,8 +50,10 @@ return 🌍.open(url)
    >>> 🌍.setAttribute("value", value: password)
    >>> 🌍.get(by: .Name("form2"))
    >>> 🌍.submit(then: .Wait(2.0))
-   >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+   >>> 🌍.get(by: .Attribute("href", "/account/"))
    >>> 🌍.click
+   >>> 🌍.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+   >>> 🌍.click(then: .Wait(0.5))
    >>> 🌍.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
 ```
 
