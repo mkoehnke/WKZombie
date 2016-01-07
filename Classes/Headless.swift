@@ -236,8 +236,8 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func getAll<T: HTMLElement>(by searchType: SearchType)(page: HTMLPage) -> Action<[T]> {
-        let elements : Result<[T]> = getElements(page, searchType: searchType)
+    public func getAll<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<[T]> {
+        let elements : Result<[T]> = page.elementsWithQuery(searchType.xPathQuery())
         return Action(result: elements)
     }
         
@@ -250,19 +250,9 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func get<T: HTMLElement>(by searchType: SearchType)(page: HTMLPage) -> Action<T> {
-        let elements : Result<[T]> = getElements(page, searchType: searchType)
+    public func get<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<T> {
+        let elements : Result<[T]> = page.elementsWithQuery(searchType.xPathQuery())
         return Action(result: elements.first())
-    }
-
-    /// Helper Method
-    private func getElements<T: HTMLElement>(page: HTMLPage, searchType: SearchType) -> Result<[T]> {
-        switch searchType {
-        case .Id(let id): return page.elementsWithQuery("//*[@id='\(id)']")
-        case .Name(let name): return page.elementsWithQuery("//*[@name='\(name)']")
-        case .Attribute(let key, let value): return page.elementsWithQuery(T.keyValueQuery(key, value: value ?? ""))
-        case .XPathQuery(let query): return page.elementsWithQuery(query)
-        }
     }
 }
 

@@ -37,10 +37,12 @@ func HLLog(message: String, lineBreak: Bool = true) {
     #endif
 }
 
-public enum SearchType {
+public enum SearchType<T: HTMLElement> {
     case Id(String)
     
     case Name(String)
+    
+    case Text(String)
     
     /**
      Search by matching an attribute using key/value.
@@ -50,6 +52,16 @@ public enum SearchType {
      Search by using a XPath Query.
      */
     case XPathQuery(String)
+    
+    func xPathQuery() -> String {
+        switch self {
+        case .Text(let value): return T.createXPathQuery("[contains(text(),'\(value)')]")
+        case .Id(let id): return T.createXPathQuery("[@id='\(id)']")
+        case .Name(let name): return T.createXPathQuery("[@name='\(name)']")
+        case .Attribute(let key, let value): return T.createXPathQuery("[@\(key)='\(value ?? "")']")
+        case .XPathQuery(let query): return query
+        }
+    }
 }
 
 //========================================
@@ -117,10 +129,10 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
-public func ===<T, U>(a: Action<T>, completion: (result: U?) -> Void) {
+public func ===<T>(a: Action<T>, completion: (result: T?) -> Void) {
     return a.start { result in
         switch result {
-        case .Success(let value): completion(result: value as? U)
+        case .Success(let value): completion(result: value)
         case .Error: completion(result: nil)
         }
     }

@@ -57,7 +57,7 @@ class LoginViewController : UIViewController {
            >>> browser.submit(then: .Wait(2.0))
            >>> browser.get(by: .Attribute("href", "/account/"))
            >>> browser.click
-           >>> browser.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+           >>> browser.get(by: .Text("Provisioning Profiles"))
            >>> browser.click(then: .Wait(0.5))
            >>> browser.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
            === output

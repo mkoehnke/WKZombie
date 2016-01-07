@@ -57,7 +57,7 @@ public class HTMLPage : HTMLParser, Page {
     - returns: A result containing either a form or an error.
     */
     public func formWithName(name: String) -> Result<HTMLForm> {
-        return formsWithQuery(HTMLForm.keyValueQuery("name", value: name)).first()
+        return formsWithQuery(HTMLForm.createXPathQuery("[@name='\(name)']")).first()
     }
     
     /**
@@ -84,7 +84,7 @@ public class HTMLPage : HTMLParser, Page {
     - returns: A result containing either a link or an error.
     */
     public func linkWithName(name: String) -> Result<HTMLLink> {
-        return linksWithQuery("//a[text()='\(name)']/@href").first()
+        return linksWithQuery(HTMLLink.createXPathQuery("[text()='\(name)']")).first()
     }
     
     /**
@@ -96,7 +96,7 @@ public class HTMLPage : HTMLParser, Page {
      - returns: A result containing either an array of links or an error.
      */
     public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
-        return linksWithQuery(HTMLLink.keyValueQuery(key, value: value))
+        return linksWithQuery(HTMLLink.createXPathQuery("[@\(key)='\(value)']"))
     }
     
     /**
@@ -124,7 +124,7 @@ public class HTMLPage : HTMLParser, Page {
      - returns: A result containing either an array of tables or an error.
      */
     public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
-        return tablesWithQuery(HTMLTable.keyValueQuery(key, value: value))
+        return tablesWithQuery(HTMLTable.createXPathQuery("[@\(key)='\(value)']"))
     }
     
     /**

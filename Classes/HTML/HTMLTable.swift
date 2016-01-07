@@ -36,8 +36,8 @@ public class HTMLTable : HTMLElement {
     // MARK: Overrides
     //========================================
 
-    internal override class func keyValueQuery(key: String, value: String) -> String {
-        return "//table[@\(key)='\(value)']"
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//table\(parameters)"
     }
 }
 
@@ -54,8 +54,8 @@ public class HTMLTableRow : HTMLElement {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(key: String, value: String) -> String {
-        return "//tr[@\(key)='\(value)']"
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//tr\(parameters)"
     }
 }
 
@@ -66,7 +66,7 @@ public class HTMLTableColumn : HTMLElement {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(key: String, value: String) -> String {
-        return "//td[@\(key)='\(value)']"
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//td\(parameters)"
     }
 }

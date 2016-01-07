@@ -76,8 +76,8 @@ public class HTMLForm : HTMLElement {
     // MARK: Overrides
     //========================================
     
-    internal override class func keyValueQuery(key: String, value: String) -> String {
-        return "//form[@\(key)='\(value)']"
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//form\(parameters)"
     }
     
     //========================================
