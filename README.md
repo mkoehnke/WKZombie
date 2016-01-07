@@ -52,9 +52,9 @@ A web session equates to a headless instance, which can be created using the fol
 >>> browser.submit(then: .Wait(2.0))
 >>> browser.get(by: .Attribute("href", "/account/"))
 >>> browser.click
->>> browser.get(by: .Attribute("href", "/account/ios/profile/profileList.action"))
+>>> browser.get(by: .Text("Provisioning Profiles"))
 >>> browser.click(then: .Wait(0.5))
->>> browser.getAll(by: .Attribute("aria-describedby", "grid-table_name"))
+>>> browser.getAll(by: .Class("ui-ellipsis bold"))
 === output
 ```
 

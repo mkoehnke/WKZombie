@@ -44,6 +44,8 @@ public enum SearchType<T: HTMLElement> {
     
     case Text(String)
     
+    case Class(String)
+    
     /**
      Search by matching an attribute using key/value.
      */
@@ -59,6 +61,7 @@ public enum SearchType<T: HTMLElement> {
         case .Id(let id): return T.createXPathQuery("[@id='\(id)']")
         case .Name(let name): return T.createXPathQuery("[@name='\(name)']")
         case .Attribute(let key, let value): return T.createXPathQuery("[@\(key)='\(value ?? "")']")
+        case .Class(let className): return T.createXPathQuery("[@class='\(className)']")
         case .XPathQuery(let query): return query
         }
     }
