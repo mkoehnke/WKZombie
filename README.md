@@ -1,5 +1,5 @@
 # Headless
-Headless is an iOS **web-browser without a graphical user interface**. It was developed as an *experiment* in order to familiarize myself with **using proven functional concepts** written in Swift. Some of those concepts are:
+Headless is an iOS **web-browser without a graphical user interface**. It was developed as a mere *experiment* in order to familiarize myself with **using proven functional concepts** written in Swift have some fun with it. Some of those concepts are:
 
 * *Futures/Promises* (for handling in asynchronous code)
 * *Function Currying*
@@ -53,27 +53,27 @@ Easy navigation by linking actions >>> (demo)
 A web session equates to a headless instance, which can be created using the following line:
 
 ```ruby
-let browser = Headless(name: "Demo")
+let 🌍= Headless(name: "Demo")
 ```
 
 ```ruby
-    browser.open(url)
->>> browser.get(by: .Id("accountname"))
->>> browser.setAttribute("value", value: user)
->>> browser.get(by: .Id("accountpassword"))
->>> browser.setAttribute("value", value: password)
->>> browser.get(by: .Name("form2"))
->>> browser.submit
->>> browser.get(by: .Attribute("href", "/account/"))
->>> browser.click
->>> browser.get(by: .Text("Provisioning Profiles"))
->>> browser.click(then: .Wait(0.5))
->>> browser.getAll(by: .Class("ui-ellipsis bold"))
-=== myOutputFunction
+    🌍.open(url)
+>>> 🌍.get(by: .Id("accountname"))
+>>> 🌍.setAttribute("value", value: user)
+>>> 🌍.get(by: .Id("accountpassword"))
+>>> 🌍.setAttribute("value", value: password)
+>>> 🌍.get(by: .Name("form2"))
+>>> 🌍.submit
+>>> 🌍.get(by: .Attribute("href", "/account/"))
+>>> 🌍.click
+>>> 🌍.get(by: .Text("Provisioning Profiles"))
+>>> 🌍.click(then: .Wait(0.5))
+>>> 🌍.getAll(by: .Class("ui-ellipsis bold"))
+=== myOutput
 ```
 
 ```ruby
-func myOutputFunction(result: [HTMLTableColumn]?) {
+func myOutput(result: [HTMLTableColumn]?) {
   // handle result
 }
 ```
