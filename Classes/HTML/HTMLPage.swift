@@ -46,106 +46,13 @@ public class HTMLPage : HTMLParser, Page {
     }
     
     //========================================
-    // MARK: Forms
+    // MARK: Find Elements
     //========================================
     
-    /**
-    Returns the first HTML form in the DOM with the specified name.
-    
-    - parameter name: The form name.
-    
-    - returns: A result containing either a form or an error.
-    */
-    public func formWithName(name: String) -> Result<HTMLForm> {
-        return formsWithQuery(HTMLForm.createXPathQuery("[@name='\(name)']")).first()
-    }
-    
-    /**
-     Returns all HTML forms in the DOM matching the specified XPath query.
-     
-     - parameter XPathQuery: The XPath query.
-     
-     - returns: A result containing either an array of forms o an error.
-     */
-    public func formsWithQuery(XPathQuery: String) -> Result<[HTMLForm]> {
-        return elementsWithQuery(XPathQuery)
-    }
-    
-    
-    //========================================
-    // MARK: Links
-    //========================================
-    
-    /**
-    Returns the first HTML link in the DOM with the specified name.
-    
-    - parameter name: The link name.
-    
-    - returns: A result containing either a link or an error.
-    */
-    public func linkWithName(name: String) -> Result<HTMLLink> {
-        return linksWithQuery(HTMLLink.createXPathQuery("[text()='\(name)']")).first()
-    }
-    
-    /**
-     Returns all HTML links in the DOM matching the specified key-value pattern.
-     
-     - parameter key:   The attribute name.
-     - parameter value: The attribute value.
-     
-     - returns: A result containing either an array of links or an error.
-     */
-    public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
-        return linksWithQuery(HTMLLink.createXPathQuery("[@\(key)='\(value)']"))
-    }
-    
-    /**
-     Returns all HTML links in the DOM matching the specified XPath query.
-     
-     - parameter XPathQuery: The XPath query.
-     
-     - returns: A result containing either an array of links o an error.
-     */
-    public func linksWithQuery(XPathQuery: String) -> Result<[HTMLLink]> {
-        return elementsWithQuery(XPathQuery)
-    }
-    
-    
-    //========================================
-    // MARK: Tables
-    //========================================
-    
-    /**
-     Returns all HTML tables in the DOM matching the specified key-value pattern.
-     
-     - parameter key:   The attribute name.
-     - parameter value: The attribute value.
-     
-     - returns: A result containing either an array of tables or an error.
-     */
-    public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
-        return tablesWithQuery(HTMLTable.createXPathQuery("[@\(key)='\(value)']"))
-    }
-    
-    /**
-     Returns all HTML tables in the DOM matching the specified XPath query.
-     
-     - parameter XPathQuery: The XPath query.
-     
-     - returns: A result containing either an array of tables o an error.
-     */
-    public func tablesWithQuery(XPathQuery: String) -> Result<[HTMLTable]> {
-        return elementsWithQuery(XPathQuery)
-    }
-    
-    
-    //========================================
-    // MARK: Generic Method
-    //========================================
-    
-    public func elementsWithQuery<T: HTMLElement>(XPathQuery: String) -> Result<[T]> {
-        if let parsedObjects = searchWithXPathQuery(XPathQuery) where parsedObjects.count > 0 {
-            return resultFromOptional(parsedObjects.flatMap { T(element: $0, XPathQuery: XPathQuery) }, error: .NotFound)
+    public func findElements<T: HTMLElement>(searchType: SearchType<T>) -> Result<[T]> {
+        let query = searchType.xPathQuery()
+        if let parsedObjects = searchWithXPathQuery(query) where parsedObjects.count > 0 {
+            return resultFromOptional(parsedObjects.flatMap { T(element: $0, XPathQuery: query) }, error: .NotFound)
         }
         return Result.Error(.NotFound)
     }

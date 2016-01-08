@@ -26,7 +26,15 @@ import Foundation
 /// The HTMLElement class is a base class, which can represent every element 
 /// in the DOM, e.g. <img>, <a>, <form> etc.
 public class HTMLElement : HTMLParserElement {
+    
     internal class func createXPathQuery(parameters: String) -> String {
         return "//*\(parameters)"
+    }
+    
+    internal func createSetAttributeCommand(key : String, value: String? = "") -> String? {
+        if let query = XPathQuery {
+            return "getElementByXpath(\"\(query)\").setAttribute(\"\(key)\", \"\(value)\");"
+        }
+        return nil
     }
 }

@@ -209,9 +209,8 @@ extension Headless {
      */
     public func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage> {
         return Action() { [unowned self] completion in
-            if let query = element.XPathQuery {
-                let script = "getElementByXpath(\"\(query)\").setAttribute(\"\(key)\", \"\(value ?? "")\"); \(Renderer.scrapingCommand);"
-                self.renderer.executeScript(script, willLoadPage: false, postAction: .None, completionHandler: { result, response, error in
+            if let script = element.createSetAttributeCommand(key, value: value) {
+                self.renderer.executeScript("\(script) \(Renderer.scrapingCommand);", completionHandler: { result, response, error in
                     completion(decodeResult(nil)(data: result as? NSData))
                 })
             } else {
@@ -237,7 +236,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func getAll<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<[T]> {
-        let elements : Result<[T]> = page.elementsWithQuery(searchType.xPathQuery())
+        let elements : Result<[T]> = page.findElements(searchType)
         return Action(result: elements)
     }
         
@@ -251,7 +250,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func get<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<T> {
-        let elements : Result<[T]> = page.elementsWithQuery(searchType.xPathQuery())
+        let elements : Result<[T]> = page.findElements(searchType)
         return Action(result: elements.first())
     }
 }

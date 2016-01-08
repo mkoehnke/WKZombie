@@ -136,13 +136,16 @@ case .Error(let error):
 }
 ```
 
+### Find HTML Elements
+
+### Set an Attribute
+
+
 ## Advanced Actions
 
 ### Batch
 
 ### Repeat
-
-## Linking Actions
 
 
 ## Conditions
@@ -184,6 +187,7 @@ link of all headless browsers
 # What can be improved?
 * HTMLImage
 * ScreenCapture
+* More descriptive errors
 
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
