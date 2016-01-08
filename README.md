@@ -53,7 +53,7 @@ Easy navigation by linking actions >>> (demo)
 A web session equates to a headless instance, which can be created using the following line:
 
 ```ruby
-let 🌍= Headless(name: "Demo")
+let 🌍 = Headless(name: "Demo")
 ```
 
 ```ruby
@@ -63,7 +63,7 @@ let 🌍= Headless(name: "Demo")
 >>> 🌍.get(by: .Id("accountpassword"))
 >>> 🌍.setAttribute("value", value: password)
 >>> 🌍.get(by: .Name("form2"))
->>> 🌍.submit
+>>> 🌍.submit(then: Wait(2.0))
 >>> 🌍.get(by: .Attribute("href", "/account/"))
 >>> 🌍.click
 >>> 🌍.get(by: .Text("Provisioning Profiles"))
