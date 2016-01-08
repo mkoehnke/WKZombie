@@ -54,7 +54,9 @@ A web session equates to a headless instance, which can be created using the fol
 
 ```ruby
 let browser = Headless(name: "Demo")
+```
 
+```ruby
     browser.open(url)
 >>> browser.get(by: .Id("accountname"))
 >>> browser.setAttribute("value", value: user)
@@ -68,7 +70,9 @@ let browser = Headless(name: "Demo")
 >>> browser.click(then: .Wait(0.5))
 >>> browser.getAll(by: .Class("ui-ellipsis bold"))
 === myOutputFunction
+```
 
+```ruby
 func myOutputFunction(result: [HTMLTableColumn]?) {
   // handle result
 }
