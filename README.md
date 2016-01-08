@@ -1,28 +1,18 @@
 # Headless
-Headless is an *experimental* iOS web browser without a graphical user interface. It was written in Swift, incorporating functional concepts such as *Futures/Promises* and *Function Currying*.  
+Headless is an iOS **web-browser without a graphical user interface**. It was developed as an *experiment* in order to familiarize myself with **using proven functional concepts** written in Swift. Some of those concepts are:
 
-## Example
+* *Futures/Promises* (for handling in asynchronous code)
+* *Function Currying*
+* *Custom Operators* (for chaining browser actions)
 
-### Web-Browser Navigation
+## Use Cases
+* Scraping web sites for data
+* Automating interaction of web pages
+* Manipulation of websites
+* Running automated tests
+* etc.
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjfam11l2jWAHXADeARCGeuMnKTI5ks5Wi8zrwA%3D%3D" />
-</p>
-
-
-### Automation with Headless
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
-
-<p align="center">
-<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjTsRwVOmj1xb8Qzfp9-UvXKoVgzGks5Wi803wA%3D%3D" />
-</p>
-
-Easy navigation by linking actions >>> (demo)
-
-## What is a headless browser?
+## Features
 link of all headless browsers
 
 * HTML and rudimentary JSON support
@@ -31,37 +21,63 @@ link of all headless browsers
 * written in Swift
 * easily chainable
 
-# Use Cases
-* Scraping web sites for data.
-* Automating interaction of web pages.
-* Manipulation of websites using JavaScript
-* Tests
-* etc.
+
+
+## Example
+
+
+
+### Web-Browser Navigation
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjQVdWqIq9FWdb42o8I09ERYprf7Mks5WmWgPwA%3D%3D" />
+</p>
+
+
+### Automation with Headless
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+
+<p align="center">
+<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
+</p>
+
+Easy navigation by linking actions >>> (demo)
+
+
 
 
 # Usage
 A web session equates to a headless instance, which can be created using the following line:
 
 ```ruby
+let browser = Headless(name: "Demo")
+
     browser.open(url)
 >>> browser.get(by: .Id("accountname"))
 >>> browser.setAttribute("value", value: user)
 >>> browser.get(by: .Id("accountpassword"))
 >>> browser.setAttribute("value", value: password)
 >>> browser.get(by: .Name("form2"))
->>> browser.submit(then: .Wait(2.0))
+>>> browser.submit
 >>> browser.get(by: .Attribute("href", "/account/"))
 >>> browser.click
 >>> browser.get(by: .Text("Provisioning Profiles"))
 >>> browser.click(then: .Wait(0.5))
 >>> browser.getAll(by: .Class("ui-ellipsis bold"))
-=== output
+=== myOutputFunction
+
+func myOutputFunction(result: [HTMLTableColumn]?) {
+  // handle result
+}
 ```
 
 Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
 
 ```swift
-let action : Action<HTMLPage> = headless.get(url)
+let action : Action<HTMLPage> = headless.open(url)
 
 action.start { result in
     switch result {
