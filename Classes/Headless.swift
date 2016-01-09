@@ -91,7 +91,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
+    public func open<T: Page>(then postAction: PostAction)(url: NSURL) -> Action<T> {
         return open(url, postAction: postAction)
     }
 

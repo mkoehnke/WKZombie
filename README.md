@@ -20,17 +20,13 @@ The following example is supposed to demonstrate the headless functionality. Let
 
 When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically type in your credentials, sign in and navigate (via links) to the *Provisioning Profiles* section:
 
-<p align="center">
 <img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjQVdWqIq9FWdb42o8I09ERYprf7Mks5WmWgPwA%3D%3D" />
-</p>
 
 #### Automation with Headless
 
 The same navigation process can be reproduced **automatically** within an iOS app using the chained *Actions* of Headless. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
-<p align="center">
 <img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
-</p>
 
 # Usage
 A Headless instance equates to a web session, which can be created using the following line:
@@ -82,7 +78,7 @@ action.start { result in
 }
 ```
 
-This is certainly the less complicated, but you have to write a lot more code, which might become confusing when you want to nest *Actions*.  
+This is certainly the less complicated way, but you have to write a lot more code, which might become confusing when you want to nest *Actions*.  
 
 
 ## Basic Actions
@@ -90,83 +86,120 @@ There are currently a few *Actions* implemented, helping you visit and navigate 
 
 ### Open a Website
 
-```swift
-headless.get(url).start { result in
-    switch result {
-    case .Success(let page): // process page
-    case .Error(let error):  // handle error
-    }
-}
+
+```ruby
+func open<T : Page>(url: NSURL) -> Action<T>
+```
+
+```ruby
+func open<T : Page>(then: PostAction)(url: NSURL) -> Action<T>
 ```
 
 ### Submit a Form
 
-```swift
-func submitLoginForm(page: HTMLPage) -> Action<HTMLPage> {
-    switch page.formWithName("form2") {
-    case .Success(let form):
-        form["username"] = "username"
-        form["password"] = "password"
-        return headless.submit(form)
+```ruby
+func submit<T : Page>(form: HTMLForm) -> Action<T>
+```
 
-    case .Error(let error):
-        return Action(error: error)
-    }
-}
-
-submitLoginForm.start { result in
-  // handle result
-}
+```ruby
+func submit<T : Page>(then: PostAction)(form: HTMLForm) -> Action<T>
 ```
 
 ### Click a Link
 
-```swift
-let result = page.firstLinkWithAttribute("href", value: "/account/")
-switch result {
-case .Success(let link):
-    headless.click(link).start { // handle result }
-case .Error(let error):
-    // handle error
-}
+```ruby
+func click<T: Page>(link : HTMLLink) -> Action<T>
+```
+
+```ruby
+func click<T: Page>(then: PostAction)(link : HTMLLink) -> Action<T>
 ```
 
 ### Find HTML Elements
 
+```ruby
+func get<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<T>
+```
+
+```ruby
+func getAll<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<[T]>
+```
+
+
 ### Set an Attribute
 
+```ruby
+func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage>
+```
+
 ### Transform
+
+```ruby
+func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A>
+```
+## Special Parameters
+
+### PostActions
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
+### SearchType
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
 ## Operators
 
 ### >>>
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+
 
 ### ===
+
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
 ## Advanced Actions
 
 ### Batch
 
-### Repeat
+```ruby
+func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]>
+```
+
+### Collect
+
+```ruby
+func collect<T>(f: T -> Action<T>, until: T -> Bool)(initial: T) -> Action<[T]>
+```
+
+### Dump
+
+```ruby
+func dump()
+```
 
 ## HTML Elements
 
 ### HTMLPage
 
-### HTMLForm
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
-### HTMLLink
+### HTMLElement
 
+The HTMLElement class is a base class, which can represent every element in the DOM.
 
+* HTMLForm
+* HTMLLink
+* HTMLTable
+* HTMLTableColumn
+* HTMLTableRow
 
-## Conditions
+## JSON Elements
 
-* experimenting with functional concepts such as Futures/Promises and Function Currying. This is far from feature complete, but it works great and functionality can be easily added.
+### JSONPage
 
-* Condition / Wait
+Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
 
-
-# Setup
+# Installation
 ## CocoaPods
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
 
@@ -190,15 +223,13 @@ Then, run the following command:
 $ pod install
 ```
 
-# JSON
-
-# Links
-link of all headless browsers
-
-# What can be improved?
+# TODOs
 * HTMLImage
 * ScreenCapture
 * More descriptive errors
+
+# Links
+link of all headless browsers
 
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
