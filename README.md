@@ -6,58 +6,60 @@ It uses [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https
 For more information, see [Usage](#usage).
 
 ## Use Cases
-* Scraping web sites for data
-* Automating interaction of web pages
+* Collect data without an API
+* Scraping websites
+* Automating interaction of websites
 * Manipulation of websites
 * Running automated tests
 * etc.
 
 ## Example
+The following example is supposed to demonstrate the headless functionality. Let's assume that we want to **show all iOS Provisioning Profiles in the Apple Developer Portal**.
 
-### Web-Browser Navigation
+#### Manual Web-Browser Navigation
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically type in your credentials, sign in and navigate (via links) to the *Provisioning Profiles* section:
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjQVdWqIq9FWdb42o8I09ERYprf7Mks5WmWgPwA%3D%3D" />
 </p>
 
+#### Automation with Headless
 
-### Automation with Headless
-
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet.
+The same navigation process can be reproduced **automatically** within an iOS app using the chained *Actions* of Headless. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
 <p align="center">
 <img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
 </p>
 
-Easy navigation by linking actions >>> (demo)
-
-
-
-
 # Usage
-A web session equates to a headless instance, which can be created using the following line:
+A Headless instance equates to a web session, which can be created using the following line:
 
 ```ruby
-let 🌍 = Headless(name: "Demo")
+let browser = Headless(name: "Demo")
 ```
 
+#### Linking Actions
+
+Web page navigation is based on *Actions*, which can be executed implicitly when linking actions using the **[>>>](#>>>)** operator. All chained actions pass their result to the next action. The **[===](#===)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use Headless to collect all Provisioning Profiles from the Developer Portal:**
+
 ```ruby
-    🌍.open(url)
->>> 🌍.get(by: .Id("accountname"))
->>> 🌍.setAttribute("value", value: user)
->>> 🌍.get(by: .Id("accountpassword"))
->>> 🌍.setAttribute("value", value: password)
->>> 🌍.get(by: .Name("form2"))
->>> 🌍.submit(then: Wait(2.0))
->>> 🌍.get(by: .Attribute("href", "/account/"))
->>> 🌍.click
->>> 🌍.get(by: .Text("Provisioning Profiles"))
->>> 🌍.click(then: .Wait(0.5))
->>> 🌍.getAll(by: .Class("ui-ellipsis bold"))
+    browser.open(url)
+>>> browser.get(by: .Id("accountname"))
+>>> browser.setAttribute("value", value: user)
+>>> browser.get(by: .Id("accountpassword"))
+>>> browser.setAttribute("value", value: password)
+>>> browser.get(by: .Name("form2"))
+>>> browser.submit
+>>> browser.get(by: .Attribute("href", "/account/"))
+>>> browser.click
+>>> browser.get(by: .Text("Provisioning Profiles"))
+>>> browser.click(then: .Wait(0.5))
+>>> browser.getAll(by: .Class("ui-ellipsis bold"))
 === myOutput
 ```
+
+In order to output or process the collected data, one can either use a closure or implement a custom function taking the Headless optional result as parameter:
 
 ```ruby
 func myOutput(result: [HTMLTableColumn]?) {
@@ -65,10 +67,12 @@ func myOutput(result: [HTMLTableColumn]?) {
 }
 ```
 
-Web page navigation is based on *Actions*, which can be executed explicitly by calling the *start()* method
+#### Manual Actions
 
-```swift
-let action : Action<HTMLPage> = headless.open(url)
+*Actions* can also be started explicitly by calling the *start()* method:
+
+```ruby
+let action : Action<HTMLPage> = browser.open(url)
 
 action.start { result in
     switch result {
@@ -78,21 +82,12 @@ action.start { result in
 }
 ```
 
-or implicitly when linking actions using the **>>>** operator
-
-```swift
-// Helper method
-func getLink(page: HTMLPage) -> Action<HTMLLink> {
-  return Action(result: page.firstLinkWithAttribute("href", value: "/account/"))
-}
-
-// Linking actions
-let combined : Action<HTMLPage> = headless.get(url) >>> getLink >>> headless.click
-```
-Starting *combined* will implicitly execute all chained actions passing each result to the next action.
+This is certainly the less complicated, but you have to write a lot more code, which might become confusing when you want to nest *Actions*.  
 
 
 ## Basic Actions
+There are currently a few *Actions* implemented, helping you visit and navigate on a website:
+
 ### Open a Website
 
 ```swift
@@ -140,12 +135,28 @@ case .Error(let error):
 
 ### Set an Attribute
 
+### Transform
+
+## Operators
+
+### >>>
+
+### ===
 
 ## Advanced Actions
 
 ### Batch
 
 ### Repeat
+
+## HTML Elements
+
+### HTMLPage
+
+### HTMLForm
+
+### HTMLLink
+
 
 
 ## Conditions
