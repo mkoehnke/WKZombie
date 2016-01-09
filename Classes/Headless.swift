@@ -73,7 +73,7 @@ public class Headless : NSObject {
 
 extension Headless {
     /**
-     The returned Headless Action will load and return a page for the specified URL.
+     The returned Headless Action will load and return a HTML or JSON page for the specified URL.
      
      - parameter url: An URL referencing a HTML or JSON page.
      
@@ -86,7 +86,7 @@ extension Headless {
     /**
      The returned Headless Action will load and return a page for the specified URL.
      
-     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
+     - parameter postAction: An wait/validation action that will be performed after the page has finished loading.
      - parameter url: An URL referencing a HTML or JSON page.
      
      - returns: The Headless Action.
