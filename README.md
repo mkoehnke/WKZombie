@@ -1,7 +1,7 @@
 # Headless
 Headless is an iOS/OSX **web-browser without a graphical user interface**. It was developed as a mere *experiment* in order to familiarize myself with **using proven functional concepts** written in Swift.
 
-It uses [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. Furthermore, it has rudimentary support for parsing JSON pages. Chaining asynchronous actions makes the code compact and easy to use.
+It uses [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing JSON pages. Chaining asynchronous actions makes the code compact and easy to use.
 
 For more information, see [Usage](#usage).
 
@@ -152,29 +152,41 @@ func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A>
 
 ### 1. PostAction
 
-An wait/validation action that will be performed after the page has finished loading.
+Certain *Actions*, that incorporate a (re-)loading of webpages (e.g. [open](#OpenaWebsite), [submit](#SubmitaForm), etc.), can have *PostActions*. A *PostAction* is a wait or validation action, that will be performed after the page has finished loading:
 
 #### a. Wait(*seconds*)
 The time in seconds that the action will wait (after the page has been loaded) before returning. This is useful in cases where the page loading has been completed, but some JavaScript/Image loading is still in progress.
 
-#### b. Validate(*script*)
+#### b. Validate(*javascript*)
 The action will complete if the specified JavaScript expression/script returns 'true' or a timeout occurs.
 
 ### 2. SearchType
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+In order to find certain HTML elements within a page, you have to specify a *SearchType*. The return type of [get()](#get) and [getAll()](#getAll) is generic and determines which tag should be searched for. For instance, the following would return all links with the class *book*:
+
+```ruby
+let books : Action<HTMLLink> = browser.get(by: .Class("book"))(page: htmlPage)
+```
+
+The following 6 types are currently available and supported:
 
 #### a. Id(*string*)
+Returns an element that matches the specified id.
 
 #### b. Name(*string*)
+Returns all elements matching the specified value for their *name* attribute.
 
 #### c. Text(*string*)
+Returns all elements with inner content, that *contain* the specified text.
 
 #### d. Class(*string*)
+Returns all elements that match the specified class name.
 
 #### e. Attribute(*string*, *string*)
+Returns all elements that match the specified attribute name/value combination.
 
 #### f. XPathQuery(*string*)
+Returns all elements that match the specified XPath query.
 
 ## Operators
 
@@ -190,7 +202,7 @@ Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod 
 
 ### Batch
 
-The returned Headless Action will make a bulk execution of the specified action with the provided input elements. Once all actions have finished executing, the collected results will be returned.
+The returned Headless Action will make a bulk execution of the specified action function *f* with the provided input elements. Once all actions have finished executing, the collected results will be returned.
 ```ruby
 func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]>
 ```
