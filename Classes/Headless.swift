@@ -293,6 +293,23 @@ extension Headless {
 }
 
 //========================================
+// MARK: JSON Actions
+//========================================
+
+extension Headless {
+    
+    public func decode<T : JSONDecodable>(page: JSONPage) -> Action<T> {
+        return Action(result: page.decodeObject())
+    }
+    
+    public func decode<T : JSONDecodable>(json: JSON) -> Action<T> {
+        return Action(result: decodeJSONObject(json))
+    }
+    
+}
+
+
+//========================================
 // MARK: Debug Methods
 //========================================
 

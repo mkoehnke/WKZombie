@@ -246,16 +246,16 @@ The *HTMLElement* class is a **base class for all elements in the DOM**. It allo
 
 As mentioned above, Headless as rudimentary support for JSON documents.
 
-### JSONPage
+### Decoding Example
 
 ```ruby
-    browser.open(booksURL)
+    browser.open(bookURL)
 >>> browser.decode
 === myOutput
 ```
 
 ```ruby
-func myOutput(result: [Book]?) {
+func myOutput(result: Book?) {
   // handle result
 }
 ```
@@ -287,16 +287,19 @@ $ pod install
 # TODOs
 * run() method for executing Javascript
 * clear() method for deleting all Cookies
-* decode() method for decoding JSON objects
 * HTMLImage
 * ScreenCapture
 * More descriptive errors
 
-# Links
-link of all headless browsers
-
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
+
+# More Resources
+* [A list of (almost) all headless web browsers in existence](https://github.com/dhamaniasad/HeadlessBrowsers)
+
+# Attributions
+* [Efficient JSON in Swift with Functional Concepts and Generics — Tony DiPasquale](https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics)
+* [Back to the Futures — Javier Soto](https://speakerdeck.com/javisoto/back-to-the-futures)
 
 # License
 Headless is available under the MIT license. See the LICENSE file for more info.
