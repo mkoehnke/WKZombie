@@ -80,7 +80,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func open<T: Page>(url: NSURL) -> Action<T> {
-        return open(url, postAction: .None)
+        return open(then: .None)(url: url)
     }
     
     /**
@@ -91,12 +91,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func open<T: Page>(then postAction: PostAction)(url: NSURL) -> Action<T> {
-        return open(url, postAction: postAction)
-    }
-
-    /// Helper Method
-    private func open<T: Page>(url: NSURL, postAction: PostAction = .None) -> Action<T> {
+    public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
         return Action() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
@@ -120,7 +115,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func submit<T: Page>(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: .None)
+        return submit(then: .None)(form: form)
     }
     
     /**
@@ -131,12 +126,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func submit<T: Page>(then postAction: PostAction)(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: postAction)
-    }
-    
-    /// Helper Method
-    private func submit<T: Page>(form: HTMLForm, postAction: PostAction = .None) -> Action<T> {
+    public func submit<T: Page>(then postAction: PostAction = .None)(form: HTMLForm) -> Action<T> {
         return Action() { [unowned self] completion in
             if let script = form.actionScript() {
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
@@ -163,7 +153,7 @@ extension Headless {
      - returns: The Headless Action.
      */
     public func click<T: Page>(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: .None)
+        return click(then: .None)(link: link)
     }
     
     /**
@@ -174,12 +164,7 @@ extension Headless {
      
      - returns: The Headless Action.
      */
-    public func click<T: Page>(then postAction: PostAction)(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: postAction)
-    }
-
-    /// Helper Method
-    private func click<T: Page>(link : HTMLLink, postAction: PostAction = .None) -> Action<T> {
+    public func click<T: Page>(then postAction: PostAction = .None)(link : HTMLLink) -> Action<T> {
         return Action() { [unowned self] completion in
             if let script = link.actionScript() {
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in

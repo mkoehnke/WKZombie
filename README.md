@@ -82,7 +82,7 @@ This is certainly the less complicated way, but you have to write a lot more cod
 
 
 ## Basic Actions
-There are currently a few *Actions* implemented, helping you visit and navigate on a website:
+There are currently a few *Actions* implemented, helping you visit and navigate within a website:
 
 ### Open a Website
 
@@ -165,7 +165,7 @@ The action will complete if the specified JavaScript expression/script returns '
 In order to find certain HTML elements within a page, you have to specify a *SearchType*. The return type of [get()](#get) and [getAll()](#getAll) is generic and determines which tag should be searched for. For instance, the following would return all links with the class *book*:
 
 ```ruby
-let books : Action<HTMLLink> = browser.get(by: .Class("book"))(page: htmlPage)
+let books : Action<HTMLLink> = browser.getAll(by: .Class("book"))(page: htmlPage)
 ```
 
 The following 6 types are currently available and supported:
@@ -190,13 +190,14 @@ Returns all elements that match the specified XPath query.
 
 ## Operators
 
-### >>>
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+The following Operators can be applied to *Actions*, which makes linking *Actions* easier to read:
 
+### >>>
+This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*.
 
 ### ===
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
 ## Advanced Actions
 
@@ -223,13 +224,15 @@ func dump()
 
 ## HTML Elements
 
+When using Headless, the following classes are involved when interacting with websites:
+
 ### HTMLPage
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+This class represents a **read-only** DOM of a website. It allows you to search for HTML elements using the [SearchType](#SearchType) parameter.
 
 ### HTMLElement
 
-The *HTMLElement* class is a base class, which can represent every element in the DOM.
+The *HTMLElement* class is a **base class for all elements in the DOM**. It allows you to inspect attributes or the inner content (e.g. text) of that element. Currently, there are 5 subclasses with additional element-specific methods and variables available:
 
 * HTMLForm
 * HTMLLink
@@ -237,11 +240,25 @@ The *HTMLElement* class is a base class, which can represent every element in th
 * HTMLTableColumn
 * HTMLTableRow
 
+**Additional subclasses can be easily implemented and might be added in the future.**
+
 ## JSON Elements
+
+As mentioned above, Headless as rudimentary support for JSON documents.
 
 ### JSONPage
 
-Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua.
+```ruby
+    browser.open(booksURL)
+>>> browser.decode
+=== myOutput
+```
+
+```ruby
+func myOutput(result: [Book]?) {
+  // handle result
+}
+```
 
 # Installation
 ## CocoaPods
@@ -268,6 +285,9 @@ $ pod install
 ```
 
 # TODOs
+* run() method for executing Javascript
+* clear() method for deleting all Cookies
+* decode() method for decoding JSON objects
 * HTMLImage
 * ScreenCapture
 * More descriptive errors
