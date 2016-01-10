@@ -23,8 +23,21 @@
 
 import Foundation
 
+/// HTMLPage class, which represents the DOM of a HTML page.
 public class HTMLPage : HTMLParser, Page {
     
+    //========================================
+    // MARK: Initializer
+    //========================================
+    
+    /**
+    Returns a HTML page instance for the specified HTML DOM data.
+    
+    - parameter data: The HTML DOM data.
+    - parameter url:  The URL of the page.
+    
+    - returns: A HTML page.
+    */
     public static func pageWithData(data: NSData?, url: NSURL?) -> Page? {
         if let data = data {
             return HTMLPage(data: data, url: url)
@@ -32,55 +45,15 @@ public class HTMLPage : HTMLParser, Page {
         return nil
     }
     
-    public func formWithName(name: String) -> Result<HTMLForm> {
-        return firstElementFromResult(formsWithQuery("//form[@name='\(name)']"))
-    }
+    //========================================
+    // MARK: Find Elements
+    //========================================
     
-    public func formsWithQuery(xPathQuery: String) -> Result<[HTMLForm]> {
-        return elementsWithQuery(xPathQuery)
-    }
-    
-    public func linkWithName(name: String) -> Result<HTMLLink> {
-        return firstElementFromResult(linksWithQuery("//a[text()='\(name)']/@href"))
-    }
-    
-    public func firstLinkWithAttribute(key: String, value: String) -> Result<HTMLLink> {
-        return firstElementFromResult(linksWithAttribute(key, value: value))
-    }
-    
-    public func linksWithAttribute(key: String, value: String) -> Result<[HTMLLink]> {
-        return linksWithQuery("//a[@\(key)='\(value)']/@href")
-    }
-    
-    public func linksWithQuery(xPathQuery: String) -> Result<[HTMLLink]> {
-        return elementsWithQuery(xPathQuery)
-    }
-    
-    public func firstTableWithAttribute(key: String, value: String) -> Result<HTMLTable> {
-        return firstElementFromResult(tablesWithAttribute(key, value: value))
-    }
-    
-    public func tablesWithAttribute(key: String, value: String) -> Result<[HTMLTable]> {
-        return tablesWithQuery("//table[@\(key)='\(value)']")
-    }
-    
-    public func tablesWithQuery(xPathQuery: String) -> Result<[HTMLTable]> {
-        return elementsWithQuery(xPathQuery)
-    }
-    
-    public func elementsWithQuery<T: HTMLElement>(xPathQuery: String) -> Result<[T]> {
-        if let parsedObjects = searchWithXPathQuery(xPathQuery) where parsedObjects.count > 0 {
-            return resultFromOptional(parsedObjects.flatMap { T(element: $0, pageURL: url) }, error: .NotFound)
+    public func findElements<T: HTMLElement>(searchType: SearchType<T>) -> Result<[T]> {
+        let query = searchType.xPathQuery()
+        if let parsedObjects = searchWithXPathQuery(query) where parsedObjects.count > 0 {
+            return resultFromOptional(parsedObjects.flatMap { T(element: $0, XPathQuery: query) }, error: .NotFound)
         }
         return Result.Error(.NotFound)
-    }
-    
-    // MARK: Helper Methods
-    
-    private func firstElementFromResult<T: HTMLElement>(result: Result<[T]>) -> Result<T> {
-        switch result {
-        case .Success(let result): return resultFromOptional(result.first, error: .NotFound)
-        case .Error(let error): return Result.Error(error)
-        }
     }
 }

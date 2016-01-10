@@ -23,12 +23,32 @@
 
 import Foundation
 
+/**
+ *  Protocol, which must be implemented by JSON models in order to get decoded.
+ */
 public protocol JSONDecodable {
+    /**
+     Returns the decoded JSON data represented as an model object.
+     
+     - parameter json: The JSON data.
+     
+     - returns: The model object.
+     */
     static func decode(json: JSON) -> Self?
 }
 
+
+/// JSONPage class, which represents the entire JSON document.
 public class JSONPage : JSONParser, Page {
     
+    /**
+     Returns a JSON page instance for the specified JSON data.
+     
+     - parameter data: The JSON data.
+     - parameter url:  The URL of the page.
+     
+     - returns: A JSON page.
+     */
     public static func pageWithData(data: NSData?, url: NSURL?) -> Page? {
         if let data = data {
             return JSONPage(data: data, url: url)

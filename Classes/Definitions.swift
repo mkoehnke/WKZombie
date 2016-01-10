@@ -27,10 +27,44 @@ import Foundation
 // MARK: Logging
 //========================================
 
-func HLLog(message: String, function: String = __FUNCTION__) {
+func HLLog(message: String, lineBreak: Bool = true) {
     #if DEBUG
-        print("\(function): \(message)")
+        if lineBreak {
+            print("\(message)")
+        } else {
+            print("\(message)", terminator: "")
+        }
     #endif
+}
+
+public enum SearchType<T: HTMLElement> {
+    case Id(String)
+    
+    case Name(String)
+    
+    case Text(String)
+    
+    case Class(String)
+    
+    /**
+     Search by matching an attribute using key/value.
+     */
+    case Attribute(String, String?)
+    /**
+     Search by using a XPath Query.
+     */
+    case XPathQuery(String)
+    
+    func xPathQuery() -> String {
+        switch self {
+        case .Text(let value): return T.createXPathQuery("[contains(text(),'\(value)')]")
+        case .Id(let id): return T.createXPathQuery("[@id='\(id)']")
+        case .Name(let name): return T.createXPathQuery("[@name='\(name)']")
+        case .Attribute(let key, let value): return T.createXPathQuery("[@\(key)='\(value ?? "")']")
+        case .Class(let className): return T.createXPathQuery("[@class='\(className)']")
+        case .XPathQuery(let query): return query
+        }
+    }
 }
 
 //========================================
@@ -46,6 +80,15 @@ public enum Result<T> {
             self = .Error(err)
         } else {
             self = .Success(value)
+        }
+    }
+}
+
+extension Result where T:CollectionType {
+    public func first<A>() -> Result<A> {
+        switch self {
+        case .Success(let result): return resultFromOptional(result.first as? A, error: .NotFound)
+        case .Error(let error): return resultFromOptional(nil, error: error)
         }
     }
 }
@@ -89,6 +132,15 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
+public func ===<T>(a: Action<T>, completion: (result: T?) -> Void) {
+    return a.start { result in
+        switch result {
+        case .Success(let value): completion(result: value)
+        case .Error: completion(result: nil)
+        }
+    }
+}
+
 internal func parseResponse(response: Response) -> Result<NSData> {
     guard let data = response.data else {
         return .Error(.NetworkRequestFailure)
@@ -115,7 +167,7 @@ internal func decodeResult<T: Page>(url: NSURL? = nil)(data: NSData?) -> Result<
 
 
 //========================================
-// MARK: Futures
+// MARK: Actions
 // Borrowed from Javier Soto's 'Back to the Futures' Talk
 // https://speakerdeck.com/javisoto/back-to-the-futures
 //========================================
@@ -129,7 +181,9 @@ public struct Action<T> {
     
     public init(result: ResultType) {
         self.init(operation: { completion in
-            completion(result)
+            dispatch_async(dispatch_get_main_queue(), {
+                completion(result)
+            })
         })
     }
     
@@ -147,7 +201,9 @@ public struct Action<T> {
     
     public func start(completion: Completion) {
         self.operation() { result in
-            completion(result)
+            dispatch_async(dispatch_get_main_queue(), {
+                completion(result)
+            })
         }
     }
 }
@@ -158,10 +214,12 @@ extension Action {
     public func map<U>(f: T -> U) -> Action<U> {
         return Action<U>(operation: { completion in
             self.start { result in
-                switch result {
-                case .Success(let value): completion(Result.Success(f(value)))
-                case .Error(let error): completion(Result.Error(error))
-                }
+                dispatch_async(dispatch_get_main_queue(), {
+                    switch result {
+                    case .Success(let value): completion(Result.Success(f(value)))
+                    case .Error(let error): completion(Result.Error(error))
+                    }
+                })
             }
         })
     }
@@ -171,7 +229,10 @@ extension Action {
             self.start { firstFutureResult in
                 switch firstFutureResult {
                 case .Success(let value): f(value).start(completion)
-                case .Error(let error): completion(Result.Error(error))
+                case .Error(let error):
+                    dispatch_async(dispatch_get_main_queue(), {
+                        completion(Result.Error(error))
+                    })
                 }
             }
         })
@@ -185,7 +246,17 @@ extension Action {
 
 extension Action {
     
-    public static func collect(initial: T, f: T -> Action<T>, until: T -> Bool) -> Action<[T]> {
+    /**
+     Executes the specified action (with the result of the previous action execution as input parameter) until
+     a certain condition is met. Afterwards, it will return the collected action results.
+     
+     - parameter initial: The initial input parameter for the Action.
+     - parameter f:       The Action which will be executed.
+     - parameter until:   If 'true', the execution of the specified Action will stop.
+     
+     - returns: The collected Sction results.
+     */
+    internal static func collect(initial: T, f: T -> Action<T>, until: T -> Bool) -> Action<[T]> {
         var values = [T]()
         func loop(future: Action<T>) -> Action<[T]> {
             return Action<[T]>(operation: { completion in
@@ -196,9 +267,14 @@ extension Action {
                         if until(newValue) == true {
                             loop(f(newValue)).start(completion)
                         } else {
-                            completion(Result.Success(values))
+                            dispatch_async(dispatch_get_main_queue(), {
+                                completion(Result.Success(values))
+                            })
                         }
-                    case .Error(let error): completion(Result.Error(error))
+                    case .Error(let error):
+                        dispatch_async(dispatch_get_main_queue(), {
+                            completion(Result.Error(error))
+                        })
                     }
                 }
             })
@@ -206,7 +282,16 @@ extension Action {
         return loop(f(initial))
     }
     
-    public static func batch<U>(elements: [T], f: T -> Action<U>) -> Action<[U]> {
+    /**
+     Makes a bulk execution of the specified action with the provided input values. Once all actions have
+     finished, the collected results will be returned.
+     
+     - parameter elements: An array containing the input value for the Action.
+     - parameter f:        The Action.
+     
+     - returns: The collected Action results.
+     */
+    internal static func batch<U>(elements: [T], f: T -> Action<U>) -> Action<[U]> {
         return Action<[U]>(operation: { completion in
             let group = dispatch_group_create()
             var results = [U]()
@@ -217,7 +302,10 @@ extension Action {
                     case .Success(let value):
                         results.append(value)
                         dispatch_group_leave(group)
-                    case .Error(let error): completion(Result.Error(error))
+                    case .Error(let error):
+                        dispatch_async(dispatch_get_main_queue(), {
+                            completion(Result.Error(error))
+                        })
                     }
                 })
             }
@@ -230,8 +318,36 @@ extension Action {
 
 
 //========================================
+// MARK: Post Action
+//========================================
+
+/**
+An wait/validation action that will be performed after the page has reloaded.
+*/
+public enum PostAction {
+    /**
+     The time in seconds that the action will wait (after the page has been loaded) before returning.
+     This is useful in cases where the page loading has been completed, but some JavaScript/Image loading
+     is still in progress.
+     
+     - returns: Time in Seconds.
+     */
+    case Wait(NSTimeInterval)
+    /**
+     The action will complete if the specified JavaScript expression/script returns 'true'
+     or a timeout occurs.
+     
+     - returns: Validation Script.
+     */
+    case Validate(String)
+    /// No Post Action will be performed.
+    case None
+}
+
+
+//========================================
 // MARK: JSON
-// Borrowed from Tony DiPasquale's Article 
+// Inspired by Tony DiPasquale's Article 
 // https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics
 //========================================
 

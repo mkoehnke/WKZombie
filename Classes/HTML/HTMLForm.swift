@@ -23,47 +23,77 @@
 
 import Foundation
 
+/// HTML Form class, which represents the <form> element in the DOM.
 public class HTMLForm : HTMLElement {
 
-    var inputs = [String : String]()
+    /// All inputs fields (keys and values) of this form.
+    public private(set) var inputElements = [String : String]()
     
-    required public init?(element: AnyObject, pageURL: NSURL? = nil) {
-        super.init(element: element, pageURL: pageURL)
-        if let element = HTMLElement(element: element) {
-            self.collectInputs(element)
+    required public init?(element: AnyObject, XPathQuery: String? = nil) {
+        super.init(element: element, XPathQuery: XPathQuery)
+        if let element = HTMLElement(element: element, XPathQuery: XPathQuery) {
+            retrieveAllInputs(element)
         }
     }
     
+    /// Returns the value for the name attribute.
+    public var name : String? {
+        return objectForKey("name")
+    }
+    
+    /// Returns the value for the action attribute.
     public var action : String? {
         return objectForKey("action")
     }
     
-    private var onSubmit : String? {
-        return objectForKey("onSubmit")
-    }
-    
-    public var name : String? {
-        return objectForKey("name")
-    }
+    /**
+     Enables subscripting for modifying the input field values.
      
-    public subscript(input: String) -> String? {
-        get {
-            return inputs[input]
-        }
-        set (newValue) {
-            inputs[input] = newValue
-        }
+     - parameter input: The Input field attribute name.
+     
+     - returns: The Input field attribute value.
+     */
+    public subscript(key: String) -> String? {
+        return inputElements[key]
     }
     
-    private func collectInputs(element: HTMLElement) {
+    //========================================
+    // MARK: Form Submit Script
+    //========================================
+    
+    internal func actionScript() -> String? {
+        if let name = name {
+//            var script = String()
+//            let fields = inputElements.map { (key, value) in "document.\(name)['\(key)'].value='\(value)';" }
+//            script += fields.joinWithSeparator("")
+//            script += "document.\(name).submit();"
+//            return script
+            return "document.\(name).submit();"
+        }
+        return nil
+    }
+    
+    //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//form\(parameters)"
+    }
+    
+    //========================================
+    // MARK: Private Methods
+    //========================================
+    
+    private func retrieveAllInputs(element: HTMLElement) {
         if let tagName = element.tagName as String? where tagName == "input" {
             if let name = element.objectForKey("name") {
-                inputs[name] = element.objectForKey("value")
+                inputElements[name] = element.objectForKey("value")
             }
         }
         if let children = element.children() as [HTMLElement]? where children.count > 0 {
             for child in children {
-                collectInputs(child)
+                retrieveAllInputs(child)
             }
         }
     }

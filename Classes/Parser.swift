@@ -24,10 +24,20 @@
 import Foundation
 import hpple
 
+/// Base class for the HTMLParser and JSONParser.
 public class Parser : NSObject {
     
+    /// The URL of the page.
     public private(set) var url : NSURL?
     
+    /**
+     Returns a (HTML or JSON) parser instance for the specified data.
+     
+     - parameter data: The encoded data.
+     - parameter url:  The URL of the page.
+     
+     - returns: A HTML or JSON page.
+     */
     required public init(data: NSData, url: NSURL? = nil) {
         super.init()
         self.url = url
@@ -39,6 +49,7 @@ public class Parser : NSObject {
 // MARK: HTML
 //========================================
 
+/// A HTML Parser class, which wraps the functionality of the TFHpple class.
 public class HTMLParser : Parser {
     
     private var doc : TFHpple?
@@ -61,15 +72,16 @@ public class HTMLParser : Parser {
     }
 }
 
+/// A HTML Parser Element class, which wraps the functionality of the TFHppleElement class.
 public class HTMLParserElement : NSObject {
     private var element : TFHppleElement?
-    public internal(set) var pageURL : NSURL?
+    public internal(set) var XPathQuery : String?
     
-    required public init?(element: AnyObject, pageURL: NSURL? = nil) {
+    required public init?(element: AnyObject, XPathQuery : String? = nil) {
         super.init()
         if let element = element as? TFHppleElement {
             self.element = element
-            self.pageURL = pageURL
+            self.XPathQuery = XPathQuery
         } else {
             return nil
         }
@@ -96,11 +108,11 @@ public class HTMLParserElement : NSObject {
     }
     
     public func childrenWithTagName<T: HTMLElement>(tagName: String) -> [T]? {
-        return element?.childrenWithTagName(tagName).flatMap { T(element: $0, pageURL: pageURL) }
+        return element?.childrenWithTagName(tagName).flatMap { T(element: $0) }
     }
     
     public func children<T: HTMLElement>() -> [T]? {
-        return element?.children.flatMap { T(element:$0, pageURL: pageURL) }
+        return element?.children.flatMap { T(element:$0) }
     }
     
     public func hasChildren() -> Bool {
@@ -117,6 +129,7 @@ public class HTMLParserElement : NSObject {
 // MARK: JSON
 //========================================
 
+/// A JSON Parser class, which represents a JSON document.
 public class JSONParser : Parser {
     
     private var json : JSON?
@@ -126,7 +139,7 @@ public class JSONParser : Parser {
         let result = parseJSON(data)
         switch result {
         case .Success(let json): self.json = json
-        case .Error: print("Error parsing JSON!")
+        case .Error: HLLog("Error parsing JSON!")
         }
     }
     

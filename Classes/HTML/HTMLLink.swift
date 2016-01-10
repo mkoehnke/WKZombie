@@ -23,36 +23,48 @@
 
 import Foundation
 
+/// HTML Link class, which represents the <a> element in the DOM.
 public class HTMLLink : HTMLElement {
     
-    private var baseURL : NSURL? {
-        return pageURL?.baseURL ?? pageURL
+    //========================================
+    // MARK: Initializer
+    //========================================
+    
+    public required init?(element: AnyObject, XPathQuery: String? = nil) {
+        super.init(element: element, XPathQuery: XPathQuery)
     }
-
+    
+    /// Returns the value of the href attribute of the link.
     public var href : String? {
         return text
     }
     
+    /// Returns the link text.
     public var linkText : String? {
         return content
     }
     
-    public var hrefURL : NSURL? {
-        if let href = href, url = NSURL(string: href) {
-            if let baseURL = baseURL where url.scheme.characters.count == 0 {
-                return NSURL(string: url.relativePath!, relativeToURL: baseURL)
-            }
-            return url
+    override public var description : String {
+        return href ?? ""
+    }
+    
+    //========================================
+    // MARK: Link Click Script
+    //========================================
+    
+    internal func actionScript() -> String? {
+        if let href = href {
+           return "window.location.href='\(href)';"
         }
         return nil
     }
     
-    public required init?(element: AnyObject, pageURL: NSURL? = nil) {
-        super.init(element: element, pageURL: pageURL)
-    }
+    //========================================
+    // MARK: Overrides
+    //========================================
     
-    override public var description : String {
-        return href ?? ""
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//a\(parameters)/@href"
     }
 }
 

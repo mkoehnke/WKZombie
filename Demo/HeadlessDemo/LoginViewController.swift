@@ -32,66 +32,54 @@ class LoginViewController : UIViewController {
     
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
-    lazy var headless : Headless = {
-        return Headless(name: "DeveloperPortal")
+    lazy var browser : Headless = {
+        return Headless(name: "Developer Portal")
     }()
     
     @IBAction func loginButtonTouched(button: UIButton) {
+        guard let user = nameTextField.text, password = passwordTextField.text else { return }
         button.enabled = false
         activityIndicator.startAnimating()
-        getProvisioningProfiles(url).start { [weak self] result in
-            switch result {
-            case .Success(let table): self?.handleSuccess(table)
-            case .Error(let error): self?.handleError(error)
-            }
-        }
+        getProvisioningProfiles(url, user: user, password: password)
     }
     
+    //========================================
     // MARK: HTML Navigation
+    //========================================
     
-    func getProvisioningProfiles(url: NSURL) -> Action<HTMLTable> {
-        return headless.get(url) >>> submitLoginForm >>> getAccountOverview >>> getProfilesPage >>> getProfilesTable
+    func getProvisioningProfiles(url: NSURL, user: String, password: String) {
+               browser.open(url)
+           >>> browser.get(by: .Id("accountname"))
+           >>> browser.setAttribute("value", value: user)
+           >>> browser.get(by: .Id("accountpassword"))
+           >>> browser.setAttribute("value", value: password)
+           >>> browser.get(by: .Name("form2"))
+           >>> browser.submit(then: .Wait(2.0))
+           >>> browser.get(by: .Attribute("href", "/account/"))
+           >>> browser.click
+           >>> browser.get(by: .Text("Provisioning Profiles"))
+           >>> browser.click(then: .Wait(0.5))
+           >>> browser.getAll(by: .Class("ui-ellipsis bold"))
+           === output
     }
     
-    func submitLoginForm(page: HTMLPage) -> Action<HTMLPage> {
-        let result = page.formWithName("form2")
-        switch result {
-        case .Success(let form):
-            form["appleId"] = nameTextField.text
-            form["accountPassword"] = passwordTextField.text
-            return headless.submit(2.0)(form: form)
-        case .Error(let error): return Action(error: error)
+    //========================================
+    // MARK: Handle Result
+    //========================================
+    
+    func output(columns: [HTMLTableColumn]?) {
+        if let columns = columns {
+            performSegueWithIdentifier("detailSegue", sender: columns)
+        } else {
+            loginButton.enabled = true
+            activityIndicator.stopAnimating()
+            browser.dump()
         }
     }
     
-    func getAccountOverview(page: HTMLPage) -> Action<HTMLPage> {
-        let link = Action(result: page.firstLinkWithAttribute("href", value: "/account/"))
-        return link >>> headless.click
-    }
-    
-    func getProfilesPage(page: HTMLPage) -> Action<HTMLPage> {
-        let link = Action(result: page.firstLinkWithAttribute("href", value: "/account/ios/profile/profileList.action"))
-        return link >>> headless.click(0.5)
-    }
-    
-    func getProfilesTable(page: HTMLPage) -> Action<HTMLTable> {
-        return Action(result: page.firstTableWithAttribute("id", value: "grid-table"))
-    }
-    
-    // MARK: Handle Result
-    
-    func handleSuccess(table: HTMLTable) {
-        let columns = table.columnsWithPattern("aria-describedby", value: "grid-table_name")
-        performSegueWithIdentifier("detailSegue", sender: columns)
-    }
-    
-    func handleError(error: ActionError) {
-        loginButton.enabled = true
-        activityIndicator.stopAnimating()
-        print(error)
-    }
-    
+    //========================================
     // MARK: Segue
+    //========================================
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "detailSegue" {

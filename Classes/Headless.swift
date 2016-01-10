@@ -23,7 +23,6 @@
 
 import Foundation
 
-
 public class Headless : NSObject {
     
     private var renderer : Renderer!
@@ -45,7 +44,7 @@ public class Headless : NSObject {
      
      - parameter name: The name of the headless session.
      
-     - returns: a headless instance
+     - returns: A headless instance.
      */
     public init(name: String? = "Headless") {
         super.init()
@@ -54,109 +53,10 @@ public class Headless : NSObject {
     }
  
     //========================================
-    // MARK: Get Page
-    //========================================
-    
-    /**
-    The Headless action will load and return a page for the specified URL.
-    
-    - parameter url: an URL referencing a HTML or JSON page
-    
-    - returns: the Headless action
-    */
-    public func get<T: Page>(url: NSURL) -> Action<T> {
-        return get(url, postAction: nil)
-    }
-    
-    /**
-     The Headless action will load and return a page for the specified URL.
-     
-     - parameter condition: a JavaScript expression/script that returns 'true' if
-     - parameter url: an URL referencing a HTML or JSON page
-     
-     - returns: the Headless action
-     */
-    public func get<T: Page>(condition: String)(url: NSURL) -> Action<T> {
-        return get(url, postAction: PostAction(type: .Validate, script: condition))
-    }
-    
-    public func get<T: Page>(wait: NSTimeInterval)(url: NSURL) -> Action<T> {
-        return get(url, postAction: PostAction(type: .Wait, wait: wait))
-    }
-    
-    private func get<T: Page>(url: NSURL, postAction: PostAction? = nil) -> Action<T> {
-        return Action() { [unowned self] completion in
-            let request = NSURLRequest(URL: url)
-            self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
-                completion(self.handleResponse(data as? NSData, response: response, error: error))
-            })
-        }
-    }
-    
-    //========================================
-    // MARK: Submit Form
-    //========================================
-    
-    private func submit<T: Page>(form: HTMLForm, postAction: PostAction? = nil) -> Action<T> {
-        return Action() { [unowned self] completion in
-            if let name = form.name {
-                let script = self.formSubmitScript(name, values: form.inputs)
-                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                    completion(self.handleResponse(result as? NSData, response: response, error: error))
-                })
-            } else {
-                completion(Result.Error(.NetworkRequestFailure))
-            }
-        }
-    }
-    
-    public func submit<T: Page>(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: nil)
-    }
-    
-    public func submit<T: Page>(condition: String)(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: PostAction(type: .Validate, script: condition))
-    }
-
-    public func submit<T: Page>(wait: NSTimeInterval)(form: HTMLForm) -> Action<T> {
-        return submit(form, postAction: PostAction(type: .Wait, wait: wait))
-    }
-    
-    //========================================
-    // MARK: Click Event
-    //========================================
-
-    private func click<T: Page>(link : HTMLLink, postAction: PostAction? = nil) -> Action<T> {
-        return Action() { [unowned self] completion in
-            if let url = link.href {
-                let script = self.clickLinkScript(url)
-                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                    completion(self.handleResponse(result as? NSData, response: response, error: error))
-                })
-            } else {
-                completion(Result.Error(.NetworkRequestFailure))
-            }
-        }
-    }
-    
-    public func click<T: Page>(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: nil)
-    }
-    
-    public func click<T: Page>(condition: String)(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: PostAction(type: .Validate, script: condition))
-    }
-    
-    public func click<T: Page>(wait: NSTimeInterval)(link : HTMLLink) -> Action<T> {
-        return click(link, postAction: PostAction(type: .Wait, wait: wait))
-    }
-    
-    
-    //========================================
     // MARK: Response Handling
     //========================================
     
-    public func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
+    private func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
         guard let response = response else {
             return decodeResult(nil)(data: nil)
         }
@@ -164,24 +64,260 @@ public class Headless : NSObject {
         let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
         return responseResult >>> parseResponse >>> decodeResult(response.URL)
     }
-    
-    
-    //========================================
-    // MARK: Scripts
-    //========================================
+}
 
-    private func formSubmitScript(name: String, values: [String: String]?) -> String {
-        var script = String()
-        if let values = values {
-            for (key, value) in values {
-                script += "document.\(name)['\(key)'].value='\(value)';"
-            }
-        }
-        script += "document.\(name).submit();"
-        return script
+
+//========================================
+// MARK: Get Page
+//========================================
+
+extension Headless {
+    /**
+     The returned Headless Action will load and return a HTML or JSON page for the specified URL.
+     
+     - parameter url: An URL referencing a HTML or JSON page.
+     
+     - returns: The Headless Action.
+     */
+    public func open<T: Page>(url: NSURL) -> Action<T> {
+        return open(then: .None)(url: url)
     }
     
-    private func clickLinkScript(href: String) -> String {
-        return "window.location.href='\(href)';"
+    /**
+     The returned Headless Action will load and return a page for the specified URL.
+     
+     - parameter postAction: An wait/validation action that will be performed after the page has finished loading.
+     - parameter url: An URL referencing a HTML or JSON page.
+     
+     - returns: The Headless Action.
+     */
+    public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
+        return Action() { [unowned self] completion in
+            let request = NSURLRequest(URL: url)
+            self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
+                completion(self.handleResponse(data as? NSData, response: response, error: error))
+            })
+        }
+    }
+}
+
+
+//========================================
+// MARK: Submit Form
+//========================================
+
+extension Headless {
+    /**
+     Submits the specified HTML form.
+     
+     - parameter form: A HTML form.
+     
+     - returns: The Headless Action.
+     */
+    public func submit<T: Page>(form: HTMLForm) -> Action<T> {
+        return submit(then: .None)(form: form)
+    }
+    
+    /**
+     Submits the specified HTML form.
+     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
+     - parameter url: An URL referencing a HTML or JSON page.
+     
+     - returns: The Headless Action.
+     */
+    public func submit<T: Page>(then postAction: PostAction = .None)(form: HTMLForm) -> Action<T> {
+        return Action() { [unowned self] completion in
+            if let script = form.actionScript() {
+                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                    completion(self.handleResponse(result as? NSData, response: response, error: error))
+                })
+            } else {
+                completion(Result.Error(.NetworkRequestFailure))
+            }
+        }
+    }
+}
+
+
+//========================================
+// MARK: Click Event
+//========================================
+
+extension Headless {
+    /**
+     Simulates the click of a HTML link.
+     
+     - parameter link: The HTML link.
+     
+     - returns: The Headless Action.
+     */
+    public func click<T: Page>(link : HTMLLink) -> Action<T> {
+        return click(then: .None)(link: link)
+    }
+    
+    /**
+     Simulates the click of a HTML link.
+     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
+     - parameter url: An URL referencing a HTML or JSON page.
+     
+     - returns: The Headless Action.
+     */
+    public func click<T: Page>(then postAction: PostAction = .None)(link : HTMLLink) -> Action<T> {
+        return Action() { [unowned self] completion in
+            if let script = link.actionScript() {
+                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                    completion(self.handleResponse(result as? NSData, response: response, error: error))
+                })
+            } else {
+                completion(Result.Error(.NetworkRequestFailure))
+            }
+        }
+    }
+}
+
+//========================================
+// MARK: DOM Modification Methods
+//========================================
+
+extension Headless {
+    
+    /**
+     The returned Headless Action will update a key/value pair on the specified HTMLElement.
+     
+     - parameter key:   A Key.
+     - parameter value: A Value.
+     - parameter element: A HTML element.
+     
+     - returns: The Headless Action.
+     */
+    public func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage> {
+        return Action() { [unowned self] completion in
+            if let script = element.createSetAttributeCommand(key, value: value) {
+                self.renderer.executeScript("\(script) \(Renderer.scrapingCommand);", completionHandler: { result, response, error in
+                    completion(decodeResult(nil)(data: result as? NSData))
+                })
+            } else {
+                completion(Result.Error(.NetworkRequestFailure))
+            }
+        }
+    }
+    
+}
+
+//========================================
+// MARK: Find Methods
+//========================================
+
+extension Headless {    
+    /**
+     The returned Headless Action will search a page and return all elements matching the generic HTML element type and
+     the passed key/value attributes.
+     
+     - parameter withAttributes: Key/Value Pairs.
+     - parameter page: A HTML page.
+     
+     - returns: The Headless Action.
+     */
+    public func getAll<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<[T]> {
+        let elements : Result<[T]> = page.findElements(searchType)
+        return Action(result: elements)
+    }
+        
+    /**
+     The returned Headless Action will search a page and return the first element matching the generic HTML element type and
+     the passed key/value attributes.
+     
+     - parameter withAttributes: Key/Value Pairs.
+     - parameter page: A HTML page.
+     
+     - returns: The Headless Action.
+     */
+    public func get<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<T> {
+        let elements : Result<[T]> = page.findElements(searchType)
+        return Action(result: elements.first())
+    }
+}
+
+
+//========================================
+// MARK: Transform Actions
+//========================================
+
+extension Headless {
+    /**
+     The returned Headless Action will transform a HTMLElement into another HTMLElement using the specified function.
+     
+     - parameter f: The function that takes a certain HTMLElement as parameter and transforms it into another HTMLElement.
+     - parameter element: A HTML element.
+     
+     - returns: The Headless Action.
+     */
+    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
+        return Action(result: resultFromOptional(f(element), error: .NotFound))
+    }
+}
+
+//========================================
+// MARK: Advanced Actions
+//========================================
+
+extension Headless {
+    /**
+     Executes the specified action (with the result of the previous action execution as input parameter) until
+     a certain condition is met. Afterwards, it will return the collected action results.
+     
+     - parameter f:       The Action which will be executed.
+     - parameter until:   If 'true', the execution of the specified Action will stop.
+     - parameter initial: The initial input parameter for the Action.
+     
+     - returns: The collected Sction results.
+     */
+    public func collect<T>(f: T -> Action<T>, until: T -> Bool)(initial: T) -> Action<[T]> {
+        return Action.collect(initial, f: f, until: until)
+    }
+    
+    /**
+     Makes a bulk execution of the specified action with the provided input values. Once all actions have
+     finished, the collected results will be returned.
+     
+     - parameter f:        The Action.
+     - parameter elements: An array containing the input value for the Action.
+     
+     - returns: The collected Action results.
+     */
+    public func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]> {
+        return Action.batch(elements, f: f)
+    }
+}
+
+//========================================
+// MARK: JSON Actions
+//========================================
+
+extension Headless {
+    
+    public func decode<T : JSONDecodable>(page: JSONPage) -> Action<T> {
+        return Action(result: page.decodeObject())
+    }
+    
+    public func decode<T : JSONDecodable>(json: JSON) -> Action<T> {
+        return Action(result: decodeJSONObject(json))
+    }
+    
+}
+
+
+//========================================
+// MARK: Debug Methods
+//========================================
+
+extension Headless {
+    /**
+     Prints the current state of the Headless browser to the console.
+     */
+    func dump() {
+        renderer.dump()
     }
 }

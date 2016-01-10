@@ -33,6 +33,7 @@ public enum ActionError: ErrorType {
     case NetworkRequestFailure
     case NotFound
     case ParsingFailure
+    case TransformFailure
 }
 
 extension ActionError: CustomDebugStringConvertible {
@@ -41,6 +42,7 @@ extension ActionError: CustomDebugStringConvertible {
         case .NetworkRequestFailure: return "NetworkRequestFailure"
         case .NotFound: return "NotFound"
         case .ParsingFailure: return "ParsingFailure"
+        case .TransformFailure: return "TransformFailure"
         }
     }
 }

@@ -2,10 +2,11 @@ Pod::Spec.new do |s|
 
   s.name         = "Headless"
   s.version      = "1.0.0"
-  s.summary      = "A tiny library for automating interaction with websites without a user interface."
+  s.summary      = "Headless is a Swift library for iOS/OSX to navigate within websites and collect data without the need of User Interface or API, also known as Headless browser."
 
   s.description  = <<-DESC
-                   A tiny library for automating interaction with websites without a user interface — written in Swift.
+                   Headless is a Swift library for iOS/OSX to navigate within websites and collect data without the need of User Interface or API, also known as Headless browser.
+                   In addition, it can be used to run automated tests or manipulate websites using Javascript.
                    DESC
 
   s.homepage     = "https://github.com/mkoehnke/Headless"
