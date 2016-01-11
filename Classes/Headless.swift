@@ -297,13 +297,13 @@ extension Headless {
 //========================================
 
 extension Headless {
-    
-    public func decode<T : JSONDecodable>(page: JSONPage) -> Action<T> {
-        return Action(result: page.decodeObject())
+
+    public func decode<T : JSONDecodable>(element: JSONParsable) -> Action<T> {
+        return Action(result: decodeJSON(element.content()))
     }
     
-    public func decode<T : JSONDecodable>(json: JSON) -> Action<T> {
-        return Action(result: decodeJSONObject(json))
+    public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
+        return Action(result: decodeJSON(array.content()))
     }
     
 }

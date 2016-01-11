@@ -143,11 +143,8 @@ public class JSONParser : Parser {
         }
     }
     
-    public func decodeObject<T: JSONDecodable>() -> Result<T> {
-        if let json = json {
-            return decodeJSONObject(json)
-        }
-        return Result.Error(.ParsingFailure)
+    public func content() -> JSON? {
+        return json
     }
     
     override public var description : String {
