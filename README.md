@@ -1,5 +1,5 @@
 # Headless
-Headless is an iOS/OSX **web-browser without a graphical user interface**. It was developed as a experiment in order to familiarize myself with **using functional concepts** written in Swift.
+Headless is an **iOS web-browser without a graphical user interface**. It was developed as a experiment in order to familiarize myself with **using functional concepts** written in Swift.
 
 It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
@@ -26,7 +26,7 @@ When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically
 
 #### Automation with Headless
 
-The same navigation process can be reproduced **automatically** within an iOS/OSX app linking Headless *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
+The same navigation process can be reproduced **automatically** within an iOS app linking Headless *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
 <img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
 
