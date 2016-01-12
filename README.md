@@ -1,7 +1,7 @@
 # Headless
 Headless is an iOS/OSX **web-browser without a graphical user interface**. It was developed as a experiment in order to familiarize myself with **using functional concepts** written in Swift.
 
-It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#JSON-Elements). **Chaining asynchronous actions makes the code compact and easy to use.**
+It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
 For more information, see [Usage](#usage).
 
@@ -39,7 +39,7 @@ let browser = Headless(name: "Demo")
 
 #### Chaining Actions
 
-Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the **[>>>](#Operators)** operator. All chained actions pass their result to the next action. The **[===](#Operators)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use Headless to collect all Provisioning Profiles from the Developer Portal:**
+Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the **[>>>](#operators)** operator. All chained actions pass their result to the next action. The **[===](#operators)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use Headless to collect all Provisioning Profiles from the Developer Portal:**
 
 ```ruby
     browser.open(url)
@@ -93,7 +93,7 @@ The returned Headless Action will load and return a HTML or JSON page for the sp
 func open<T : Page>(url: NSURL) -> Action<T>
 ```
 
-Optionally, a *PostAction* can be passed. This is a special wait/validation action, that is performed after the page has finished loading. See [PostAction](#PostAction) for more information.
+Optionally, a *PostAction* can be passed. This is a special wait/validation action, that is performed after the page has finished loading. See [PostAction](#special-parameters) for more information.
 
 ```ruby
 func open<T : Page>(then: PostAction)(url: NSURL) -> Action<T>
@@ -106,7 +106,7 @@ The returned Headless Action will submit the specified HTML form.
 func submit<T : Page>(form: HTMLForm) -> Action<T>
 ```
 
-Optionally, a *PostAction* can be passed. See [PostAction](#Special- Parameters) for more information.
+Optionally, a *PostAction* can be passed. See [PostAction](#special-parameters) for more information.
 ```ruby
 func submit<T : Page>(then: PostAction)(form: HTMLForm) -> Action<T>
 ```
@@ -125,7 +125,7 @@ func click<T: Page>(then: PostAction)(link : HTMLLink) -> Action<T>
 
 ### Find HTML Elements
 
-The returned Headless Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#Special-Parameters).
+The returned Headless Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#special-parameters).
 ```ruby
 func get<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<T>
 ```
@@ -153,7 +153,7 @@ func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A>
 
 ### 1. PostAction
 
-Some *Actions*, that incorporate a (re-)loading of webpages (e.g. [open](#Open-a-Website), [submit](#Submit-a-Form), etc.), have *PostActions* available. A *PostAction* is a wait or validation action, that will be performed after the page has finished loading:
+Some *Actions*, that incorporate a (re-)loading of webpages (e.g. [open](#open-a-website), [submit](#submit-a-form), etc.), have *PostActions* available. A *PostAction* is a wait or validation action, that will be performed after the page has finished loading:
 
 PostAction                | Description
 ------------------------- | -------------
@@ -162,7 +162,7 @@ PostAction                | Description
 
 ### 2. SearchType
 
-In order to find certain HTML elements within a page, you have to specify a *SearchType*. The return type of [get()](#Find-HTML-Elements) and [getAll()](#Find-HTML-Elements) is generic and determines which tag should be searched for. For instance, the following would return all links with the class *book*:
+In order to find certain HTML elements within a page, you have to specify a *SearchType*. The return type of [get()](#find-html-elements) and [getAll()](#find-html-elements) is generic and determines which tag should be searched for. For instance, the following would return all links with the class *book*:
 
 ```ruby
 let books : Action<HTMLLink> = browser.getAll(by: .Class("book"))(page: htmlPage)
@@ -217,7 +217,7 @@ When using Headless, the following classes are involved when interacting with we
 
 ### HTMLPage
 
-This class represents a **read-only** DOM of a website. It allows you to search for HTML elements using the [SearchType](#Special-Parameters) parameter.
+This class represents a **read-only** DOM of a website. It allows you to search for HTML elements using the [SearchType](#special-parameters) parameter.
 
 ### HTMLElement
 
@@ -247,7 +247,7 @@ func parse<T: JSON>(data: NSData) -> Action<T>
 ```
 
 #### Decoding
-The following methods return a Headless Action, that will take a *JSONParsable* (Array, Dictionary and JSONPage) and decode it into a Model object. This particular Model class has to implement the [*JSONDecodable*](#JSONDecodable) protocol.
+The following methods return a Headless Action, that will take a *JSONParsable* (Array, Dictionary and JSONPage) and decode it into a Model object. This particular Model class has to implement the [*JSONDecodable*](#jsondecodable) protocol.
 
 ```ruby
 func decode<T : JSONDecodable>(element: JSONParsable) -> Action<T>
