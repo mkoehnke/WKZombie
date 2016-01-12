@@ -246,7 +246,40 @@ The *HTMLElement* class is a **base class for all elements in the DOM**. It allo
 
 As mentioned above, Headless as rudimentary support for JSON documents.
 
-### Decoding Example
+### Methods and Protocols
+
+For parsing and decoding JSON, the following methods and protocols are available:
+
+#### Parsing
+The returned Headless Action will parse NSData and create a JSON object.
+
+```ruby
+func parse<T: JSON>(data: NSData) -> Action<T>
+```
+
+#### Decoding
+The following methods return a Headless Action, that will take a *JSONParsable* (Array, Dictionary and JSONPage) and decode it into a Model object. This particular Model class has to implement the [*JSONDecodable*](####JSONDecodable) protocol.
+
+```ruby
+func decode<T : JSONDecodable>(element: JSONParsable) -> Action<T>
+```
+
+```ruby
+func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]>
+```
+
+#### JSONDecodable
+This protocol must be implemented by each class, that is supposed to support JSON decoding.
+The implementation will take a *JSONElement* (Dictionary\<String : AnyObject\>) and create an object instance of that class.
+
+```ruby
+static func decode(json: JSONElement) -> Self?
+```
+
+
+### Example
+
+The following example shows how to use JSON parsing/decoding in conjunction with Headless:
 
 ```ruby
     browser.open(bookURL)
@@ -260,6 +293,7 @@ func myOutput(result: Book?) {
 }
 ```
 
+<!---
 # Installation
 ## CocoaPods
 [CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
@@ -283,8 +317,10 @@ Then, run the following command:
 ```bash
 $ pod install
 ```
+-->
 
 # TODOs
+* Cocoapods
 * run() method for executing Javascript
 * clear() method for deleting all Cookies
 * HTMLImage

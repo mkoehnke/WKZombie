@@ -34,12 +34,24 @@ public protocol JSONDecodable {
      
      - returns: The model object.
      */
-    static func decode(json: JSON) -> Self?
+    static func decode(json: JSONElement) -> Self?
+}
+
+/**
+ *  Protocol, which must be implemented by objects in order to get parsed as JSON.
+ */
+public protocol JSONParsable {
+    /**
+     Returns the parsable JSON data.
+     
+     - returns: The JSON data.
+     */
+    func content() -> JSON?
 }
 
 
 /// JSONPage class, which represents the entire JSON document.
-public class JSONPage : JSONParser, Page {
+public class JSONPage : JSONParser, Page, JSONParsable {
     
     /**
      Returns a JSON page instance for the specified JSON data.
@@ -55,5 +67,4 @@ public class JSONPage : JSONParser, Page {
         }
         return nil
     }
-    
 }

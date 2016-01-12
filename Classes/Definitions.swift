@@ -352,30 +352,63 @@ public enum PostAction {
 //========================================
 
 public typealias JSON = AnyObject
-public typealias JSONObject = [String:AnyObject]
-public typealias JSONArray = [AnyObject]
+public typealias JSONElement = [String : AnyObject]
 
-internal func _JSONParse<A>(object: JSON) -> A? {
-    return object as? A
-}
-
-internal func parseJSON(data: NSData) -> Result<JSON> {
-    var jsonOptional: JSON
+internal func parseJSON<U: JSON>(data: NSData) -> Result<U> {
+    var jsonOptional: U?
     var __error = ActionError.ParsingFailure
     
     do {
-        let htmlString = NSString(data: data, encoding: NSUTF8StringEncoding)!
-        let jsonString = htmlString.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: NSMakeRange(0, htmlString.length))
-        let jsonData = jsonString.dataUsingEncoding(NSUTF8StringEncoding)!
-        jsonOptional = try NSJSONSerialization.JSONObjectWithData(jsonData, options: NSJSONReadingOptions(rawValue: 0))
+        if let data = htmlToData(NSString(data: data, encoding: NSUTF8StringEncoding)) {
+            jsonOptional = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0)) as? U
+        }
     } catch _ as NSError {
         __error = .ParsingFailure
-        jsonOptional = []
+        jsonOptional = nil
     }
     
     return resultFromOptional(jsonOptional, error: __error)
 }
 
-internal func decodeJSONObject<U: JSONDecodable>(json: JSON) -> Result<U> {
-    return resultFromOptional(U.decode(json), error: .ParsingFailure)
+internal func decodeJSON<U: JSONDecodable>(json: JSON?) -> Result<U> {
+    if let element = json as? JSONElement {
+        return resultFromOptional(U.decode(element), error: .ParsingFailure)
+    }
+    return Result.Error(.ParsingFailure)
+}
+
+internal func decodeJSON<U: JSONDecodable>(json: JSON?) -> Result<[U]> {
+    let result = [U]()
+    if let elements = json as? [JSONElement] {
+        var result = [U]()
+        for element in elements {
+            let decodable : Result<U> = decodeJSON(element)
+            switch decodable {
+            case .Success(let value): result.append(value)
+            case .Error(let error): return Result.Error(error)
+            }
+        }
+    }
+    return Result.Success(result)
+}
+
+/// Helper methods
+private func htmlToData(html: NSString?) -> NSData? {
+    if let html = html {
+        let json = html.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: NSMakeRange(0, html.length))
+        return json.dataUsingEncoding(NSUTF8StringEncoding)
+    }
+    return nil
+}
+
+extension Dictionary : JSONParsable {
+    public func content() -> JSON? {
+        return self as? JSON
+    }
+}
+
+extension Array : JSONParsable {
+    public func content() -> JSON? {
+        return self as? JSON
+    }
 }
