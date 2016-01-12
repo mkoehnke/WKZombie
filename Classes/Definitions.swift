@@ -354,13 +354,13 @@ public enum PostAction {
 public typealias JSON = AnyObject
 public typealias JSONElement = [String : AnyObject]
 
-internal func parseJSON(data: NSData) -> Result<JSON> {
-    var jsonOptional: JSON?
+internal func parseJSON<U: JSON>(data: NSData) -> Result<U> {
+    var jsonOptional: U?
     var __error = ActionError.ParsingFailure
     
     do {
         if let data = htmlToData(NSString(data: data, encoding: NSUTF8StringEncoding)) {
-            jsonOptional = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0))
+            jsonOptional = try NSJSONSerialization.JSONObjectWithData(data, options: NSJSONReadingOptions(rawValue: 0)) as? U
         }
     } catch _ as NSError {
         __error = .ParsingFailure

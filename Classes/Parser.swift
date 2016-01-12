@@ -136,7 +136,7 @@ public class JSONParser : Parser {
     
     required public init(data: NSData, url: NSURL? = nil) {
         super.init(data: data, url: url)
-        let result = parseJSON(data)
+        let result : Result<JSON> = parseJSON(data)
         switch result {
         case .Success(let json): self.json = json
         case .Error: HLLog("Error parsing JSON!")

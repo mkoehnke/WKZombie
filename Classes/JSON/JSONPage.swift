@@ -37,8 +37,15 @@ public protocol JSONDecodable {
     static func decode(json: JSONElement) -> Self?
 }
 
-
+/**
+ *  Protocol, which must be implemented by objects in order to get parsed as JSON.
+ */
 public protocol JSONParsable {
+    /**
+     Returns the parsable JSON data.
+     
+     - returns: The JSON data.
+     */
     func content() -> JSON?
 }
 
