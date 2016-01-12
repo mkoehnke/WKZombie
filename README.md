@@ -1,11 +1,13 @@
 # Headless
-Headless is an iOS/OSX **web-browser without a graphical user interface**. It was developed as a mere *experiment* in order to familiarize myself with **using proven functional concepts** written in Swift.
+Headless is an iOS/OSX **web-browser without a graphical user interface**. It was developed as a experiment in order to familiarize myself with **using functional concepts** written in Swift.
 
-It uses [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing JSON pages. Chaining asynchronous actions makes the code compact and easy to use.
+It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](). **Chaining asynchronous actions makes the code compact and easy to use.**
 
 For more information, see [Usage](#usage).
 
 ## Use Cases
+There are many use cases for a Headless Browser. Some of them are:
+
 * Collect data without an API
 * Scraping websites
 * Automating interaction of websites
@@ -14,7 +16,7 @@ For more information, see [Usage](#usage).
 * etc.
 
 ## Example
-The following example is supposed to demonstrate the headless functionality. Let's assume that we want to **show all iOS Provisioning Profiles in the Apple Developer Portal**.
+The following example is supposed to demonstrate the Headless functionality. Let's assume that we want to **show all iOS Provisioning Profiles in the Apple Developer Portal**.
 
 #### Manual Web-Browser Navigation
 
@@ -24,7 +26,7 @@ When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically
 
 #### Automation with Headless
 
-The same navigation process can be reproduced **automatically** within an iOS/OSX app using the chained *Actions* of Headless. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
+The same navigation process can be reproduced **automatically** within an iOS/OSX app linking Headless *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
 <img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
 
@@ -35,9 +37,9 @@ A Headless instance equates to a web session, which can be created using the fol
 let browser = Headless(name: "Demo")
 ```
 
-#### Linking Actions
+#### Chaining Actions
 
-Web page navigation is based on *Actions*, which can be executed implicitly when linking actions using the **[>>>](#>>>)** operator. All chained actions pass their result to the next action. The **[===](#===)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use Headless to collect all Provisioning Profiles from the Developer Portal:**
+Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the **[>>>](#>>>)** operator. All chained actions pass their result to the next action. The **[===](#===)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use Headless to collect all Provisioning Profiles from the Developer Portal:**
 
 ```ruby
     browser.open(url)
@@ -78,7 +80,7 @@ action.start { result in
 }
 ```
 
-This is certainly the less complicated way, but you have to write a lot more code, which might become confusing when you want to nest *Actions*.  
+This is certainly the less complicated way, but you have to write a lot more code, which might become confusing when you want to execute *Actions* successively.  
 
 
 ## Basic Actions
@@ -91,7 +93,7 @@ The returned Headless Action will load and return a HTML or JSON page for the sp
 func open<T : Page>(url: NSURL) -> Action<T>
 ```
 
-Optionally, a *PostAction* can be passed. It can be seen as a special wait/validation action, that will be performed after the page has finished loading. See [PostAction](#PostAction) for more information.
+Optionally, a *PostAction* can be passed. This is a special wait/validation action, that is performed after the page has finished loading. See [PostAction](#PostAction) for more information.
 
 ```ruby
 func open<T : Page>(then: PostAction)(url: NSURL) -> Action<T>
@@ -123,8 +125,7 @@ func click<T: Page>(then: PostAction)(link : HTMLLink) -> Action<T>
 
 ### Find HTML Elements
 
-The returned Headless Action will search the specified HTML page and return the first element matching the generic HTML element type and
-the passed [SearchType](SearchType).
+The returned Headless Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](SearchType).
 ```ruby
 func get<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<T>
 ```
@@ -152,13 +153,12 @@ func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A>
 
 ### 1. PostAction
 
-Certain *Actions*, that incorporate a (re-)loading of webpages (e.g. [open](#OpenaWebsite), [submit](#SubmitaForm), etc.), can have *PostActions*. A *PostAction* is a wait or validation action, that will be performed after the page has finished loading:
+Some *Actions*, that incorporate a (re-)loading of webpages (e.g. [open](#OpenaWebsite), [submit](#SubmitaForm), etc.), have *PostActions* available. A *PostAction* is a wait or validation action, that will be performed after the page has finished loading:
 
-#### a. Wait(*seconds*)
-The time in seconds that the action will wait (after the page has been loaded) before returning. This is useful in cases where the page loading has been completed, but some JavaScript/Image loading is still in progress.
-
-#### b. Validate(*javascript*)
-The action will complete if the specified JavaScript expression/script returns 'true' or a timeout occurs.
+PostAction                | Description
+------------------------- | -------------
+**Wait** (Seconds)        | The time in seconds that the action will wait (after the page has been loaded) before returning. This is useful in cases where the page loading has been completed, but some JavaScript/Image loading is still in progress.
+**Validate** (Javascript) | The action will complete if the specified JavaScript expression/script returns 'true' or a timeout occurs.
 
 ### 2. SearchType
 
@@ -170,34 +170,23 @@ let books : Action<HTMLLink> = browser.getAll(by: .Class("book"))(page: htmlPage
 
 The following 6 types are currently available and supported:
 
-#### a. Id(*string*)
-Returns an element that matches the specified id.
-
-#### b. Name(*string*)
-Returns all elements matching the specified value for their *name* attribute.
-
-#### c. Text(*string*)
-Returns all elements with inner content, that *contain* the specified text.
-
-#### d. Class(*string*)
-Returns all elements that match the specified class name.
-
-#### e. Attribute(*string*, *string*)
-Returns all elements that match the specified attribute name/value combination.
-
-#### f. XPathQuery(*string*)
-Returns all elements that match the specified XPath query.
+SearchType                     | Description
+------------------------------ | -------------
+**Id** (String)                | Returns an element that matches the specified id.
+**Name** (String)              | Returns all elements matching the specified value for their *name* attribute.
+**Text** (String)              | Returns all elements with inner content, that *contain* the specified text.
+**Class** (String)             | Returns all elements that match the specified class name.
+**Attribute** (String, String) | Returns all elements that match the specified attribute name/value combination.
+**XPathQuery** (String)        | Returns all elements that match the specified XPath query.
 
 ## Operators
 
-The following Operators can be applied to *Actions*, which makes linking *Actions* easier to read:
+The following Operators can be applied to *Actions*, which makes chained *Actions* easier to read:
 
-### >>>
-This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*.
-
-### ===
-
-This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
+Operator       | Description
+-------------- | -------------
+**>>>**        | This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*.
+**===**        | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
 ## Advanced Actions
 
