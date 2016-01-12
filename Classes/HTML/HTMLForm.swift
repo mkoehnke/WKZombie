@@ -63,11 +63,6 @@ public class HTMLForm : HTMLElement {
     
     internal func actionScript() -> String? {
         if let name = name {
-//            var script = String()
-//            let fields = inputElements.map { (key, value) in "document.\(name)['\(key)'].value='\(value)';" }
-//            script += fields.joinWithSeparator("")
-//            script += "document.\(name).submit();"
-//            return script
             return "document.\(name).submit();"
         }
         return nil

@@ -184,9 +184,9 @@ extension Headless {
 extension Headless {
     
     /**
-     The returned Headless Action will update a key/value pair on the specified HTMLElement.
+     The returned Headless Action will set or update a attribute/value pair on the specified HTMLElement.
      
-     - parameter key:   A Key.
+     - parameter key:   A Attribute Name.
      - parameter value: A Value.
      - parameter element: A HTML element.
      
@@ -215,7 +215,7 @@ extension Headless {
      The returned Headless Action will search a page and return all elements matching the generic HTML element type and
      the passed key/value attributes.
      
-     - parameter withAttributes: Key/Value Pairs.
+     - parameter by: Key/Value Pairs.
      - parameter page: A HTML page.
      
      - returns: The Headless Action.
@@ -229,7 +229,7 @@ extension Headless {
      The returned Headless Action will search a page and return the first element matching the generic HTML element type and
      the passed key/value attributes.
      
-     - parameter withAttributes: Key/Value Pairs.
+     - parameter by: Key/Value Pairs.
      - parameter page: A HTML page.
      
      - returns: The Headless Action.
@@ -298,14 +298,39 @@ extension Headless {
 
 extension Headless {
 
+    /**
+     The returned Headless Action will parse NSData and create a JSON object.
+     
+     - parameter data: A NSData object.
+     
+     - returns: A JSON object.
+     */
     public func parse<T: JSON>(data: NSData) -> Action<T> {
         return Action(result: parseJSON(data))
     }
     
+    /**
+     The returned Headless Action will take a JSONParsable (Array, Dictionary and JSONPage) and 
+     decode it into a Model object. This particular Model class has to implement the 
+     JSONDecodable protocol.
+     
+     - parameter element: A JSONParsable instance.
+     
+     - returns: A JSONDecodable object.
+     */
     public func decode<T : JSONDecodable>(element: JSONParsable) -> Action<T> {
         return Action(result: decodeJSON(element.content()))
     }
     
+    /**
+     The returned Headless Action will take a JSONParsable (Array, Dictionary and JSONPage) and
+     decode it into an array of Model objects of the same class. The class has to implement the
+     JSONDecodable protocol.
+     
+     - parameter element: A JSONParsable instance.
+     
+     - returns: A JSONDecodable array.
+     */
     public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
         return Action(result: decodeJSON(array.content()))
     }

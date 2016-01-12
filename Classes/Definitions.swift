@@ -38,20 +38,28 @@ func HLLog(message: String, lineBreak: Bool = true) {
 }
 
 public enum SearchType<T: HTMLElement> {
-    case Id(String)
-    
-    case Name(String)
-    
-    case Text(String)
-    
-    case Class(String)
-    
     /**
-     Search by matching an attribute using key/value.
+     * Returns an element that matches the specified id.
+     */
+    case Id(String)
+    /**
+     * Returns all elements matching the specified value for their name attribute.
+     */
+    case Name(String)
+    /**
+     * Returns all elements with inner content, that contain the specified text.
+     */
+    case Text(String)
+    /**
+     * Returns all elements that match the specified class name.
+     */
+    case Class(String)
+    /**
+     Returns all elements that match the specified attribute name/value combination.
      */
     case Attribute(String, String?)
     /**
-     Search by using a XPath Query.
+     Returns all elements that match the specified XPath query.
      */
     case XPathQuery(String)
     
@@ -128,10 +136,26 @@ internal func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     }
 }
 
+/**
+ This Operator equates to the andThen() method. Here, the left-hand side Action will be started 
+ and the result is used as parameter for the right-hand side Action.
+ 
+ - parameter a: An Action.
+ - parameter f: A Function.
+ 
+ - returns: An Action.
+ */
 public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
+/**
+ This Operator starts the left-hand side Action and passes the result as Optional to the 
+ function on the right-hand side.
+ 
+ - parameter a:          An Action.
+ - parameter completion: A Completion Block.
+ */
 public func ===<T>(a: Action<T>, completion: (result: T?) -> Void) {
     return a.start { result in
         switch result {
