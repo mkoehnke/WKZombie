@@ -31,9 +31,9 @@ public class HTMLElement : HTMLParserElement {
         return "//*\(parameters)"
     }
     
-    internal func createSetAttributeCommand(key : String, value: String? = "") -> String? {
+    internal func createSetAttributeCommand(key : String, value: String?) -> String? {
         if let query = XPathQuery {
-            return "getElementByXpath(\"\(query)\").setAttribute(\"\(key)\", \"\(value)\");"
+            return "getElementByXpath(\"\(query)\").setAttribute(\"\(key)\", \"\(value ?? "")\");"
         }
         return nil
     }

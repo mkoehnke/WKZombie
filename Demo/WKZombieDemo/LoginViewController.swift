@@ -32,8 +32,8 @@ class LoginViewController : UIViewController {
     
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
-    lazy var browser : Headless = {
-        return Headless(name: "Developer Portal")
+    lazy var browser : WKZombie = {
+        return WKZombie(name: "Developer Portal")
     }()
     
     @IBAction func loginButtonTouched(button: UIButton) {
