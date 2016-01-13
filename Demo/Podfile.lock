@@ -1,12 +1,6 @@
 PODS:
   - hpple (0.2.0)
-  - WKZombie (0.9.0):
-    - hpple (= 0.2.0)
-    - WKZombie/HTML (= 0.9.0)
-    - WKZombie/JSON (= 0.9.0)
-  - WKZombie/HTML (0.9.0):
-    - hpple (= 0.2.0)
-  - WKZombie/JSON (0.9.0):
+  - WKZombie (0.9.1):
     - hpple (= 0.2.0)
 
 DEPENDENCIES:
@@ -18,6 +12,6 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
-  WKZombie: ee48780e7da6a8f6347bf96c49eaf87f25629696
+  WKZombie: 5e2118ec903183abba15f27dd85d2d912651c1e0
 
 COCOAPODS: 0.39.0

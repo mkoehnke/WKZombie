@@ -27,7 +27,7 @@ import Foundation
 // MARK: Logging
 //========================================
 
-func HLLog(message: String, lineBreak: Bool = true) {
+public func HLLog(message: String, lineBreak: Bool = true) {
     #if DEBUG
         if lineBreak {
             print("\(message)")
@@ -92,7 +92,7 @@ public enum Result<T> {
     }
 }
 
-extension Result where T:CollectionType {
+public extension Result where T:CollectionType {
     public func first<A>() -> Result<A> {
         switch self {
         case .Success(let result): return resultFromOptional(result.first as? A, error: .NotFound)
@@ -232,7 +232,7 @@ public struct Action<T> {
     }
 }
 
-extension Action {
+public extension Action {
     // TODO - implement flatMap
     
     public func map<U>(f: T -> U) -> Action<U> {
@@ -268,7 +268,7 @@ extension Action {
 // MARK: Convenience Methods
 //========================================
 
-extension Action {
+public extension Action {
     
     /**
      Executes the specified action (with the result of the previous action execution as input parameter) until
