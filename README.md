@@ -6,7 +6,7 @@ It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hppl
 For more information, see [Usage](#usage).
 
 ## Use Cases
-There are many use cases for a WKZombie Browser. Some of them are:
+There are many use cases for a Headless Browser. Some of them are:
 
 * Collect data without an API
 * Scraping websites
@@ -22,13 +22,13 @@ The following example is supposed to demonstrate the WKZombie functionality. Let
 
 When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically type in your credentials, sign in and navigate (via links) to the *Provisioning Profiles* section:
 
-<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/develop/Resources/WKZombie-Web-Demo.gif?token=ABXNjQVdWqIq9FWdb42o8I09ERYprf7Mks5WmWgPwA%3D%3D" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/WKZombie-Web-Demo.gif" />
 
 #### Automation with WKZombie
 
 The same navigation process can be reproduced **automatically** within an iOS app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
-<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/develop/Resources/WKZombie-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/WKZombie-Simulator-Demo.gif" />
 
 # Usage
 A WKZombie instance equates to a web session, which can be created using the following line:
@@ -320,7 +320,7 @@ $ pod install
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
 
 # More Resources
-* [A list of (almost) all WKZombie web browsers in existence](https://github.com/dhamaniasad/WKZombieBrowsers)
+* [A list of (almost) all headless web browsers in existence](https://github.com/dhamaniasad/HeadlessBrowsers)
 
 # Attributions
 * [Efficient JSON in Swift with Functional Concepts and Generics — Tony DiPasquale](https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics)
