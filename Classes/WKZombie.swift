@@ -1,5 +1,5 @@
 //
-// Headless.swift
+// WKZombie.swift
 //
 // Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -23,11 +23,11 @@
 
 import Foundation
 
-public class Headless : NSObject {
+public class WKZombie : NSObject {
     
     private var renderer : Renderer!
     
-    /// Returns the name of this headless session.
+    /// Returns the name of this WKZombie session.
     public private(set) var name : String!
     
     /// If false, the loading progress will finish once the 'raw' HTML data
@@ -42,11 +42,11 @@ public class Headless : NSObject {
     /**
      The designated initializer.
      
-     - parameter name: The name of the headless session.
+     - parameter name: The name of the WKZombie session.
      
-     - returns: A headless instance.
+     - returns: A WKZombie instance.
      */
-    public init(name: String? = "Headless") {
+    public init(name: String? = "WKZombie") {
         super.init()
         self.name = name
         self.renderer = Renderer()
@@ -71,25 +71,25 @@ public class Headless : NSObject {
 // MARK: Get Page
 //========================================
 
-extension Headless {
+extension WKZombie {
     /**
-     The returned Headless Action will load and return a HTML or JSON page for the specified URL.
+     The returned WKZombie Action will load and return a HTML or JSON page for the specified URL.
      
      - parameter url: An URL referencing a HTML or JSON page.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func open<T: Page>(url: NSURL) -> Action<T> {
         return open(then: .None)(url: url)
     }
     
     /**
-     The returned Headless Action will load and return a page for the specified URL.
+     The returned WKZombie Action will load and return a page for the specified URL.
      
      - parameter postAction: An wait/validation action that will be performed after the page has finished loading.
      - parameter url: An URL referencing a HTML or JSON page.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
         return Action() { [unowned self] completion in
@@ -106,13 +106,13 @@ extension Headless {
 // MARK: Submit Form
 //========================================
 
-extension Headless {
+extension WKZombie {
     /**
      Submits the specified HTML form.
      
      - parameter form: A HTML form.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func submit<T: Page>(form: HTMLForm) -> Action<T> {
         return submit(then: .None)(form: form)
@@ -124,7 +124,7 @@ extension Headless {
      - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
      - parameter url: An URL referencing a HTML or JSON page.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func submit<T: Page>(then postAction: PostAction = .None)(form: HTMLForm) -> Action<T> {
         return Action() { [unowned self] completion in
@@ -144,13 +144,13 @@ extension Headless {
 // MARK: Click Event
 //========================================
 
-extension Headless {
+extension WKZombie {
     /**
      Simulates the click of a HTML link.
      
      - parameter link: The HTML link.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func click<T: Page>(link : HTMLLink) -> Action<T> {
         return click(then: .None)(link: link)
@@ -162,7 +162,7 @@ extension Headless {
      - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
      - parameter url: An URL referencing a HTML or JSON page.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func click<T: Page>(then postAction: PostAction = .None)(link : HTMLLink) -> Action<T> {
         return Action() { [unowned self] completion in
@@ -181,16 +181,16 @@ extension Headless {
 // MARK: DOM Modification Methods
 //========================================
 
-extension Headless {
+extension WKZombie {
     
     /**
-     The returned Headless Action will set or update a attribute/value pair on the specified HTMLElement.
+     The returned WKZombie Action will set or update a attribute/value pair on the specified HTMLElement.
      
      - parameter key:   A Attribute Name.
      - parameter value: A Value.
      - parameter element: A HTML element.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage> {
         return Action() { [unowned self] completion in
@@ -210,15 +210,15 @@ extension Headless {
 // MARK: Find Methods
 //========================================
 
-extension Headless {    
+extension WKZombie {    
     /**
-     The returned Headless Action will search a page and return all elements matching the generic HTML element type and
+     The returned WKZombie Action will search a page and return all elements matching the generic HTML element type and
      the passed key/value attributes.
      
      - parameter by: Key/Value Pairs.
      - parameter page: A HTML page.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func getAll<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<[T]> {
         let elements : Result<[T]> = page.findElements(searchType)
@@ -226,13 +226,13 @@ extension Headless {
     }
         
     /**
-     The returned Headless Action will search a page and return the first element matching the generic HTML element type and
+     The returned WKZombie Action will search a page and return the first element matching the generic HTML element type and
      the passed key/value attributes.
      
      - parameter by: Key/Value Pairs.
      - parameter page: A HTML page.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func get<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<T> {
         let elements : Result<[T]> = page.findElements(searchType)
@@ -245,14 +245,14 @@ extension Headless {
 // MARK: Transform Actions
 //========================================
 
-extension Headless {
+extension WKZombie {
     /**
-     The returned Headless Action will transform a HTMLElement into another HTMLElement using the specified function.
+     The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function.
      
      - parameter f: The function that takes a certain HTMLElement as parameter and transforms it into another HTMLElement.
      - parameter element: A HTML element.
      
-     - returns: The Headless Action.
+     - returns: The WKZombie Action.
      */
     public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
         return Action(result: resultFromOptional(f(element), error: .NotFound))
@@ -263,7 +263,7 @@ extension Headless {
 // MARK: Advanced Actions
 //========================================
 
-extension Headless {
+extension WKZombie {
     /**
      Executes the specified action (with the result of the previous action execution as input parameter) until
      a certain condition is met. Afterwards, it will return the collected action results.
@@ -296,10 +296,10 @@ extension Headless {
 // MARK: JSON Actions
 //========================================
 
-extension Headless {
+extension WKZombie {
 
     /**
-     The returned Headless Action will parse NSData and create a JSON object.
+     The returned WKZombie Action will parse NSData and create a JSON object.
      
      - parameter data: A NSData object.
      
@@ -310,7 +310,7 @@ extension Headless {
     }
     
     /**
-     The returned Headless Action will take a JSONParsable (Array, Dictionary and JSONPage) and 
+     The returned WKZombie Action will take a JSONParsable (Array, Dictionary and JSONPage) and 
      decode it into a Model object. This particular Model class has to implement the 
      JSONDecodable protocol.
      
@@ -323,7 +323,7 @@ extension Headless {
     }
     
     /**
-     The returned Headless Action will take a JSONParsable (Array, Dictionary and JSONPage) and
+     The returned WKZombie Action will take a JSONParsable (Array, Dictionary and JSONPage) and
      decode it into an array of Model objects of the same class. The class has to implement the
      JSONDecodable protocol.
      
@@ -342,9 +342,9 @@ extension Headless {
 // MARK: Debug Methods
 //========================================
 
-extension Headless {
+extension WKZombie {
     /**
-     Prints the current state of the Headless browser to the console.
+     Prints the current state of the WKZombie browser to the console.
      */
     func dump() {
         renderer.dump()

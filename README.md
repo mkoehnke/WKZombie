@@ -1,12 +1,12 @@
-# Headless
-Headless is an **iOS web-browser without a graphical user interface**. It was developed as a experiment in order to familiarize myself with **using functional concepts** written in Swift.
+# WKZombie
+WKZombie is an **iOS web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift.
 
 It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
 For more information, see [Usage](#usage).
 
 ## Use Cases
-There are many use cases for a Headless Browser. Some of them are:
+There are many use cases for a WKZombie Browser. Some of them are:
 
 * Collect data without an API
 * Scraping websites
@@ -16,30 +16,30 @@ There are many use cases for a Headless Browser. Some of them are:
 * etc.
 
 ## Example
-The following example is supposed to demonstrate the Headless functionality. Let's assume that we want to **show all iOS Provisioning Profiles in the Apple Developer Portal**.
+The following example is supposed to demonstrate the WKZombie functionality. Let's assume that we want to **show all iOS Provisioning Profiles in the Apple Developer Portal**.
 
 #### Manual Web-Browser Navigation
 
 When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically type in your credentials, sign in and navigate (via links) to the *Provisioning Profiles* section:
 
-<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Web-Demo.gif?token=ABXNjQVdWqIq9FWdb42o8I09ERYprf7Mks5WmWgPwA%3D%3D" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/develop/Resources/WKZombie-Web-Demo.gif?token=ABXNjQVdWqIq9FWdb42o8I09ERYprf7Mks5WmWgPwA%3D%3D" />
 
-#### Automation with Headless
+#### Automation with WKZombie
 
-The same navigation process can be reproduced **automatically** within an iOS app linking Headless *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
+The same navigation process can be reproduced **automatically** within an iOS app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
-<img src="https://raw.githubusercontent.com/mkoehnke/Headless/develop/Resources/Headless-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/develop/Resources/WKZombie-Simulator-Demo.gif?token=ABXNjWc-qmO9Vk7DUFWbnG1VE0LNM73Wks5WmWfXwA%3D%3D" />
 
 # Usage
-A Headless instance equates to a web session, which can be created using the following line:
+A WKZombie instance equates to a web session, which can be created using the following line:
 
 ```ruby
-let browser = Headless(name: "Demo")
+let browser = WKZombie(name: "Demo")
 ```
 
 #### Chaining Actions
 
-Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the **[>>>](#operators)** operator. All chained actions pass their result to the next action. The **[===](#operators)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use Headless to collect all Provisioning Profiles from the Developer Portal:**
+Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the **[>>>](#operators)** operator. All chained actions pass their result to the next action. The **[===](#operators)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use WKZombie to collect all Provisioning Profiles from the Developer Portal:**
 
 ```ruby
     browser.open(url)
@@ -57,7 +57,7 @@ Web page navigation is based on *Actions*, that can be executed **implicitly** w
 === myOutput
 ```
 
-In order to output or process the collected data, one can either use a closure or implement a custom function taking the Headless optional result as parameter:
+In order to output or process the collected data, one can either use a closure or implement a custom function taking the WKZombie optional result as parameter:
 
 ```ruby
 func myOutput(result: [HTMLTableColumn]?) {
@@ -88,7 +88,7 @@ There are currently a few *Actions* implemented, helping you visit and navigate 
 
 ### Open a Website
 
-The returned Headless Action will load and return a HTML or JSON page for the specified URL.
+The returned WKZombie Action will load and return a HTML or JSON page for the specified URL.
 ```ruby
 func open<T : Page>(url: NSURL) -> Action<T>
 ```
@@ -101,7 +101,7 @@ func open<T : Page>(then: PostAction)(url: NSURL) -> Action<T>
 
 ### Submit a Form
 
-The returned Headless Action will submit the specified HTML form.
+The returned WKZombie Action will submit the specified HTML form.
 ```ruby
 func submit<T : Page>(form: HTMLForm) -> Action<T>
 ```
@@ -113,7 +113,7 @@ func submit<T : Page>(then: PostAction)(form: HTMLForm) -> Action<T>
 
 ### Click a Link
 
-The returned Headless Action will simulate the click of a HTML link.
+The returned WKZombie Action will simulate the click of a HTML link.
 ```ruby
 func click<T: Page>(link : HTMLLink) -> Action<T>
 ```
@@ -125,12 +125,12 @@ func click<T: Page>(then: PostAction)(link : HTMLLink) -> Action<T>
 
 ### Find HTML Elements
 
-The returned Headless Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#special-parameters).
+The returned WKZombie Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#special-parameters).
 ```ruby
 func get<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<T>
 ```
 
-The returned Headless Action will search and return all elements matching.
+The returned WKZombie Action will search and return all elements matching.
 ```ruby
 func getAll<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<[T]>
 ```
@@ -138,14 +138,14 @@ func getAll<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<[T]>
 
 ### Set an Attribute
 
-The returned Headless Action will set or update an existing attribute/value pair on the specified HTMLElement.
+The returned WKZombie Action will set or update an existing attribute/value pair on the specified HTMLElement.
 ```ruby
 func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage>
 ```
 
 ### Transform
 
-The returned Headless Action will transform a HTMLElement into another HTMLElement using the specified function *f*.
+The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function *f*.
 ```ruby
 func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A>
 ```
@@ -192,28 +192,28 @@ Operator       | Description
 
 ### Batch
 
-The returned Headless Action will make a bulk execution of the specified action function *f* with the provided input elements. Once all actions have finished executing, the collected results will be returned.
+The returned WKZombie Action will make a bulk execution of the specified action function *f* with the provided input elements. Once all actions have finished executing, the collected results will be returned.
 ```ruby
 func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]>
 ```
 
 ### Collect
 
-The returned Headless Action will execute the specified action (with the result of the previous action execution as input parameter) until a certain condition is met. Afterwards, it will return the collected action results.
+The returned WKZombie Action will execute the specified action (with the result of the previous action execution as input parameter) until a certain condition is met. Afterwards, it will return the collected action results.
 ```ruby
 func collect<T>(f: T -> Action<T>, until: T -> Bool)(initial: T) -> Action<[T]>
 ```
 
 ### Dump
 
-This command is useful for **debugging**. It prints out the current state of the Headless browser represented as *DOM*.
+This command is useful for **debugging**. It prints out the current state of the WKZombie browser represented as *DOM*.
 ```ruby
 func dump()
 ```
 
 ## HTML Elements
 
-When using Headless, the following classes are involved when interacting with websites:
+When using WKZombie, the following classes are involved when interacting with websites:
 
 ### HTMLPage
 
@@ -233,21 +233,21 @@ The *HTMLElement* class is a **base class for all elements in the DOM**. It allo
 
 ## JSON Elements
 
-As mentioned above, Headless as rudimentary support for JSON documents.
+As mentioned above, WKZombie as rudimentary support for JSON documents.
 
 ### Methods and Protocols
 
 For parsing and decoding JSON, the following methods and protocols are available:
 
 #### Parsing
-The returned Headless Action will parse NSData and create a JSON object.
+The returned WKZombie Action will parse NSData and create a JSON object.
 
 ```ruby
 func parse<T: JSON>(data: NSData) -> Action<T>
 ```
 
 #### Decoding
-The following methods return a Headless Action, that will take a *JSONParsable* (Array, Dictionary and JSONPage) and decode it into a Model object. This particular Model class has to implement the [*JSONDecodable*](#jsondecodable) protocol.
+The following methods return a WKZombie Action, that will take a *JSONParsable* (Array, Dictionary and JSONPage) and decode it into a Model object. This particular Model class has to implement the [*JSONDecodable*](#jsondecodable) protocol.
 
 ```ruby
 func decode<T : JSONDecodable>(element: JSONParsable) -> Action<T>
@@ -268,7 +268,7 @@ static func decode(json: JSONElement) -> Self?
 
 ### Example
 
-The following example shows how to use JSON parsing/decoding in conjunction with Headless:
+The following example shows how to use JSON parsing/decoding in conjunction with WKZombie:
 
 ```ruby
     browser.open(bookURL)
@@ -291,14 +291,14 @@ func myOutput(result: Book?) {
 $ gem install cocoapods
 ```
 
-To integrate the Headless into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate the WKZombie into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '9.0'
 use_frameworks!
 
-pod 'Headless'
+pod 'WKZombie'
 ```
 
 Then, run the following command:
@@ -320,14 +320,14 @@ $ pod install
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
 
 # More Resources
-* [A list of (almost) all headless web browsers in existence](https://github.com/dhamaniasad/HeadlessBrowsers)
+* [A list of (almost) all WKZombie web browsers in existence](https://github.com/dhamaniasad/WKZombieBrowsers)
 
 # Attributions
 * [Efficient JSON in Swift with Functional Concepts and Generics — Tony DiPasquale](https://robots.thoughtbot.com/efficient-json-in-swift-with-functional-concepts-and-generics)
 * [Back to the Futures — Javier Soto](https://speakerdeck.com/javisoto/back-to-the-futures)
 
 # License
-Headless is available under the MIT license. See the LICENSE file for more info.
+WKZombie is available under the MIT license. See the LICENSE file for more info.
 
 # Recent Changes
-The release notes can be found [here](https://github.com/mkoehnke/Headless/releases).
+The release notes can be found [here](https://github.com/mkoehnke/WKZombie/releases).

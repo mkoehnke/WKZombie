@@ -1,5 +1,5 @@
 //
-// HeadlessDemo-Bridging-Header.h
+// WKZombieDemo-Bridging-Header.h
 //
 // Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -21,9 +21,9 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-#ifndef HeadlessDemo_Bridging_Header_h
-#define HeadlessDemo_Bridging_Header_h
+#ifndef WKZombieDemo_Bridging_Header_h
+#define WKZombieDemo_Bridging_Header_h
 
 #import <hpple/TFHpple.h>
 
-#endif /* HeadlessDemo_Bridging_Header_h */
+#endif /* WKZombieDemo_Bridging_Header_h */
