@@ -314,7 +314,7 @@ $ pod install
 -->
 
 # TODOs
-* Cocoapods
+* OSX support
 * run() method for executing Javascript
 * clear() method for deleting all Cookies
 * HTMLImage
