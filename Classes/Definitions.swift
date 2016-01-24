@@ -233,8 +233,6 @@ public struct Action<T> {
 }
 
 public extension Action {
-    // TODO - implement flatMap
-    
     public func map<U>(f: T -> U) -> Action<U> {
         return Action<U>(operation: { completion in
             self.start { result in
