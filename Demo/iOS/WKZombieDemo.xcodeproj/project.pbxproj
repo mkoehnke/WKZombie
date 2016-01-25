@@ -102,7 +102,7 @@
 				BF13347D1C235D750093A135 /* RenderOperation.swift */,
 			);
 			name = Classes;
-			path = ../../Classes;
+			path = ../../../Classes;
 			sourceTree = "<group>";
 		};
 		BF0C9FBA1C1756BF00B3AD79 /* HTML */ = {

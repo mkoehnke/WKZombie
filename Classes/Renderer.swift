@@ -65,12 +65,22 @@ internal class Renderer : NSObject {
         /// webview will be added to the view hierarchy (between the 
         /// rootViewController's view and the key window.
         /// Until there's no better solution, we'll have to roll with this.
-        let bounds = UIScreen.mainScreen().bounds
-        webView = WKWebView(frame: bounds, configuration: config)
-        if let window = UIApplication.sharedApplication().keyWindow {
-            webView.alpha = 0.01
-            window.insertSubview(webView, atIndex: 0)
-        }
+        #if os(iOS)
+            let bounds = UIScreen.mainScreen().bounds
+            webView = WKWebView(frame: bounds, configuration: config)
+            if let window = UIApplication.sharedApplication().keyWindow {
+                webView.alpha = 0.01
+                window.insertSubview(webView, atIndex: 0)
+            }
+        #elseif os(OSX)
+            if let size = NSScreen.mainScreen()?.frame.size {
+                webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
+                if let window = NSApplication.sharedApplication().keyWindow {
+                    webView.alphaValue = 0.01
+                    window.contentView?.addSubview(webView)
+                }
+            }
+        #endif
     }
     
     deinit {
