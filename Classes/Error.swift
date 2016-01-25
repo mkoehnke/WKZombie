@@ -39,10 +39,10 @@ public enum ActionError: ErrorType {
 extension ActionError: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
-        case .NetworkRequestFailure: return "NetworkRequestFailure"
-        case .NotFound: return "NotFound"
-        case .ParsingFailure: return "ParsingFailure"
-        case .TransformFailure: return "TransformFailure"
+        case .NetworkRequestFailure: return "Network Request Failure"
+        case .NotFound: return "Not Found"
+        case .ParsingFailure: return "Parsing Failure"
+        case .TransformFailure: return "Transform Failure"
         }
     }
 }
