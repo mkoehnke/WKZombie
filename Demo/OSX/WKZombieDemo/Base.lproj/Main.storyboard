@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="6198" systemVersion="14A297b" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="B8D-0N-5wS">
+<document type="com.apple.InterfaceBuilder3.Cocoa.Storyboard.XIB" version="3.0" toolsVersion="9531" systemVersion="15D21" targetRuntime="MacOSX.Cocoa" propertyAccessControl="none" useAutolayout="YES" initialViewController="XfG-lQ-9wD">
     <dependencies>
-        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="6198"/>
+        <deployment identifier="macosx"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.CocoaPlugin" version="9531"/>
     </dependencies>
     <scenes>
         <!--Application-->
@@ -641,15 +642,15 @@
                         <outlet property="delegate" destination="Voe-Tx-rLC" id="PrD-fu-P6m"/>
                     </connections>
                 </application>
-                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModuleProvider="target"/>
+                <customObject id="Voe-Tx-rLC" customClass="AppDelegate" customModule="WKZombieDemo" customModuleProvider="target"/>
                 <customObject id="Ady-hI-5gd" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
             <point key="canvasLocation" x="75" y="0.0"/>
         </scene>
-        <!--Window Controller - Window-->
+        <!--Window Controller-->
         <scene sceneID="R2V-B0-nI4">
             <objects>
-                <windowController id="B8D-0N-5wS" sceneMemberID="viewController">
+                <windowController showSeguePresentationStyle="single" id="B8D-0N-5wS" sceneMemberID="viewController">
                     <window key="window" title="Window" allowsToolTipsWhenApplicationIsInactive="NO" autorecalculatesKeyViewLoop="NO" oneShot="NO" releasedWhenClosed="NO" showsToolbarButton="NO" visibleAtLaunch="NO" animationBehavior="default" id="IQv-IB-iLA">
                         <windowStyleMask key="styleMask" titled="YES" closable="YES" miniaturizable="YES" resizable="YES"/>
                         <windowPositionMask key="initialPositionMask" leftStrut="YES" rightStrut="YES" topStrut="YES" bottomStrut="YES"/>
@@ -664,18 +665,48 @@
             </objects>
             <point key="canvasLocation" x="75" y="250"/>
         </scene>
-        <!--View Controller-->
+        <!--Reddit Top Trending-->
         <scene sceneID="hIz-AP-VOD">
             <objects>
-                <viewController id="XfG-lQ-9wD" customClass="ViewController" customModuleProvider="target" sceneMemberID="viewController">
+                <viewController title="Reddit Top Trending" id="XfG-lQ-9wD" customClass="ViewController" customModule="WKZombieDemo" customModuleProvider="target" sceneMemberID="viewController">
                     <view key="view" id="m2S-Jp-Qdl">
-                        <rect key="frame" x="0.0" y="0.0" width="480" height="270"/>
+                        <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
                         <autoresizingMask key="autoresizingMask"/>
+                        <subviews>
+                            <imageView horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="NDw-IH-ZhE">
+                                <rect key="frame" x="0.0" y="0.0" width="640" height="480"/>
+                                <imageCell key="cell" refusesFirstResponder="YES" alignment="left" imageScaling="proportionallyDown" id="VSc-vM-PSd"/>
+                            </imageView>
+                            <textField horizontalHuggingPriority="251" verticalHuggingPriority="750" setsMaxLayoutWidthAtFirstLayout="YES" translatesAutoresizingMaskIntoConstraints="NO" id="sya-5d-ugI">
+                                <rect key="frame" x="0.0" y="0.0" width="640" height="39"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" constant="39" id="qdU-RX-NNu"/>
+                                </constraints>
+                                <textFieldCell key="cell" truncatesLastVisibleLine="YES" sendsActionOnEndEditing="YES" alignment="center" title="Loading ..." drawsBackground="YES" id="17t-Lw-P1J">
+                                    <font key="font" size="32" name=".AppleSystemUIFont"/>
+                                    <color key="textColor" name="textBackgroundColor" catalog="System" colorSpace="catalog"/>
+                                    <color key="backgroundColor" red="0.0" green="0.0" blue="0.0" alpha="0.20349451013513514" colorSpace="calibratedRGB"/>
+                                </textFieldCell>
+                            </textField>
+                        </subviews>
+                        <constraints>
+                            <constraint firstItem="NDw-IH-ZhE" firstAttribute="top" secondItem="m2S-Jp-Qdl" secondAttribute="top" id="4Us-YB-yl1"/>
+                            <constraint firstAttribute="bottom" secondItem="sya-5d-ugI" secondAttribute="bottom" id="6cD-Mz-rcz"/>
+                            <constraint firstAttribute="trailing" secondItem="sya-5d-ugI" secondAttribute="trailing" id="BDS-9W-qMT"/>
+                            <constraint firstItem="sya-5d-ugI" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="K4K-1l-SBB"/>
+                            <constraint firstAttribute="trailing" secondItem="NDw-IH-ZhE" secondAttribute="trailing" id="L4Q-sS-KMz"/>
+                            <constraint firstItem="NDw-IH-ZhE" firstAttribute="leading" secondItem="m2S-Jp-Qdl" secondAttribute="leading" id="jaP-PQ-H2b"/>
+                            <constraint firstAttribute="bottom" secondItem="NDw-IH-ZhE" secondAttribute="bottom" id="lhB-Rk-VRl"/>
+                        </constraints>
                     </view>
+                    <connections>
+                        <outlet property="imageView" destination="NDw-IH-ZhE" id="ENd-xv-mzJ"/>
+                        <outlet property="textLabel" destination="sya-5d-ugI" id="hGe-ln-wMY"/>
+                    </connections>
                 </viewController>
                 <customObject id="rPt-NT-nkU" userLabel="First Responder" customClass="NSResponder" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="75" y="655"/>
+            <point key="canvasLocation" x="75" y="753"/>
         </scene>
     </scenes>
 </document>
