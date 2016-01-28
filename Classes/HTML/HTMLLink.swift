@@ -63,12 +63,14 @@ public class HTMLLink : HTMLElement, HTMLFetchable {
     // MARK: HTMLFetchable Protocol
     //========================================
     
-    internal var fetchURL : NSURL? {
-        if let href = href {
+    public var fetchURL : NSURL? {
+        if let href = objectForKey("href") {
             return NSURL(string: href)
         }
         return nil
     }
+    
+    public var fetchedContent : AnyObject?
     
     //========================================
     // MARK: Overrides

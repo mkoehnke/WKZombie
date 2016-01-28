@@ -36,17 +36,14 @@ class ViewController: NSViewController {
             browser.open(url)
         >>> browser.get(by: .Text("pics"))
         >>> browser.click
-        >>> browser.getAll(by: .XPathQuery("//a[contains(@class, 'title may-blank')]"))
+        >>> browser.get(by: .XPathQuery("(//a[contains(@class, 'thumbnail may-blank')])[2]"))
+        >>> browser.fetch(NSImage)
         === output
     }
     
-    func output(links: [HTMLLink]?) {
-        if let link = links?[1] {
-            print(link.objectForKey("href"))
-            textLabel.attributedStringValue = NSAttributedString(string: link.text ?? "")
-        }
-
-        
+    func output(result: HTMLLink?) {
+        let image = result?.fetchedContent as? NSImage
+        imageView.image = image
     }
 }
 

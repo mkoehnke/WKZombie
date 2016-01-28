@@ -27,8 +27,9 @@ import Foundation
 // MARK: Fetchable Protocol
 //==========================================
 
-internal protocol HTMLFetchable {
+public protocol HTMLFetchable {
     var fetchURL : NSURL? { get }
+    var fetchedContent : AnyObject? { get set }
 }
 
 
@@ -36,7 +37,7 @@ internal protocol HTMLFetchable {
 // MARK: FetchableContentType Protocol
 //==========================================
 
-public protocol HTMLFetchableContentType {
+public protocol HTMLFetchableContent {
     typealias ContentType
     static func instanceFromData(data: NSData) -> Result<ContentType>
 }
@@ -47,8 +48,9 @@ public protocol HTMLFetchableContentType {
 
 #if os(iOS)
     import UIKit
-    extension UIImage : HTMLFetchableContentType {
-        public static func instanceFromData(data: NSData) -> Result<UIImage> {
+    extension UIImage : HTMLFetchableContent {
+        public typealias ContentType = UIImage
+        public static func instanceFromData(data: NSData) -> Result<ContentType> {
             if let image = UIImage(data: data) {
                 return Result.Success(image)
             }
@@ -57,11 +59,20 @@ public protocol HTMLFetchableContentType {
     }
 #elseif os(OSX)
     import Cocoa
-    extension NSImage : HTMLFetchableContentType {}
+    extension NSImage : HTMLFetchableContent {
+        public typealias ContentType = NSImage
+        public static func instanceFromData(data: NSData) -> Result<ContentType> {
+            if let image = NSImage(data: data) {
+                return Result.Success(image)
+            }
+            return Result.Error(.TransformFailure)
+        }
+    }
 #endif
 
-extension NSData : HTMLFetchableContentType {
-    public static func instanceFromData(data: NSData) -> Result<NSData> {
+extension NSData : HTMLFetchableContent {
+    public typealias ContentType = NSData
+    public static func instanceFromData(data: NSData) -> Result<ContentType> {
         return Result.Success(data)
     }
 }

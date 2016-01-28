@@ -24,7 +24,7 @@
 		BF5C09A51C144D0700DDE306 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C09A41C144D0700DDE306 /* Button.swift */; };
 		BF7210671C56C24A00A4A522 /* HTMLFetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7210661C56C24A00A4A522 /* HTMLFetchable.swift */; };
 		BF822BF11C0925F2008518C7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF822BF01C0925F2008518C7 /* LoginViewController.swift */; };
-		BF907DD41C580CF700812462 /* FetchOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF907DD31C580CF700812462 /* FetchOperation.swift */; };
+		BF907DD41C580CF700812462 /* ContentFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF907DD31C580CF700812462 /* ContentFetcher.swift */; };
 		BFAE16D71C02888B00AA3DA0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAE16D61C02888B00AA3DA0 /* AppDelegate.swift */; };
 		BFAE16D91C02888B00AA3DA0 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFAE16D81C02888B00AA3DA0 /* ViewController.swift */; };
 		BFAE16DC1C02888B00AA3DA0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAE16DA1C02888B00AA3DA0 /* Main.storyboard */; };
@@ -53,7 +53,7 @@
 		BF7210661C56C24A00A4A522 /* HTMLFetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLFetchable.swift; sourceTree = "<group>"; };
 		BF75B5E81C064BD9004BFE06 /* WKZombieDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WKZombieDemo-Bridging-Header.h"; sourceTree = "<group>"; };
 		BF822BF01C0925F2008518C7 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		BF907DD31C580CF700812462 /* FetchOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FetchOperation.swift; sourceTree = "<group>"; };
+		BF907DD31C580CF700812462 /* ContentFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentFetcher.swift; sourceTree = "<group>"; };
 		BFAE16D31C02888B00AA3DA0 /* WKZombieDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WKZombieDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFAE16D61C02888B00AA3DA0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BFAE16D81C02888B00AA3DA0 /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
@@ -104,7 +104,7 @@
 				BF0C9FC41C1756BF00B3AD79 /* Parser.swift */,
 				BF0C9FC51C1756BF00B3AD79 /* Renderer.swift */,
 				BF13347D1C235D750093A135 /* RenderOperation.swift */,
-				BF907DD31C580CF700812462 /* FetchOperation.swift */,
+				BF907DD31C580CF700812462 /* ContentFetcher.swift */,
 			);
 			name = Classes;
 			path = ../../../Classes;
@@ -315,7 +315,7 @@
 				BF0C9FCC1C1756BF00B3AD79 /* HTMLLink.swift in Sources */,
 				BF0C9FC91C1756BF00B3AD79 /* HTMLElement.swift in Sources */,
 				BF0C9FCD1C1756BF00B3AD79 /* HTMLPage.swift in Sources */,
-				BF907DD41C580CF700812462 /* FetchOperation.swift in Sources */,
+				BF907DD41C580CF700812462 /* ContentFetcher.swift in Sources */,
 				BF0C9FC71C1756BF00B3AD79 /* WKZombie.swift in Sources */,
 				BF5C09A51C144D0700DDE306 /* Button.swift in Sources */,
 				BF0C9FC61C1756BF00B3AD79 /* Error.swift in Sources */,

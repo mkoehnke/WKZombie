@@ -25,7 +25,7 @@ import Foundation
 import WebKit
 
 
-typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
+typealias RenderCompletion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
 
 internal class Renderer : NSObject {
     
@@ -91,7 +91,7 @@ internal class Renderer : NSObject {
     // MARK: Render Page
     //========================================
     
-    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: Completion) {
+    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: RenderCompletion) {
         let requestBlock : (operation: RenderOperation) -> Void = { operation in
             operation.webView?.loadRequest(request)
         }
@@ -105,7 +105,7 @@ internal class Renderer : NSObject {
     // MARK: Execute JavaScript
     //========================================
     
-    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction = .None, completionHandler: Completion?) {
+    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction = .None, completionHandler: RenderCompletion?) {
         var requestBlock : (operation : RenderOperation) -> Void
         if let willLoadPage = willLoadPage where willLoadPage == true {
             requestBlock = { $0.webView?.evaluateJavaScript(script, completionHandler: nil) }
@@ -126,7 +126,7 @@ internal class Renderer : NSObject {
     // MARK: Helper Methods
     //========================================
     
-    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction = .None, completionHandler: Completion?) -> NSOperation {
+    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction = .None, completionHandler: RenderCompletion?) -> NSOperation {
         let operation = RenderOperation(webView: webView)
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction
