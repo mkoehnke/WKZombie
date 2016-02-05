@@ -251,17 +251,16 @@ extension WKZombie {
 //========================================
 
 extension WKZombie {
-    public func fetch<T: HTMLFetchable, U: HTMLFetchableContent>(mimeType: U.Type)(var fetchable: T) -> Action<T> {
+    public func fetch<T: HTMLFetchable>(fetchable: T) -> Action<T> {
         return Action() { [unowned self] completion in
             if let fetchURL = fetchable.fetchURL {
                 self.fetcher.fetch(fetchURL, completion: { (result, response, error) in
                     let data = self.handleResponse(result, response: response, error: error)
-                    let result = data >>> U.instanceFromData
-                    switch result {
-                    case .Success(let value): fetchable.fetchedContent = value as? AnyObject
+                    switch data {
+                    case .Success(let value): fetchable.fetchedData = value
                     case .Error(let error):
                         completion(Result.Error(error))
-                        break
+                        return
                     }
                     completion(Result.Success(fetchable))
                 })

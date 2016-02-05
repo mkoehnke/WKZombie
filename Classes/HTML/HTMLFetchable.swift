@@ -22,14 +22,42 @@
 // THE SOFTWARE.
 
 import Foundation
+import ObjectiveC
 
 //==========================================
 // MARK: Fetchable Protocol
 //==========================================
 
-public protocol HTMLFetchable {
+public protocol HTMLFetchable : NSObjectProtocol {
     var fetchURL : NSURL? { get }
-    var fetchedContent : AnyObject? { get set }
+    func fetchedContent<T: HTMLFetchableContent>() -> T?
+}
+
+private var WKZFetchedDataKey: UInt8 = 0
+
+//==========================================
+// MARK: Fetchable Default Implementation
+//==========================================
+
+extension HTMLFetchable {
+    internal var fetchedData: NSData? {
+        get {
+            return objc_getAssociatedObject(self, &WKZFetchedDataKey) as? NSData
+        }
+        set(newValue) {
+            objc_setAssociatedObject(self, &WKZFetchedDataKey, newValue, objc_AssociationPolicy.OBJC_ASSOCIATION_RETAIN)
+        }
+    }
+    
+    public func fetchedContent<T : HTMLFetchableContent>() -> T? {
+        if let fetchedData = fetchedData {
+            switch T.instanceFromData(fetchedData) {
+            case .Success(let value): return value as? T
+            case .Error: return nil
+            }
+        }
+        return nil
+    }
 }
 
 

@@ -12,7 +12,7 @@ import WKZombie
 class ViewController: NSViewController {
 
     @IBOutlet weak var imageView : NSImageView!
-    @IBOutlet weak var textLabel : NSTextField!
+    @IBOutlet weak var activityIndicator : NSProgressIndicator!
     
     let url = NSURL(string: "https://www.reddit.com")!
     
@@ -22,28 +22,22 @@ class ViewController: NSViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        activityIndicator.startAnimation(nil)
         getTopTrendingEntry(url)
     }
-
-    override var representedObject: AnyObject? {
-        didSet {
-        // Update the view, if already loaded.
-        }
-    }
-
 
     func getTopTrendingEntry(url: NSURL) {
             browser.open(url)
         >>> browser.get(by: .Text("pics"))
         >>> browser.click
-        >>> browser.get(by: .XPathQuery("(//a[contains(@class, 'thumbnail may-blank')])[2]"))
-        >>> browser.fetch(NSImage)
+        >>> browser.get(by: .XPathQuery("//a[contains(@class, 'thumbnail may-blank') and contains(@href,'.jpg')]"))
+        >>> browser.fetch
         === output
     }
     
     func output(result: HTMLLink?) {
-        let image = result?.fetchedContent as? NSImage
-        imageView.image = image
+        imageView.image = result?.fetchedContent()
+        activityIndicator.stopAnimation(nil)
     }
 }
 

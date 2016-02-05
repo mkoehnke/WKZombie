@@ -25,7 +25,7 @@ import Foundation
 
 /// HTML Link class, which represents the <a> element in the DOM.
 public class HTMLLink : HTMLElement, HTMLFetchable {
-    
+
     //========================================
     // MARK: Initializer
     //========================================
@@ -53,7 +53,9 @@ public class HTMLLink : HTMLElement, HTMLFetchable {
     //========================================
     
     internal func actionScript() -> String? {
-        if let href = href {
+        if let onClick = objectForKey("onClick") {
+            return onClick
+        } else if let href = href {
            return "window.location.href='\(href)';"
         }
         return nil
@@ -69,8 +71,6 @@ public class HTMLLink : HTMLElement, HTMLFetchable {
         }
         return nil
     }
-    
-    public var fetchedContent : AnyObject?
     
     //========================================
     // MARK: Overrides
