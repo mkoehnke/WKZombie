@@ -21,6 +21,7 @@
 		BF0C9FD11C1756BF00B3AD79 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FC41C1756BF00B3AD79 /* Parser.swift */; };
 		BF0C9FD21C1756BF00B3AD79 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF0C9FC51C1756BF00B3AD79 /* Renderer.swift */; };
 		BF13347E1C235D750093A135 /* RenderOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF13347D1C235D750093A135 /* RenderOperation.swift */; };
+		BF15A1491C6524CC00B64D52 /* HTMLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF15A1481C6524CC00B64D52 /* HTMLImage.swift */; };
 		BF5C09A51C144D0700DDE306 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF5C09A41C144D0700DDE306 /* Button.swift */; };
 		BF7210671C56C24A00A4A522 /* HTMLFetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF7210661C56C24A00A4A522 /* HTMLFetchable.swift */; };
 		BF822BF11C0925F2008518C7 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF822BF01C0925F2008518C7 /* LoginViewController.swift */; };
@@ -49,6 +50,7 @@
 		BF0C9FC41C1756BF00B3AD79 /* Parser.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Parser.swift; sourceTree = "<group>"; };
 		BF0C9FC51C1756BF00B3AD79 /* Renderer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Renderer.swift; sourceTree = "<group>"; };
 		BF13347D1C235D750093A135 /* RenderOperation.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = RenderOperation.swift; sourceTree = "<group>"; };
+		BF15A1481C6524CC00B64D52 /* HTMLImage.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLImage.swift; sourceTree = "<group>"; };
 		BF5C09A41C144D0700DDE306 /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		BF7210661C56C24A00A4A522 /* HTMLFetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLFetchable.swift; sourceTree = "<group>"; };
 		BF75B5E81C064BD9004BFE06 /* WKZombieDemo-Bridging-Header.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "WKZombieDemo-Bridging-Header.h"; sourceTree = "<group>"; };
@@ -119,6 +121,7 @@
 				BF0C9FBF1C1756BF00B3AD79 /* HTMLPage.swift */,
 				BF0C9FC01C1756BF00B3AD79 /* HTMLTable.swift */,
 				BF7210661C56C24A00A4A522 /* HTMLFetchable.swift */,
+				BF15A1481C6524CC00B64D52 /* HTMLImage.swift */,
 			);
 			path = HTML;
 			sourceTree = "<group>";
@@ -318,6 +321,7 @@
 				BF907DD41C580CF700812462 /* ContentFetcher.swift in Sources */,
 				BF0C9FC71C1756BF00B3AD79 /* WKZombie.swift in Sources */,
 				BF5C09A51C144D0700DDE306 /* Button.swift in Sources */,
+				BF15A1491C6524CC00B64D52 /* HTMLImage.swift in Sources */,
 				BF0C9FC61C1756BF00B3AD79 /* Error.swift in Sources */,
 				BF0C9FD21C1756BF00B3AD79 /* Renderer.swift in Sources */,
 				BF7210671C56C24A00A4A522 /* HTMLFetchable.swift in Sources */,

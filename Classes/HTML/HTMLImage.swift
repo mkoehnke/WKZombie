@@ -1,5 +1,5 @@
 //
-// ViewController.swift
+// HTMLImage.swift
 //
 // Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -21,36 +21,40 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Cocoa
-import WKZombie
+import Foundation
 
-class ViewController: NSViewController {
-
-    @IBOutlet weak var imageView : NSImageView!
-    @IBOutlet weak var activityIndicator : NSProgressIndicator!
+/// HTML Image class, which represents the <img> element in the DOM.
+public class HTMLImage : HTMLElement, HTMLFetchable {
     
-    let url = NSURL(string: "https://developer.apple.com")!
+    //========================================
+    // MARK: Initializer
+    //========================================
     
-    lazy var browser : WKZombie = {
-        return WKZombie(name: "Developer Portal")
-    }()
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        activityIndicator.startAnimation(nil)
-        getTopTrendingEntry(url)
-    }
-
-    func getTopTrendingEntry(url: NSURL) {
-            browser.open(url)
-        >>> browser.get(by: .XPathQuery("//img[contains(@class, 'platform-icon')]"))
-        >>> browser.fetch
-        === output
+    public required init?(element: AnyObject, XPathQuery: String? = nil) {
+        super.init(element: element, XPathQuery: XPathQuery)
     }
     
-    func output(result: HTMLImage?) {
-        imageView.image = result?.fetchedContent()
-        activityIndicator.stopAnimation(nil)
+    /// Returns the value of the href attribute of the link.
+    public var source : String? {
+        return objectForKey("src")
+    }
+
+    //========================================
+    // MARK: HTMLFetchable Protocol
+    //========================================
+    
+    public var fetchURL : NSURL? {
+        if let source = source {
+            return NSURL(string: source)
+        }
+        return nil
+    }
+    
+    //========================================
+    // MARK: Overrides
+    //========================================
+    
+    internal override class func createXPathQuery(parameters: String) -> String {
+        return "//img\(parameters)"
     }
 }
-
