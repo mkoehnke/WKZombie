@@ -4,7 +4,7 @@
 [![License](https://img.shields.io/cocoapods/l/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 
-WKZombie is an **iOS web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift.
+WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift.
 
 It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
@@ -31,7 +31,7 @@ When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically
 
 #### Automation with WKZombie
 
-The same navigation process can be reproduced **automatically** within an iOS app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
+The same navigation process can be reproduced **automatically** within an iOS/OSX app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
 <img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/WKZombie-Simulator-Demo.gif" />
 
@@ -148,6 +148,26 @@ The returned WKZombie Action will set or update an existing attribute/value pair
 func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage>
 ```
 
+### Fetching
+
+Some HTMLElements, that implement the _HTMLFetchable_ protocol (e.g. _HTMLLink_ or _HTMLImage_), contain attributes like _"src"_ or _"href"_, that link to remote objects or data.
+The following method returns a WKZombie Action that can conveniently download this data:
+```ruby
+func fetch<T: HTMLFetchable>(fetchable: T) -> Action<T>
+```
+
+Once the _fetch_ method has been executed, the data can be retrieved and __converted__. The following example shows how to convert data, fetched from a link, into an UIImage:
+```ruby
+let image : UIImage? = link.fetchedContent()
+```
+
+Fetched data can be converted into types, that implement the _HTMLFetchableContent_ protocol. The following types are currently supported:
+
+- UIImage / NSImage
+- NSData
+
+__Note:__ See the OSX example for more info on how to use this. 
+
 ### Transform
 
 The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function *f*.
@@ -226,10 +246,11 @@ This class represents a **read-only** DOM of a website. It allows you to search 
 
 ### HTMLElement
 
-The *HTMLElement* class is a **base class for all elements in the DOM**. It allows you to inspect attributes or the inner content (e.g. text) of that element. Currently, there are 5 subclasses with additional element-specific methods and variables available:
+The *HTMLElement* class is a **base class for all elements in the DOM**. It allows you to inspect attributes or the inner content (e.g. text) of that element. Currently, there are 6 subclasses with additional element-specific methods and variables available:
 
 * HTMLForm
 * HTMLLink
+* HTMLImage
 * HTMLTable
 * HTMLTableColumn
 * HTMLTableRow
@@ -314,10 +335,8 @@ $ pod install
 -->
 
 # TODOs
-* OSX support
 * run() method for executing Javascript
 * clear() method for deleting all Cookies
-* HTMLImage
 * ScreenCapture
 * More descriptive errors
 
