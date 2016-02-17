@@ -1,5 +1,5 @@
 //
-// FetchOperation.swift
+// ContentFetcher.swift
 //
 // Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
