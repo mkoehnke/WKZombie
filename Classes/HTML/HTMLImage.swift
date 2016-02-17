@@ -1,5 +1,5 @@
 //
-// HTMLLink.swift
+// HTMLImage.swift
 //
 // Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -23,9 +23,9 @@
 
 import Foundation
 
-/// HTML Link class, which represents the <a> element in the DOM.
-public class HTMLLink : HTMLElement, HTMLFetchable {
-
+/// HTML Image class, which represents the <img> element in the DOM.
+public class HTMLImage : HTMLElement, HTMLFetchable {
+    
     //========================================
     // MARK: Initializer
     //========================================
@@ -35,39 +35,17 @@ public class HTMLLink : HTMLElement, HTMLFetchable {
     }
     
     /// Returns the value of the href attribute of the link.
-    public var href : String? {
-        return text
+    public var source : String? {
+        return objectForKey("src")
     }
-    
-    /// Returns the link text.
-    public var linkText : String? {
-        return content
-    }
-    
-    override public var description : String {
-        return href ?? ""
-    }
-    
-    //========================================
-    // MARK: Link Click Script
-    //========================================
-    
-    internal func actionScript() -> String? {
-        if let onClick = objectForKey("onClick") {
-            return onClick
-        } else if let href = href {
-           return "window.location.href='\(href)';"
-        }
-        return nil
-    }
-    
+
     //========================================
     // MARK: HTMLFetchable Protocol
     //========================================
     
     public var fetchURL : NSURL? {
-        if let href = objectForKey("href") {
-            return NSURL(string: href)
+        if let source = source {
+            return NSURL(string: source)
         }
         return nil
     }
@@ -77,9 +55,6 @@ public class HTMLLink : HTMLElement, HTMLFetchable {
     //========================================
     
     internal override class func createXPathQuery(parameters: String) -> String {
-        return "//a\(parameters)/@href"
+        return "//img\(parameters)"
     }
 }
-
-
-    

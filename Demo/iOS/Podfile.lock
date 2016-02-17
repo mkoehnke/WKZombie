@@ -1,0 +1,17 @@
+PODS:
+  - hpple (0.2.0)
+  - WKZombie (0.9.1):
+    - hpple (= 0.2.0)
+
+DEPENDENCIES:
+  - WKZombie (from `../../`)
+
+EXTERNAL SOURCES:
+  WKZombie:
+    :path: ../../
+
+SPEC CHECKSUMS:
+  hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
+  WKZombie: 1cf25157ae0c5b8ab212415ebeb18aaa3177b562
+
+COCOAPODS: 0.39.0

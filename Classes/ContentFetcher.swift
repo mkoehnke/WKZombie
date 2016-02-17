@@ -1,7 +1,7 @@
 //
-// Error.swift
+// ContentFetcher.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,26 +23,19 @@
 
 import Foundation
 
-public protocol ErrorType { }
+typealias FetchCompletion = (result : NSData?, response: NSURLResponse?, error: NSError?) -> Void
 
-public enum NoError: ErrorType { }
+internal class ContentFetcher {
 
-extension NSError: ErrorType { }
-
-public enum ActionError: ErrorType {
-    case NetworkRequestFailure
-    case NotFound
-    case ParsingFailure
-    case TransformFailure
-}
-
-extension ActionError: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        switch self {
-        case .NetworkRequestFailure: return "Network Request Failure"
-        case .NotFound: return "Not Found"
-        case .ParsingFailure: return "Parsing Failure"
-        case .TransformFailure: return "Transform Failure"
-        }
+    // TODO remove NSURLSession singleton
+    
+    func fetch(url: NSURL, completion: FetchCompletion) -> NSURLSessionTask? {
+        let request = NSURLRequest(URL: url)
+        let task = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, urlResponse, error) in
+            completion(result: data, response: urlResponse, error: error)
+        })
+        task.resume()
+        return task
     }
 }
+

@@ -25,7 +25,7 @@ import Foundation
 import WebKit
 
 
-typealias Completion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
+typealias RenderCompletion = (result : AnyObject?, response: NSURLResponse?, error: NSError?) -> Void
 
 internal class Renderer : NSObject {
     
@@ -65,12 +65,22 @@ internal class Renderer : NSObject {
         /// webview will be added to the view hierarchy (between the 
         /// rootViewController's view and the key window.
         /// Until there's no better solution, we'll have to roll with this.
-        let bounds = UIScreen.mainScreen().bounds
-        webView = WKWebView(frame: bounds, configuration: config)
-        if let window = UIApplication.sharedApplication().keyWindow {
-            webView.alpha = 0.01
-            window.insertSubview(webView, atIndex: 0)
-        }
+        #if os(iOS)
+            let bounds = UIScreen.mainScreen().bounds
+            webView = WKWebView(frame: bounds, configuration: config)
+            if let window = UIApplication.sharedApplication().keyWindow {
+                webView.alpha = 0.01
+                window.insertSubview(webView, atIndex: 0)
+            }
+        #elseif os(OSX)
+            if let size = NSScreen.mainScreen()?.frame.size {
+                webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
+                if let window = NSApplication.sharedApplication().keyWindow {
+                    webView.alphaValue = 0.01
+                    window.contentView?.addSubview(webView)
+                }
+            }
+        #endif
     }
     
     deinit {
@@ -81,7 +91,7 @@ internal class Renderer : NSObject {
     // MARK: Render Page
     //========================================
     
-    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: Completion) {
+    internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: RenderCompletion) {
         let requestBlock : (operation: RenderOperation) -> Void = { operation in
             operation.webView?.loadRequest(request)
         }
@@ -95,7 +105,7 @@ internal class Renderer : NSObject {
     // MARK: Execute JavaScript
     //========================================
     
-    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction = .None, completionHandler: Completion?) {
+    internal func executeScript(script: String, willLoadPage: Bool? = false, postAction: PostAction = .None, completionHandler: RenderCompletion?) {
         var requestBlock : (operation : RenderOperation) -> Void
         if let willLoadPage = willLoadPage where willLoadPage == true {
             requestBlock = { $0.webView?.evaluateJavaScript(script, completionHandler: nil) }
@@ -116,7 +126,7 @@ internal class Renderer : NSObject {
     // MARK: Helper Methods
     //========================================
     
-    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction = .None, completionHandler: Completion?) -> NSOperation {
+    private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction = .None, completionHandler: RenderCompletion?) -> NSOperation {
         let operation = RenderOperation(webView: webView)
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction

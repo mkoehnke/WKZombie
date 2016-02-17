@@ -1,5 +1,5 @@
 //
-// Error.swift
+// ViewController.swift
 //
 // Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -21,28 +21,36 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
+import Cocoa
+import WKZombie
 
-public protocol ErrorType { }
+class ViewController: NSViewController {
 
-public enum NoError: ErrorType { }
+    @IBOutlet weak var imageView : NSImageView!
+    @IBOutlet weak var activityIndicator : NSProgressIndicator!
+    
+    let url = NSURL(string: "https://developer.apple.com")!
+    
+    lazy var browser : WKZombie = {
+        return WKZombie(name: "Developer Portal")
+    }()
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        activityIndicator.startAnimation(nil)
+        getTopTrendingEntry(url)
+    }
 
-extension NSError: ErrorType { }
-
-public enum ActionError: ErrorType {
-    case NetworkRequestFailure
-    case NotFound
-    case ParsingFailure
-    case TransformFailure
-}
-
-extension ActionError: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        switch self {
-        case .NetworkRequestFailure: return "Network Request Failure"
-        case .NotFound: return "Not Found"
-        case .ParsingFailure: return "Parsing Failure"
-        case .TransformFailure: return "Transform Failure"
-        }
+    func getTopTrendingEntry(url: NSURL) {
+            browser.open(url)
+        >>> browser.get(by: .XPathQuery("//img[contains(@class, 'platform-icon')]"))
+        >>> browser.fetch
+        === output
+    }
+    
+    func output(result: HTMLImage?) {
+        imageView.image = result?.fetchedContent()
+        activityIndicator.stopAnimation(nil)
     }
 }
+

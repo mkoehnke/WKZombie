@@ -26,6 +26,7 @@ import Foundation
 public class WKZombie : NSObject {
     
     private var renderer : Renderer!
+    private var fetcher : ContentFetcher!
     
     /// Returns the name of this WKZombie session.
     public private(set) var name : String!
@@ -50,19 +51,20 @@ public class WKZombie : NSObject {
         super.init()
         self.name = name
         self.renderer = Renderer()
+        self.fetcher = ContentFetcher()
     }
  
     //========================================
     // MARK: Response Handling
     //========================================
     
-    private func handleResponse<T: Page>(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<T> {
+    private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<NSData> {
         guard let response = response else {
-            return decodeResult(nil)(data: nil)
+            return Result.Error(.NetworkRequestFailure)
         }
         let errorDomain : ActionError? = (error == nil) ? nil : .NetworkRequestFailure
         let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
-        return responseResult >>> parseResponse >>> decodeResult(response.URL)
+        return responseResult >>> parseResponse
     }
 }
 
@@ -95,7 +97,8 @@ extension WKZombie {
         return Action() { [unowned self] completion in
             let request = NSURLRequest(URL: url)
             self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
-                completion(self.handleResponse(data as? NSData, response: response, error: error))
+                let data = self.handleResponse(data as? NSData, response: response, error: error)
+                completion(data >>> decodeResult(response?.URL))
             })
         }
     }
@@ -130,7 +133,8 @@ extension WKZombie {
         return Action() { [unowned self] completion in
             if let script = form.actionScript() {
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                    completion(self.handleResponse(result as? NSData, response: response, error: error))
+                    let data = self.handleResponse(result as? NSData, response: response, error: error)
+                    completion(data >>> decodeResult(response?.URL))
                 })
             } else {
                 completion(Result.Error(.NetworkRequestFailure))
@@ -168,7 +172,8 @@ extension WKZombie {
         return Action() { [unowned self] completion in
             if let script = link.actionScript() {
                 self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                    completion(self.handleResponse(result as? NSData, response: response, error: error))
+                    let data = self.handleResponse(result as? NSData, response: response, error: error)
+                    completion(data >>> decodeResult(response?.URL))
                 })
             } else {
                 completion(Result.Error(.NetworkRequestFailure))
@@ -237,6 +242,39 @@ extension WKZombie {
     public func get<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<T> {
         let elements : Result<[T]> = page.findElements(searchType)
         return Action(result: elements.first())
+    }
+}
+
+
+//========================================
+// MARK: Fetch Actions
+//========================================
+
+extension WKZombie {
+    /**
+     The returned WKZombie Action will download the linked data of the passed HTMLFetchable object.
+     
+     - parameter fetchable: A HTMLElement that implements the HTMLFetchable protocol.
+     
+     - returns: The WKZombie Action.
+     */
+    public func fetch<T: HTMLFetchable>(fetchable: T) -> Action<T> {
+        return Action() { [unowned self] completion in
+            if let fetchURL = fetchable.fetchURL {
+                self.fetcher.fetch(fetchURL, completion: { (result, response, error) in
+                    let data = self.handleResponse(result, response: response, error: error)
+                    switch data {
+                    case .Success(let value): fetchable.fetchedData = value
+                    case .Error(let error):
+                        completion(Result.Error(error))
+                        return
+                    }
+                    completion(Result.Success(fetchable))
+                })
+            } else {
+                completion(Result.Error(.NotFound))
+            }
+        }
     }
 }
 

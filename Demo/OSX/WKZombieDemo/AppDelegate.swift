@@ -1,5 +1,5 @@
 //
-// Error.swift
+// AppDelegate.swift
 //
 // Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -21,28 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
+import Cocoa
 
-public protocol ErrorType { }
+@NSApplicationMain
+class AppDelegate: NSObject, NSApplicationDelegate {
 
-public enum NoError: ErrorType { }
 
-extension NSError: ErrorType { }
 
-public enum ActionError: ErrorType {
-    case NetworkRequestFailure
-    case NotFound
-    case ParsingFailure
-    case TransformFailure
-}
-
-extension ActionError: CustomDebugStringConvertible {
-    public var debugDescription: String {
-        switch self {
-        case .NetworkRequestFailure: return "Network Request Failure"
-        case .NotFound: return "Not Found"
-        case .ParsingFailure: return "Parsing Failure"
-        case .TransformFailure: return "Transform Failure"
-        }
+    func applicationDidFinishLaunching(aNotification: NSNotification) {
+        // Insert code here to initialize your application
     }
+
+    func applicationWillTerminate(aNotification: NSNotification) {
+        // Insert code here to tear down your application
+    }
+
+
 }
+
