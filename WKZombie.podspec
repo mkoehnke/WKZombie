@@ -1,11 +1,11 @@
 Pod::Spec.new do |s|
 
   s.name         = "WKZombie"
-  s.version      = "0.9.1"
-  s.summary      = "WKZombie is a Swift library for iOS to browse websites without the need of User Interface or API."
+  s.version      = "0.9.2"
+  s.summary      = "WKZombie is a Swift library for iOS/OSX to browse websites without the need of User Interface or API."
 
   s.description  = <<-DESC
-                   WKZombie is a Swift library for iOS to navigate within websites and collect data without the need of User Interface or API, also known as Headless Browser.
+                   WKZombie is a Swift library for iOS/OSX to navigate within websites and collect data without the need of User Interface or API, also known as Headless Browser.
                    In addition, it can be used to run automated tests or manipulate websites using Javascript.
                    DESC
 
