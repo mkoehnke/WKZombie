@@ -251,6 +251,13 @@ extension WKZombie {
 //========================================
 
 extension WKZombie {
+    /**
+     The returned WKZombie Action will download the linked data of the passed HTMLFetchable object.
+     
+     - parameter fetchable: A HTMLElement that implements the HTMLFetchable protocol.
+     
+     - returns: The WKZombie Action.
+     */
     public func fetch<T: HTMLFetchable>(fetchable: T) -> Action<T> {
         return Action() { [unowned self] completion in
             if let fetchURL = fetchable.fetchURL {
