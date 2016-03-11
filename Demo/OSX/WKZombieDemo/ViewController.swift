@@ -29,10 +29,10 @@ class ViewController: NSViewController {
     @IBOutlet weak var imageView : NSImageView!
     @IBOutlet weak var activityIndicator : NSProgressIndicator!
     
-    let url = NSURL(string: "https://developer.apple.com")!
+    let url = NSURL(string: "https://github.com/logos")!
     
     lazy var browser : WKZombie = {
-        return WKZombie(name: "Developer Portal")
+        return WKZombie(name: "Github")
     }()
     
     override func viewDidLoad() {
@@ -43,7 +43,7 @@ class ViewController: NSViewController {
 
     func getTopTrendingEntry(url: NSURL) {
             browser.open(url)
-        >>> browser.get(by: .XPathQuery("//img[contains(@class, 'platform-icon')]"))
+        >>> browser.get(by: .XPathQuery("//img[contains(@class, 'gh-octocat')]"))
         >>> browser.fetch
         === output
     }
