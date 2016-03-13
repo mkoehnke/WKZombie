@@ -32,7 +32,7 @@ class ViewController: NSViewController {
     let url = NSURL(string: "https://github.com/logos")!
     
     lazy var browser : WKZombie = {
-        return WKZombie(name: "Github")
+        return WKZombie(name: "Github Logo")
     }()
     
     override func viewDidLoad() {
