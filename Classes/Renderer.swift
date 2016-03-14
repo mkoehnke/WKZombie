@@ -142,4 +142,14 @@ internal class Renderer : NSObject {
             HLLog((result as? String) ?? "No Output available.")
         }
     }
+    
+    
+    //========================================
+    // MARK: Cookies
+    //========================================
+    
+    internal func clearCookies() {
+        NSHTTPCookieStorage.sharedHTTPCookieStorage().removeCookiesSinceDate(NSDate.distantPast())
+        webView.configuration.processPool = WKProcessPool()
+    }
 }
