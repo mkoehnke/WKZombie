@@ -145,11 +145,13 @@ internal class Renderer : NSObject {
     
     
     //========================================
-    // MARK: Cookies
+    // MARK: Cache
     //========================================
     
-    internal func clearCookies() {
-        NSHTTPCookieStorage.sharedHTTPCookieStorage().removeCookiesSinceDate(NSDate.distantPast())
-        webView.configuration.processPool = WKProcessPool()
+    internal func clearCache() {
+        let distantPast = NSDate.distantPast()
+        NSHTTPCookieStorage.sharedHTTPCookieStorage().removeCookiesSinceDate(distantPast)
+        let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+        WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(websiteDataTypes, modifiedSince: distantPast, completionHandler:{ })
     }
 }
