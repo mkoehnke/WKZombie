@@ -387,4 +387,11 @@ extension WKZombie {
     func dump() {
         renderer.dump()
     }
+    
+    /**
+     TODO Description
+     */
+    func clearCache() {
+        renderer.clearCache()
+    }
 }
