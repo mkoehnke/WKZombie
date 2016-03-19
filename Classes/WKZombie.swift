@@ -389,7 +389,7 @@ extension WKZombie {
     }
     
     /**
-     TODO Description
+     Clears the cache/cookie data (such as login data, etc).
      */
     func clearCache() {
         renderer.clearCache()
