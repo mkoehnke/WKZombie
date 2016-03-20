@@ -166,7 +166,7 @@ Fetched data can be converted into types, that implement the _HTMLFetchableConte
 - UIImage / NSImage
 - NSData
 
-__Note:__ See the OSX example for more info on how to use this. 
+__Note:__ See the OSX example for more info on how to use this.
 
 ### Transform
 
@@ -339,6 +339,7 @@ $ pod install
 * clear() method for deleting all Cookies
 * ScreenCapture
 * More descriptive errors
+* Unit Tests
 
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)

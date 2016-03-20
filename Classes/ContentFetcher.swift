@@ -27,11 +27,11 @@ typealias FetchCompletion = (result : NSData?, response: NSURLResponse?, error: 
 
 internal class ContentFetcher {
 
-    // TODO remove NSURLSession singleton
+    private let defaultSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
     
     func fetch(url: NSURL, completion: FetchCompletion) -> NSURLSessionTask? {
         let request = NSURLRequest(URL: url)
-        let task = NSURLSession.sharedSession().dataTaskWithRequest(request, completionHandler: { (data, urlResponse, error) in
+        let task = defaultSession.dataTaskWithRequest(request, completionHandler: { (data, urlResponse, error) in
             completion(result: data, response: urlResponse, error: error)
         })
         task.resume()
