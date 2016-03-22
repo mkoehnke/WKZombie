@@ -93,13 +93,15 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func open<T: Page>(then postAction: PostAction = .None)(url: NSURL) -> Action<T> {
-        return Action() { [unowned self] completion in
-            let request = NSURLRequest(URL: url)
-            self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
-                let data = self.handleResponse(data as? NSData, response: response, error: error)
-                completion(data >>> decodeResult(response?.URL))
-            })
+    public func open<T: Page>(then postAction: PostAction = .None) -> (url: NSURL) -> Action<T> {
+        return { (url: NSURL) -> Action<T> in
+            return Action() { [unowned self] completion in
+                let request = NSURLRequest(URL: url)
+                self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
+                    let data = self.handleResponse(data as? NSData, response: response, error: error)
+                    completion(data >>> decodeResult(response?.URL))
+                })
+            }
         }
     }
 }
@@ -129,15 +131,17 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func submit<T: Page>(then postAction: PostAction = .None)(form: HTMLForm) -> Action<T> {
-        return Action() { [unowned self] completion in
-            if let script = form.actionScript() {
-                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                    let data = self.handleResponse(result as? NSData, response: response, error: error)
-                    completion(data >>> decodeResult(response?.URL))
-                })
-            } else {
-                completion(Result.Error(.NetworkRequestFailure))
+    public func submit<T: Page>(then postAction: PostAction = .None) -> (form: HTMLForm) -> Action<T> {
+        return { (form: HTMLForm) -> Action<T> in
+            return Action() { [unowned self] completion in
+                if let script = form.actionScript() {
+                    self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                        let data = self.handleResponse(result as? NSData, response: response, error: error)
+                        completion(data >>> decodeResult(response?.URL))
+                    })
+                } else {
+                    completion(Result.Error(.NetworkRequestFailure))
+                }
             }
         }
     }
@@ -168,15 +172,17 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func click<T: Page>(then postAction: PostAction = .None)(link : HTMLLink) -> Action<T> {
-        return Action() { [unowned self] completion in
-            if let script = link.actionScript() {
-                self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                    let data = self.handleResponse(result as? NSData, response: response, error: error)
-                    completion(data >>> decodeResult(response?.URL))
-                })
-            } else {
-                completion(Result.Error(.NetworkRequestFailure))
+    public func click<T: Page>(then postAction: PostAction = .None) -> (link : HTMLLink) -> Action<T> {
+        return { (link: HTMLLink) -> Action<T> in
+            return Action() { [unowned self] completion in
+                if let script = link.actionScript() {
+                    self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                        let data = self.handleResponse(result as? NSData, response: response, error: error)
+                        completion(data >>> decodeResult(response?.URL))
+                    })
+                } else {
+                    completion(Result.Error(.NetworkRequestFailure))
+                }
             }
         }
     }
@@ -197,14 +203,16 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage> {
-        return Action() { [unowned self] completion in
-            if let script = element.createSetAttributeCommand(key, value: value) {
-                self.renderer.executeScript("\(script) \(Renderer.scrapingCommand);", completionHandler: { result, response, error in
-                    completion(decodeResult(nil)(data: result as? NSData))
-                })
-            } else {
-                completion(Result.Error(.NetworkRequestFailure))
+    public func setAttribute<T: HTMLElement>(key: String, value: String?) -> (element: T) -> Action<HTMLPage> {
+        return { (element: T) -> Action<HTMLPage> in
+            return Action() { [unowned self] completion in
+                if let script = element.createSetAttributeCommand(key, value: value) {
+                    self.renderer.executeScript("\(script) \(Renderer.scrapingCommand);", completionHandler: { result, response, error in
+                        completion(decodeResult(nil)(data: result as? NSData))
+                    })
+                } else {
+                    completion(Result.Error(.NetworkRequestFailure))
+                }
             }
         }
     }
@@ -225,9 +233,11 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func getAll<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<[T]> {
-        let elements : Result<[T]> = page.findElements(searchType)
-        return Action(result: elements)
+    public func getAll<T: HTMLElement>(by searchType: SearchType<T>) -> (page: HTMLPage) -> Action<[T]> {
+        return { (page: HTMLPage) -> Action<[T]> in
+            let elements : Result<[T]> = page.findElements(searchType)
+            return Action(result: elements)
+        }
     }
         
     /**
@@ -239,9 +249,11 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func get<T: HTMLElement>(by searchType: SearchType<T>)(page: HTMLPage) -> Action<T> {
-        let elements : Result<[T]> = page.findElements(searchType)
-        return Action(result: elements.first())
+    public func get<T: HTMLElement>(by searchType: SearchType<T>) -> (page: HTMLPage) -> Action<T> {
+        return { (page: HTMLPage) -> Action<T> in
+            let elements : Result<[T]> = page.findElements(searchType)
+            return Action(result: elements.first())
+        }
     }
 }
 
@@ -292,8 +304,10 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A> {
-        return Action(result: resultFromOptional(f(element), error: .NotFound))
+    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A) -> (element: T) -> Action<A> {
+        return { (element: T) -> Action<A> in
+            return Action(result: resultFromOptional(f(element), error: .NotFound))
+        }
     }
 }
 
@@ -312,8 +326,10 @@ extension WKZombie {
      
      - returns: The collected Sction results.
      */
-    public func collect<T>(f: T -> Action<T>, until: T -> Bool)(initial: T) -> Action<[T]> {
-        return Action.collect(initial, f: f, until: until)
+    public func collect<T>(f: T -> Action<T>, until: T -> Bool) -> (initial: T) -> Action<[T]> {
+        return { (initial: T) -> Action<[T]> in
+            return Action.collect(initial, f: f, until: until)
+        }
     }
     
     /**
@@ -325,8 +341,10 @@ extension WKZombie {
      
      - returns: The collected Action results.
      */
-    public func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]> {
-        return Action.batch(elements, f: f)
+    public func batch<T, U>(f: T -> Action<U>) -> (elements: [T]) -> Action<[U]> {
+        return { (elements: [T]) -> Action<[U]> in
+            return Action.batch(elements, f: f)
+        }
     }
 }
 
