@@ -56,10 +56,8 @@ class LoginViewController : UIViewController {
            >>> browser.get(by: .Name("form2"))
            >>> browser.submit(then: .Wait(2.0))
            >>> browser.get(by: .Attribute("href", "/account/"))
-           >>> browser.click
-           >>> browser.get(by: .Text("Provisioning Profiles"))
-           >>> browser.click(then: .Wait(0.5))
-           >>> browser.getAll(by: .Class("ui-ellipsis bold"))
+           >>> browser.click(then: .Wait(2.0))
+           >>> browser.getAll(by: .XPathQuery("//tr[@class='row-even' OR @class='row-odd']")) // Use XPathQuery Wildcard? 'row-*'? Possible?
            === output
     }
     
@@ -67,9 +65,10 @@ class LoginViewController : UIViewController {
     // MARK: Handle Result
     //========================================
     
-    func output(columns: [HTMLTableColumn]?) {
-        if let columns = columns {
-            performSegueWithIdentifier("detailSegue", sender: columns)
+    func output(rows: [HTMLTableRow]?) {
+        if let rows = rows where rows.count > 0 {
+            let columns = rows.map { $0.columns?.first }
+            performSegueWithIdentifier("detailSegue", sender: columns as? AnyObject)
         } else {
             loginButton.enabled = true
             activityIndicator.stopAnimating()
@@ -83,8 +82,9 @@ class LoginViewController : UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "detailSegue" {
-            let vc = segue.destinationViewController as? ViewController
-            vc?.items = sender as? [HTMLTableColumn]
+            if let vc = segue.destinationViewController as? ViewController, items = sender as? [HTMLTableColumn] {
+                vc.items = items
+            }
         }
     }
 }
