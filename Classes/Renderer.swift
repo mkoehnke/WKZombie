@@ -142,4 +142,16 @@ internal class Renderer : NSObject {
             HLLog((result as? String) ?? "No Output available.")
         }
     }
+    
+    
+    //========================================
+    // MARK: Cache
+    //========================================
+    
+    internal func clearCache() {
+        let distantPast = NSDate.distantPast()
+        NSHTTPCookieStorage.sharedHTTPCookieStorage().removeCookiesSinceDate(distantPast)
+        let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+        WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(websiteDataTypes, modifiedSince: distantPast, completionHandler:{ })
+    }
 }

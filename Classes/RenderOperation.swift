@@ -129,7 +129,7 @@ internal class RenderOperation : NSOperation {
     
     private func startTimeout() {
         stopRunLoop = false
-        timeout = NSTimer(timeInterval: timeoutInSeconds, target: self, selector: Selector("cancel"), userInfo: nil, repeats: false)
+        timeout = NSTimer(timeInterval: timeoutInSeconds, target: self, selector: #selector(RenderOperation.cancel), userInfo: nil, repeats: false)
         NSRunLoop.currentRunLoop().addTimer(timeout!, forMode: NSDefaultRunLoopMode)
     }
     

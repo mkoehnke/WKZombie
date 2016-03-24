@@ -1,7 +1,7 @@
 //
-// ContentFetcher.swift
+// Tests.swift
 //
-// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,21 +21,30 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
+import XCTest
 
-typealias FetchCompletion = (result : NSData?, response: NSURLResponse?, error: NSError?) -> Void
-
-internal class ContentFetcher {
-
-    private let defaultSession = NSURLSession(configuration: NSURLSessionConfiguration.defaultSessionConfiguration())
+class Tests: XCTestCase {
     
-    func fetch(url: NSURL, completion: FetchCompletion) -> NSURLSessionTask? {
-        let request = NSURLRequest(URL: url)
-        let task = defaultSession.dataTaskWithRequest(request, completionHandler: { (data, urlResponse, error) in
-            completion(result: data, response: urlResponse, error: error)
-        })
-        task.resume()
-        return task
+    override func setUp() {
+        super.setUp()
+        // Put setup code here. This method is called before the invocation of each test method in the class.
     }
+    
+    override func tearDown() {
+        // Put teardown code here. This method is called after the invocation of each test method in the class.
+        super.tearDown()
+    }
+    
+    func testExample() {
+        // This is an example of a functional test case.
+        // Use XCTAssert and related functions to verify your tests produce the correct results.
+    }
+    
+    func testPerformanceExample() {
+        // This is an example of a performance test case.
+        self.measureBlock {
+            // Put the code you want to measure the time of here.
+        }
+    }
+    
 }
-
