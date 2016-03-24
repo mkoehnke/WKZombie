@@ -1,5 +1,4 @@
 language: objective-c
 osx_image: xcode7.3
-xcode_workspace: Demo/iOS/WKZombieDemo.xcworkspace
-xcode_scheme: WKZombieDemo
 podfile: Demo/iOS/Podfile
+script: xctool -workspace Demo/iOS/WKZombieDemo.xcworkspace -scheme WKZombieDemo -sdk iphonesimulator build #test
