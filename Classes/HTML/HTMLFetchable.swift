@@ -66,7 +66,7 @@ extension HTMLFetchable {
 //==========================================
 
 public protocol HTMLFetchableContent {
-    typealias ContentType
+    associatedtype ContentType
     static func instanceFromData(data: NSData) -> Result<ContentType>
 }
 
