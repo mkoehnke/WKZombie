@@ -57,7 +57,7 @@ class LoginViewController : UIViewController {
            >>> browser.submit(then: .Wait(2.0))
            >>> browser.get(by: .Attribute("href", "/account/"))
            >>> browser.click(then: .Wait(2.0))
-           >>> browser.getAll(by: .XPathQuery("//tr[@class='row-even' OR @class='row-odd']")) // Use XPathQuery Wildcard? 'row-*'? Possible?
+           >>> browser.getAll(by: .Contains("class", "row-"))
            === output
     }
     
@@ -67,8 +67,8 @@ class LoginViewController : UIViewController {
     
     func output(rows: [HTMLTableRow]?) {
         if let rows = rows where rows.count > 0 {
-            let columns = rows.map { $0.columns?.first }
-            performSegueWithIdentifier("detailSegue", sender: columns as? AnyObject)
+            let columns = rows.flatMap { $0.columns?.first }
+            performSegueWithIdentifier("detailSegue", sender: columns)
         } else {
             loginButton.enabled = true
             activityIndicator.stopAnimating()

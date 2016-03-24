@@ -59,6 +59,10 @@ public enum SearchType<T: HTMLElement> {
      */
     case Attribute(String, String?)
     /**
+     Returns all elements with an attribute containing the specified value.
+     */
+    case Contains(String, String?)
+    /**
      Returns all elements that match the specified XPath query.
      */
     case XPathQuery(String)
@@ -70,6 +74,7 @@ public enum SearchType<T: HTMLElement> {
         case .Name(let name): return T.createXPathQuery("[@name='\(name)']")
         case .Attribute(let key, let value): return T.createXPathQuery("[@\(key)='\(value ?? "")']")
         case .Class(let className): return T.createXPathQuery("[@class='\(className)']")
+        case .Contains(let key, let value): return T.createXPathQuery("[contains(@\(key), '\(value ?? "")')]")
         case .XPathQuery(let query): return query
         }
     }

@@ -39,7 +39,8 @@ class ViewController: UITableViewController {
 
     override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-        cell.textLabel?.text = items?[indexPath.row].text
+        let item = items?[indexPath.row].children()?.first as HTMLElement?
+        cell.textLabel?.text = item?.text
         return cell
     }
 }
