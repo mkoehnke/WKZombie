@@ -1,5 +1,4 @@
 language: objective-c
 osx_image: xcode7.3
-xcode_project: Demo/iOS/WKZombieDemo.xcworkspace
+xcode_workspace: Demo/iOS/WKZombieDemo.xcworkspace
 xcode_scheme: WKZombieDemo
-xcode_sdk: iphonesimulator9.3 
