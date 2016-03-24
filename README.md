@@ -3,6 +3,7 @@
 [![Version](https://img.shields.io/cocoapods/v/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![License](https://img.shields.io/cocoapods/l/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
+[![Build Status](https://travis-ci.org/mkoehnke/WKZombie.svg?branch=master)](https://travis-ci.org/mkoehnke/WKZombie)
 
 WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift.
 
