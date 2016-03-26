@@ -336,11 +336,11 @@ $ pod install
 -->
 
 # TODOs
+* Unit Tests
+* Update README to reflect Swift 2.2 Syntax Changes
 * run() method for executing Javascript
-* clear() method for deleting all Cookies
 * ScreenCapture
 * More descriptive errors
-* Unit Tests
 
 # Author
 Mathias Köhnke [@mkoehnke](http://twitter.com/mkoehnke)
