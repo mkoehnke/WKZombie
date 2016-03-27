@@ -102,7 +102,7 @@ func open<T : Page>(url: NSURL) -> Action<T>
 Optionally, a *PostAction* can be passed. This is a special wait/validation action, that is performed after the page has finished loading. See [PostAction](#special-parameters) for more information.
 
 ```ruby
-func open<T : Page>(then: PostAction)(url: NSURL) -> Action<T>
+func open<T : Page>(then: PostAction) -> (url: NSURL) -> Action<T>
 ```
 
 ### Submit a Form
@@ -114,7 +114,7 @@ func submit<T : Page>(form: HTMLForm) -> Action<T>
 
 Optionally, a *PostAction* can be passed. See [PostAction](#special-parameters) for more information.
 ```ruby
-func submit<T : Page>(then: PostAction)(form: HTMLForm) -> Action<T>
+func submit<T : Page>(then: PostAction) -> (form: HTMLForm) -> Action<T>
 ```
 
 ### Click a Link
@@ -126,19 +126,19 @@ func click<T: Page>(link : HTMLLink) -> Action<T>
 
 Optionally, a *PostAction* can be passed. See [PostAction](#Special- Parameters) for more information.
 ```ruby
-func click<T: Page>(then: PostAction)(link : HTMLLink) -> Action<T>
+func click<T: Page>(then: PostAction) -> (link : HTMLLink) -> Action<T>
 ```
 
 ### Find HTML Elements
 
 The returned WKZombie Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#special-parameters).
 ```ruby
-func get<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<T>
+func get<T: HTMLElement>(by: SearchType<T>) -> (page: HTMLPage) -> Action<T>
 ```
 
 The returned WKZombie Action will search and return all elements matching.
 ```ruby
-func getAll<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<[T]>
+func getAll<T: HTMLElement>(by: SearchType<T>) -> (page: HTMLPage) -> Action<[T]>
 ```
 
 
@@ -146,7 +146,7 @@ func getAll<T: HTMLElement>(by: SearchType<T>)(page: HTMLPage) -> Action<[T]>
 
 The returned WKZombie Action will set or update an existing attribute/value pair on the specified HTMLElement.
 ```ruby
-func setAttribute<T: HTMLElement>(key: String, value: String?)(element: T) -> Action<HTMLPage>
+func setAttribute<T: HTMLElement>(key: String, value: String?) -> (element: T) -> Action<HTMLPage>
 ```
 
 ### Fetching
@@ -173,7 +173,7 @@ __Note:__ See the OSX example for more info on how to use this.
 
 The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function *f*.
 ```ruby
-func map<T: HTMLElement, A: HTMLElement>(f: T -> A)(element: T) -> Action<A>
+func map<T: HTMLElement, A: HTMLElement>(f: T -> A) -> (element: T) -> Action<A>
 ```
 ## Special Parameters
 
@@ -220,14 +220,14 @@ Operator       | Description
 
 The returned WKZombie Action will make a bulk execution of the specified action function *f* with the provided input elements. Once all actions have finished executing, the collected results will be returned.
 ```ruby
-func batch<T, U>(f: T -> Action<U>)(elements: [T]) -> Action<[U]>
+func batch<T, U>(f: T -> Action<U>) -> (elements: [T]) -> Action<[U]>
 ```
 
 ### Collect
 
 The returned WKZombie Action will execute the specified action (with the result of the previous action execution as input parameter) until a certain condition is met. Afterwards, it will return the collected action results.
 ```ruby
-func collect<T>(f: T -> Action<T>, until: T -> Bool)(initial: T) -> Action<[T]>
+func collect<T>(f: T -> Action<T>, until: T -> Bool) -> (initial: T) -> Action<[T]>
 ```
 
 ### Dump
