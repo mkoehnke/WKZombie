@@ -41,7 +41,7 @@ internal class Renderer : NSObject {
     private var webView : WKWebView!
     internal static let scrapingCommand = "document.documentElement.outerHTML"
     
-    override init() {
+    init(processPool: WKProcessPool? = nil) {
         super.init()
         let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(\(Renderer.scrapingCommand));"
         let doneLoadingUserScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: .AtDocumentEnd, forMainFrameOnly: true)
@@ -56,6 +56,7 @@ internal class Renderer : NSObject {
         contentController.addUserScript(getElementUserScript)
 
         let config = WKWebViewConfiguration()
+        config.processPool = processPool ?? WKProcessPool()
         config.userContentController = contentController
         
         /// Note: The WKWebView behaves very unreliable when rendering offscreen

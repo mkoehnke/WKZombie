@@ -22,6 +22,7 @@
 // THE SOFTWARE.
 
 import Foundation
+import WebKit
 
 public class WKZombie : NSObject {
     
@@ -47,13 +48,13 @@ public class WKZombie : NSObject {
      
      - returns: A WKZombie instance.
      */
-    public init(name: String? = "WKZombie") {
+    public init(name: String? = "WKZombie", processPool: WKProcessPool? = nil) {
         super.init()
         self.name = name
-        self.renderer = Renderer()
+        self.renderer = Renderer(processPool: processPool)
         self.fetcher = ContentFetcher()
     }
- 
+    
     //========================================
     // MARK: Response Handling
     //========================================
