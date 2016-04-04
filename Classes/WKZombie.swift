@@ -208,7 +208,7 @@ extension WKZombie {
         return { (element: T) -> Action<HTMLPage> in
             return Action() { [unowned self] completion in
                 if let script = element.createSetAttributeCommand(key, value: value) {
-                    self.renderer.executeScript("\(script) \(Renderer.scrapingCommand);", completionHandler: { result, response, error in
+                    self.renderer.executeScript("\(script) \(Renderer.scrapingCommand.terminate())", completionHandler: { result, response, error in
                         completion(decodeResult(nil)(data: result as? NSData))
                     })
                 } else {
@@ -254,6 +254,37 @@ extension WKZombie {
         return { (page: HTMLPage) -> Action<T> in
             let elements : Result<[T]> = page.findElements(searchType)
             return Action(result: elements.first())
+        }
+    }
+    
+    // TODO - documentation
+    public func get<T: Page>() -> Action<T> {
+        return Action() { [unowned self] completion in
+            self.renderer.currentContent({ (result, response, error) in
+                let data = self.handleResponse(result as? NSData, response: response, error: error)
+                completion(data >>> decodeResult(response?.URL))
+            })
+        }
+    }
+}
+
+//========================================
+// MARK: JavaScript Methods
+//========================================
+
+extension WKZombie {
+    
+    public typealias ScriptResult = String
+    
+    // TODO - documentation
+    public func execute<T: HTMLPage>(script: String) -> (page : T) -> Action<ScriptResult> {
+        return { [unowned self] (page: T) -> Action<ScriptResult> in
+            return Action() { [unowned self] completion in
+                self.renderer.executeScript(script, completionHandler: { result, response, error in
+                    let data = self.handleResponse(result as? NSData, response: response, error: error)
+                    completion(data >>> decodeString)
+                })
+            }
         }
     }
 }
@@ -305,9 +336,9 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A) -> (element: T) -> Action<A> {
-        return { (element: T) -> Action<A> in
-            return Action(result: resultFromOptional(f(element), error: .NotFound))
+    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A) -> (object: T) -> Action<A> {
+        return { (object: T) -> Action<A> in
+            return Action(result: resultFromOptional(f(object), error: .NotFound))
         }
     }
 }
@@ -404,7 +435,13 @@ extension WKZombie {
      Prints the current state of the WKZombie browser to the console.
      */
     func dump() {
-        renderer.dump()
+        renderer.currentContent { (result, response, error) in
+            if let result = result as? NSData, output = String(data: result, encoding: NSUTF8StringEncoding) {
+                WKZLog(output)
+            } else {
+                WKZLog("No Output available.")
+            }
+        }
     }
     
     /**

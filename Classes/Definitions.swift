@@ -27,7 +27,7 @@ import Foundation
 // MARK: Logging
 //========================================
 
-public func HLLog(message: String, lineBreak: Bool = true) {
+public func WKZLog(message: String, lineBreak: Bool = true) {
     #if DEBUG
         if lineBreak {
             print("\(message)")
@@ -196,6 +196,12 @@ internal func decodeResult<T: Page>(url: NSURL? = nil) -> (data: NSData?) -> Res
     }
 }
 
+internal func decodeString(data: NSData?) -> Result<String> {
+    if let data = data {
+        return resultFromOptional(String(data: data, encoding: NSUTF8StringEncoding), error: .TransformFailure)
+    }
+    return Result.Error(.TransformFailure)
+}
 
 //========================================
 // MARK: Actions
@@ -246,6 +252,24 @@ public extension Action {
                 dispatch_async(dispatch_get_main_queue(), {
                     switch result {
                     case .Success(let value): completion(Result.Success(f(value)))
+                    case .Error(let error): completion(Result.Error(error))
+                    }
+                })
+            }
+        })
+    }
+    
+    public func flatMap<U>(f: T -> U?) -> Action<U> {
+        return Action<U>(operation: { completion in
+            self.start { result in
+                dispatch_async(dispatch_get_main_queue(), {
+                    switch result {
+                    case .Success(let value):
+                        if let result = f(value) {
+                            completion(Result.Success(result))
+                        } else {
+                            completion(Result.Error(.TransformFailure))
+                        }
                     case .Error(let error): completion(Result.Error(error))
                     }
                 })
@@ -439,5 +463,14 @@ extension Dictionary : JSONParsable {
 extension Array : JSONParsable {
     public func content() -> JSON? {
         return self as? JSON
+    }
+}
+
+extension String {
+    public func terminate() -> String {
+        let terminator : Character = ";"
+        var trimmed = stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        if (trimmed.characters.last != terminator) { trimmed += String(terminator) }
+        return trimmed
     }
 }

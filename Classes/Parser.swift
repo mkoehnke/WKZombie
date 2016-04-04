@@ -139,7 +139,7 @@ public class JSONParser : Parser {
         let result : Result<JSON> = parseJSON(data)
         switch result {
         case .Success(let json): self.json = json
-        case .Error: HLLog("Error parsing JSON!")
+        case .Error: WKZLog("Error parsing JSON!")
         }
     }
     

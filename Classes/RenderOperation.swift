@@ -84,8 +84,8 @@ internal class RenderOperation : NSOperation {
         if self.cancelled {
             return
         } else {
-            HLLog("\(name ?? String())")
-            HLLog("[", lineBreak: false)
+            WKZLog("\(name ?? String())")
+            WKZLog("[", lineBreak: false)
             executing = true
             setupReferences()
             startTimeout()
@@ -95,7 +95,7 @@ internal class RenderOperation : NSOperation {
             var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
             while !stopRunLoop && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
                 loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
-                HLLog(".", lineBreak: false)
+                WKZLog(".", lineBreak: false)
             }
         }
     }
@@ -112,12 +112,12 @@ internal class RenderOperation : NSOperation {
             executing = false
             finished = true
             
-            HLLog("]\n")
+            WKZLog("]\n")
         }
     }
     
     override func cancel() {
-        HLLog("Cancelling Rendering - \(name)")
+        WKZLog("Cancelling Rendering - \(name)")
         super.cancel()
         stopTimeout()
         cleanupReferences()
@@ -238,7 +238,7 @@ extension RenderOperation {
         switch postAction {
         case .Validate(let script): validate(script, webView: webView)
         case .Wait(let time): waitAndFinish(time, webView: webView)
-        default: HLLog("Something went wrong!")
+        default: WKZLog("Something went wrong!")
         }
         self.postAction = .None
     }
