@@ -131,6 +131,11 @@ internal struct Response {
             self.statusCode = httpResponse.statusCode
         }
     }
+    
+    init(data: NSData?, statusCode: Int) {
+        self.data = data
+        self.statusCode = statusCode
+    }
 }
 
 infix operator >>> { associativity left precedence 150 }
@@ -154,6 +159,12 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
+// TODO - documentation
+public func >>><T, U>(a: Action<T>, b: Action<U>) -> Action<U> {
+    let f : (T -> Action<U>) = { _ in b }
+    return a.andThen(f)
+}
+
 /**
  This Operator starts the left-hand side Action and passes the result as Optional to the 
  function on the right-hand side.
@@ -161,11 +172,11 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
  - parameter a:          An Action.
  - parameter completion: A Completion Block.
  */
-public func ===<T>(a: Action<T>, completion: (result: T?) -> Void) {
+public func ===<T>(a: Action<T>, completion: T? -> Void) {
     return a.start { result in
         switch result {
-        case .Success(let value): completion(result: value)
-        case .Error: completion(result: nil)
+        case .Success(let value): completion(value)
+        case .Error: completion(nil)
         }
     }
 }
@@ -197,10 +208,7 @@ internal func decodeResult<T: Page>(url: NSURL? = nil) -> (data: NSData?) -> Res
 }
 
 internal func decodeString(data: NSData?) -> Result<String> {
-    if let data = data {
-        return resultFromOptional(String(data: data, encoding: NSUTF8StringEncoding), error: .TransformFailure)
-    }
-    return Result.Error(.TransformFailure)
+    return resultFromOptional(data?.toString(), error: .TransformFailure)
 }
 
 //========================================
@@ -467,10 +475,16 @@ extension Array : JSONParsable {
 }
 
 extension String {
-    public func terminate() -> String {
+    internal func terminate() -> String {
         let terminator : Character = ";"
         var trimmed = stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
         if (trimmed.characters.last != terminator) { trimmed += String(terminator) }
         return trimmed
+    }
+}
+
+extension NSData {
+    internal func toString() -> String? {
+        return String(data: self, encoding: NSUTF8StringEncoding)
     }
 }

@@ -60,11 +60,14 @@ public class WKZombie : NSObject {
     //========================================
     
     private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<NSData> {
-        guard let response = response else {
-            return Result.Error(.NetworkRequestFailure)
+        var statusCode : Int = 200
+        if let response = response as? NSHTTPURLResponse {
+            statusCode = response.statusCode
+        } else if let _ = error {
+            statusCode = 500
         }
         let errorDomain : ActionError? = (error == nil) ? nil : .NetworkRequestFailure
-        let responseResult: Result<Response> = Result(errorDomain, Response(data: data, urlResponse: response))
+        let responseResult: Result<Response> = Result(errorDomain, Response(data: data, statusCode: statusCode))
         return responseResult >>> parseResponse
     }
 }
@@ -103,6 +106,17 @@ extension WKZombie {
                     completion(data >>> decodeResult(response?.URL))
                 })
             }
+        }
+    }
+    
+    
+    // TODO - documentation
+    public func inspect<T: Page>() -> Action<T> {
+        return Action() { [unowned self] completion in
+            self.renderer.currentContent({ (result, response, error) in
+                let data = self.handleResponse(result as? NSData, response: response, error: error)
+                completion(data >>> decodeResult(response?.URL))
+            })
         }
     }
 }
@@ -256,33 +270,26 @@ extension WKZombie {
             return Action(result: elements.first())
         }
     }
-    
-    // TODO - documentation
-    public func get<T: Page>() -> Action<T> {
-        return Action() { [unowned self] completion in
-            self.renderer.currentContent({ (result, response, error) in
-                let data = self.handleResponse(result as? NSData, response: response, error: error)
-                completion(data >>> decodeResult(response?.URL))
-            })
-        }
-    }
 }
 
 //========================================
 // MARK: JavaScript Methods
 //========================================
 
+public typealias JavaScript = String
+public typealias JavaScriptResult = String
+
 extension WKZombie {
     
-    public typealias ScriptResult = String
-    
     // TODO - documentation
-    public func execute<T: HTMLPage>(script: String) -> (page : T) -> Action<ScriptResult> {
-        return { [unowned self] (page: T) -> Action<ScriptResult> in
+    public func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult> {
+        return { (page: HTMLPage) -> Action<JavaScriptResult> in
             return Action() { [unowned self] completion in
                 self.renderer.executeScript(script, completionHandler: { result, response, error in
                     let data = self.handleResponse(result as? NSData, response: response, error: error)
-                    completion(data >>> decodeString)
+                    let output = data >>> decodeString
+                    WKZLog("Script Result".uppercaseString + "\n\(output)\n")
+                    completion(output)
                 })
             }
         }
@@ -336,7 +343,7 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func map<T: HTMLElement, A: HTMLElement>(f: T -> A) -> (object: T) -> Action<A> {
+    public func map<T, A>(f: T -> A) -> (object: T) -> Action<A> {
         return { (object: T) -> Action<A> in
             return Action(result: resultFromOptional(f(object), error: .NotFound))
         }
@@ -436,7 +443,7 @@ extension WKZombie {
      */
     func dump() {
         renderer.currentContent { (result, response, error) in
-            if let result = result as? NSData, output = String(data: result, encoding: NSUTF8StringEncoding) {
+            if let output = (result as? NSData)?.toString() {
                 WKZLog(output)
             } else {
                 WKZLog("No Output available.")

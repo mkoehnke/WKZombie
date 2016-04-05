@@ -87,16 +87,25 @@ internal class RenderOperation : NSOperation {
             WKZLog("\(name ?? String())")
             WKZLog("[", lineBreak: false)
             executing = true
-            setupReferences()
             startTimeout()
+            
+            // Wait for WKWebView to finish loading before starting the operation.
+            wait { [unowned self] in self.webView?.loading == false ?? true }
+            
+            setupReferences()
             requestBlock?(operation: self)
             
-            let updateInterval : NSTimeInterval = 0.1
-            var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
-            while !stopRunLoop && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
-                loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
-                WKZLog(".", lineBreak: false)
-            }
+            // Loading
+            wait { [unowned self] in self.stopRunLoop }
+        }
+    }
+    
+    func wait(condition: () -> Bool) {
+        let updateInterval : NSTimeInterval = 0.1
+        var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
+        while condition() == false && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
+            loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
+            WKZLog(".", lineBreak: false)
         }
     }
     
