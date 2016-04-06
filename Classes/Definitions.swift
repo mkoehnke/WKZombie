@@ -159,7 +159,15 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
     return a.andThen(f)
 }
 
-// TODO - documentation
+/**
+ This Operator equates to the andThen() method with the exception, that the result of the left-hand 
+ side Action will be ignored and not passed as paramter to the right-hand side Action.
+ 
+ - parameter a: An Action.
+ - parameter b: An Action.
+ 
+ - returns: An Action.
+ */
 public func >>><T, U>(a: Action<T>, b: Action<U>) -> Action<U> {
     let f : (T -> Action<U>) = { _ in b }
     return a.andThen(f)

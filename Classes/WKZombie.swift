@@ -26,8 +26,8 @@ import WebKit
 
 public class WKZombie : NSObject {
     
-    private var renderer : Renderer!
-    private var fetcher : ContentFetcher!
+    private var _renderer : Renderer!
+    private var _fetcher : ContentFetcher!
     
     /// Returns the name of this WKZombie session.
     public private(set) var name : String!
@@ -37,7 +37,7 @@ public class WKZombie : NSObject {
     /// be loaded.
     public var loadMediaContent : Bool = true {
         didSet {
-            renderer.loadMediaContent = loadMediaContent
+            _renderer.loadMediaContent = loadMediaContent
         }
     }
     
@@ -51,15 +51,15 @@ public class WKZombie : NSObject {
     public init(name: String? = "WKZombie", processPool: WKProcessPool? = nil) {
         super.init()
         self.name = name
-        self.renderer = Renderer(processPool: processPool)
-        self.fetcher = ContentFetcher()
+        self._renderer = Renderer(processPool: processPool)
+        self._fetcher = ContentFetcher()
     }
     
     //========================================
     // MARK: Response Handling
     //========================================
     
-    private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<NSData> {
+    private func _handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<NSData> {
         var statusCode : Int = (error == nil) ? Static.DefaultStatusCodeSuccess : Static.DefaultStatusCodeError
         if let response = response as? NSHTTPURLResponse {
             statusCode = response.statusCode
@@ -99,20 +99,23 @@ extension WKZombie {
         return { (url: NSURL) -> Action<T> in
             return Action() { [unowned self] completion in
                 let request = NSURLRequest(URL: url)
-                self.renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
-                    let data = self.handleResponse(data as? NSData, response: response, error: error)
+                self._renderer.renderPageWithRequest(request, postAction: postAction, completionHandler: { data, response, error in
+                    let data = self._handleResponse(data as? NSData, response: response, error: error)
                     completion(data >>> decodeResult(response?.URL))
                 })
             }
         }
     }
     
-    
-    // TODO - documentation
+    /**
+     The returned WKZombie Action will return the current page.
+     
+     - returns: The WKZombie Action.
+     */
     public func inspect<T: Page>() -> Action<T> {
         return Action() { [unowned self] completion in
-            self.renderer.currentContent({ (result, response, error) in
-                let data = self.handleResponse(result as? NSData, response: response, error: error)
+            self._renderer.currentContent({ (result, response, error) in
+                let data = self._handleResponse(result as? NSData, response: response, error: error)
                 completion(data >>> decodeResult(response?.URL))
             })
         }
@@ -148,8 +151,8 @@ extension WKZombie {
         return { (form: HTMLForm) -> Action<T> in
             return Action() { [unowned self] completion in
                 if let script = form.actionScript() {
-                    self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                        let data = self.handleResponse(result as? NSData, response: response, error: error)
+                    self._renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                        let data = self._handleResponse(result as? NSData, response: response, error: error)
                         completion(data >>> decodeResult(response?.URL))
                     })
                 } else {
@@ -181,16 +184,48 @@ extension WKZombie {
      Simulates the click of a HTML link.
      
      - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
-     - parameter url: An URL referencing a HTML or JSON page.
+     - parameter link: The HTML link.
      
      - returns: The WKZombie Action.
      */
     public func click<T: Page>(then postAction: PostAction = .None) -> (link : HTMLLink) -> Action<T> {
-        return { (link: HTMLLink) -> Action<T> in
+        return { [unowned self] (link: HTMLLink) -> Action<T> in
+            return self._touch(then: postAction)(clickable: link)
+        }
+    }
+    
+    /**
+     Simulates HTMLButton press.
+     
+     - parameter button: The HTML button.
+     
+     - returns: The WKZombie Action.
+     */
+    public func press<T: Page>(button : HTMLButton) -> Action<T> {
+        return press(then: .None)(button: button)
+    }
+    
+    /**
+     Simulates HTMLButton press.
+     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
+     - parameter button: The HTML button.
+     
+     - returns: The WKZombie Action.
+     */
+    public func press<T: Page>(then postAction: PostAction = .None) -> (button : HTMLButton) -> Action<T> {
+        return { [unowned self] (button: HTMLButton) -> Action<T> in
+            return self._touch(then: postAction)(clickable: button)
+        }
+    }
+    
+    // Private
+    private func _touch<T: Page, U: HTMLClickable>(then postAction: PostAction = .None) -> (clickable : U) -> Action<T> {
+        return { (clickable: U) -> Action<T> in
             return Action() { [unowned self] completion in
-                if let script = link.actionScript() {
-                    self.renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                        let data = self.handleResponse(result as? NSData, response: response, error: error)
+                if let script = clickable.actionScript() {
+                    self._renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                        let data = self._handleResponse(result as? NSData, response: response, error: error)
                         completion(data >>> decodeResult(response?.URL))
                     })
                 } else {
@@ -220,7 +255,7 @@ extension WKZombie {
         return { (element: T) -> Action<HTMLPage> in
             return Action() { [unowned self] completion in
                 if let script = element.createSetAttributeCommand(key, value: value) {
-                    self.renderer.executeScript("\(script) \(Renderer.scrapingCommand.terminate())", completionHandler: { result, response, error in
+                    self._renderer.executeScript("\(script) \(Renderer.scrapingCommand.terminate())", completionHandler: { result, response, error in
                         completion(decodeResult(nil)(data: result as? NSData))
                     })
                 } else {
@@ -279,12 +314,18 @@ public typealias JavaScriptResult = String
 
 extension WKZombie {
     
-    // TODO - documentation
+    /**
+     The returned WKZombie Action will execute a JavaScript string.
+     
+     - parameter script: A JavaScript string.
+     
+     - returns: The WKZombie Action.
+     */
     public func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult> {
         return { (page: HTMLPage) -> Action<JavaScriptResult> in
             return Action() { [unowned self] completion in
-                self.renderer.executeScript(script, completionHandler: { result, response, error in
-                    let data = self.handleResponse(result as? NSData, response: response, error: error)
+                self._renderer.executeScript(script, completionHandler: { result, response, error in
+                    let data = self._handleResponse(result as? NSData, response: response, error: error)
                     let output = data >>> decodeString
                     WKZLog("Script Result".uppercaseString + "\n\(output)\n")
                     completion(output)
@@ -310,8 +351,8 @@ extension WKZombie {
     public func fetch<T: HTMLFetchable>(fetchable: T) -> Action<T> {
         return Action() { [unowned self] completion in
             if let fetchURL = fetchable.fetchURL {
-                self.fetcher.fetch(fetchURL, completion: { (result, response, error) in
-                    let data = self.handleResponse(result, response: response, error: error)
+                self._fetcher.fetch(fetchURL, completion: { (result, response, error) in
+                    let data = self._handleResponse(result, response: response, error: error)
                     switch data {
                     case .Success(let value): fetchable.fetchedData = value
                     case .Error(let error):
@@ -440,7 +481,7 @@ extension WKZombie {
      Prints the current state of the WKZombie browser to the console.
      */
     func dump() {
-        renderer.currentContent { (result, response, error) in
+        _renderer.currentContent { (result, response, error) in
             if let output = (result as? NSData)?.toString() {
                 WKZLog(output)
             } else {
@@ -453,6 +494,6 @@ extension WKZombie {
      Clears the cache/cookie data (such as login data, etc).
      */
     func clearCache() {
-        renderer.clearCache()
+        _renderer.clearCache()
     }
 }
