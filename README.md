@@ -105,6 +105,14 @@ Optionally, a *PostAction* can be passed. This is a special wait/validation acti
 func open<T : Page>(then: PostAction) -> (url: NSURL) -> Action<T>
 ```
 
+### Get the current Website
+
+The returned WKZombie Action will return the current page.
+
+```ruby
+func inspect<T: Page>() -> Action<T>
+```
+
 ### Submit a Form
 
 The returned WKZombie Action will submit the specified HTML form.
@@ -117,16 +125,18 @@ Optionally, a *PostAction* can be passed. See [PostAction](#special-parameters) 
 func submit<T : Page>(then: PostAction) -> (form: HTMLForm) -> Action<T>
 ```
 
-### Click a Link
+### Click a Link / Press a Button
 
-The returned WKZombie Action will simulate the click of a HTML link.
+The returned WKZombie Actions will simulate the interaction with a HTML link/button.
 ```ruby
 func click<T: Page>(link : HTMLLink) -> Action<T>
+func press<T: Page>(button : HTMLButton) -> Action<T>
 ```
 
 Optionally, a *PostAction* can be passed. See [PostAction](#Special- Parameters) for more information.
 ```ruby
 func click<T: Page>(then: PostAction) -> (link : HTMLLink) -> Action<T>
+func press<T: Page>(then: PostAction) -> (button : HTMLButton) -> Action<T>
 ```
 
 ### Find HTML Elements
@@ -147,6 +157,28 @@ func getAll<T: HTMLElement>(by: SearchType<T>) -> (page: HTMLPage) -> Action<[T]
 The returned WKZombie Action will set or update an existing attribute/value pair on the specified HTMLElement.
 ```ruby
 func setAttribute<T: HTMLElement>(key: String, value: String?) -> (element: T) -> Action<HTMLPage>
+```
+
+### Execute JavaScript
+
+The returned WKZombie Action will execute a JavaScript string.
+
+```ruby
+func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult>
+```
+
+For example, the following example shows how retrieve the title of the currently loaded website using the *execute()* method:
+
+```ruby
+    browser.inspect()
+>>> browser.execute("document.title")
+=== myOutput
+```
+
+```ruby
+func myOutput(result: JavaScriptResult?) {
+  // handle result
+}
 ```
 
 ### Fetching
@@ -171,10 +203,11 @@ __Note:__ See the OSX example for more info on how to use this.
 
 ### Transform
 
-The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function *f*.
+The returned WKZombie Action will transform a WKZombie object into another object using the specified function *f*.
 ```ruby
-func map<T: HTMLElement, A: HTMLElement>(f: T -> A) -> (element: T) -> Action<A>
+func map<T, A>(f: T -> A) -> (element: T) -> Action<A>
 ```
+
 ## Special Parameters
 
 ### 1. PostAction
@@ -203,6 +236,7 @@ SearchType                     | Description
 **Text** (String)              | Returns all elements with inner content, that *contain* the specified text.
 **Class** (String)             | Returns all elements that match the specified class name.
 **Attribute** (String, String) | Returns all elements that match the specified attribute name/value combination.
+**Contains** (String, String)  | Returns all elements with an attribute containing the specified value.
 **XPathQuery** (String)        | Returns all elements that match the specified XPath query.
 
 ## Operators
@@ -211,7 +245,7 @@ The following Operators can be applied to *Actions*, which makes chained *Action
 
 Operator       | Description
 -------------- | -------------
-**>>>**        | This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*.
+**>>>**        | This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*. **Note:** If the right-hand side *Action* doesn't take a parameter, the result of the left-hand side *Action* will be ignored and not passed.
 **===**        | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
 ## Advanced Actions
@@ -237,6 +271,13 @@ This command is useful for **debugging**. It prints out the current state of the
 func dump()
 ```
 
+### Clear Cache and Cookies
+
+Clears the cache/cookie data (such as login data, etc).
+```ruby
+func clearCache()
+```
+
 ## HTML Elements
 
 When using WKZombie, the following classes are involved when interacting with websites:
@@ -247,10 +288,11 @@ This class represents a **read-only** DOM of a website. It allows you to search 
 
 ### HTMLElement
 
-The *HTMLElement* class is a **base class for all elements in the DOM**. It allows you to inspect attributes or the inner content (e.g. text) of that element. Currently, there are 6 subclasses with additional element-specific methods and variables available:
+The *HTMLElement* class is a **base class for all elements in the DOM**. It allows you to inspect attributes or the inner content (e.g. text) of that element. Currently, there are 7 subclasses with additional element-specific methods and variables available:
 
 * HTMLForm
 * HTMLLink
+* HTMLButton
 * HTMLImage
 * HTMLTable
 * HTMLTableColumn
@@ -337,8 +379,6 @@ $ pod install
 
 # TODOs
 * Unit Tests
-* Update README to reflect Swift 2.2 Syntax Changes
-* Document inspect() and execute() method
 * ScreenCapture
 * More descriptive errors
 
