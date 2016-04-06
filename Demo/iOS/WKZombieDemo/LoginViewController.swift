@@ -73,6 +73,7 @@ class LoginViewController : UIViewController {
             loginButton.enabled = true
             activityIndicator.stopAnimating()
             browser.dump()
+            browser.clearCache()
         }
     }
     

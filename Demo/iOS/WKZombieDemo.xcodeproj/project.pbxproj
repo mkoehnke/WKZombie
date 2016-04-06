@@ -32,6 +32,8 @@
 		BFAE16DC1C02888B00AA3DA0 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAE16DA1C02888B00AA3DA0 /* Main.storyboard */; };
 		BFAE16DE1C02888B00AA3DA0 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BFAE16DD1C02888B00AA3DA0 /* Assets.xcassets */; };
 		BFAE16E11C02888B00AA3DA0 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BFAE16DF1C02888B00AA3DA0 /* LaunchScreen.storyboard */; };
+		BFEF00291CB4EC4000BAA4D9 /* HTMLClickable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEF00281CB4EC4000BAA4D9 /* HTMLClickable.swift */; };
+		BFEF002B1CB4EF6900BAA4D9 /* HTMLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFEF002A1CB4EF6900BAA4D9 /* HTMLButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +77,8 @@
 		BFAE16DD1C02888B00AA3DA0 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BFAE16E01C02888B00AA3DA0 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BFAE16E21C02888B00AA3DA0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BFEF00281CB4EC4000BAA4D9 /* HTMLClickable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLClickable.swift; sourceTree = "<group>"; };
+		BFEF002A1CB4EF6900BAA4D9 /* HTMLButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLButton.swift; sourceTree = "<group>"; };
 		BFF807611CA0960000DD9190 /* Tests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Tests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFF807651CA0960000DD9190 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -143,6 +147,8 @@
 				BF0C9FC01C1756BF00B3AD79 /* HTMLTable.swift */,
 				BF7210661C56C24A00A4A522 /* HTMLFetchable.swift */,
 				BF15A1481C6524CC00B64D52 /* HTMLImage.swift */,
+				BFEF00281CB4EC4000BAA4D9 /* HTMLClickable.swift */,
+				BFEF002A1CB4EF6900BAA4D9 /* HTMLButton.swift */,
 			);
 			path = HTML;
 			sourceTree = "<group>";
@@ -382,6 +388,7 @@
 				BF0C9FC81C1756BF00B3AD79 /* Definitions.swift in Sources */,
 				BF0C9FCA1C1756BF00B3AD79 /* HTMLForm.swift in Sources */,
 				BFAE16D71C02888B00AA3DA0 /* AppDelegate.swift in Sources */,
+				BFEF002B1CB4EF6900BAA4D9 /* HTMLButton.swift in Sources */,
 				BF0C9FD11C1756BF00B3AD79 /* Parser.swift in Sources */,
 				BF0C9FCE1C1756BF00B3AD79 /* HTMLTable.swift in Sources */,
 				BF0C9FCF1C1756BF00B3AD79 /* JSONPage.swift in Sources */,
@@ -391,6 +398,7 @@
 				BF0C9FCD1C1756BF00B3AD79 /* HTMLPage.swift in Sources */,
 				BF907DD41C580CF700812462 /* ContentFetcher.swift in Sources */,
 				BF0C9FC71C1756BF00B3AD79 /* WKZombie.swift in Sources */,
+				BFEF00291CB4EC4000BAA4D9 /* HTMLClickable.swift in Sources */,
 				BF5C09A51C144D0700DDE306 /* Button.swift in Sources */,
 				BF15A1491C6524CC00B64D52 /* HTMLImage.swift in Sources */,
 				BF0C9FC61C1756BF00B3AD79 /* Error.swift in Sources */,

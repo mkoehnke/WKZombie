@@ -113,7 +113,10 @@ internal class Renderer : NSObject {
         } else {
             requestBlock = { operation in
                 operation.webView?.evaluateJavaScript(script, completionHandler: { result, error in
-                    let data = result?.dataUsingEncoding(NSUTF8StringEncoding)
+                    var data : NSData?
+                    if let result = result {
+                        data = "\(result)".dataUsingEncoding(NSUTF8StringEncoding)
+                    }
                     operation.completeRendering(operation.webView, result: data, error: error)
                 })
             }
@@ -138,12 +141,15 @@ internal class Renderer : NSObject {
         return operation
     }
     
-    internal func dump() {
-        webView.evaluateJavaScript("\(Renderer.scrapingCommand);") { result, error in
-            HLLog((result as? String) ?? "No Output available.")
+    internal func currentContent(completionHandler: RenderCompletion) {
+        webView.evaluateJavaScript(Renderer.scrapingCommand.terminate()) { result, error in
+            var data : NSData?
+            if let result = result {
+                data = "\(result)".dataUsingEncoding(NSUTF8StringEncoding)
+            }
+            completionHandler(result: data, response: nil, error: error)
         }
     }
-    
     
     //========================================
     // MARK: Cache

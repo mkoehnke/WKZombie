@@ -338,7 +338,7 @@ $ pod install
 # TODOs
 * Unit Tests
 * Update README to reflect Swift 2.2 Syntax Changes
-* run() method for executing Javascript
+* Document inspect() and execute() method
 * ScreenCapture
 * More descriptive errors
 

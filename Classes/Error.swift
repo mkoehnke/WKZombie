@@ -23,6 +23,11 @@
 
 import Foundation
 
+internal struct Static {
+    static let DefaultStatusCodeSuccess : Int = 200
+    static let DefaultStatusCodeError : Int = 500
+}
+
 public protocol ErrorType { }
 
 public enum NoError: ErrorType { }

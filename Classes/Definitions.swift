@@ -27,7 +27,7 @@ import Foundation
 // MARK: Logging
 //========================================
 
-public func HLLog(message: String, lineBreak: Bool = true) {
+public func WKZLog(message: String, lineBreak: Bool = true) {
     #if DEBUG
         if lineBreak {
             print("\(message)")
@@ -123,13 +123,18 @@ extension Result: CustomDebugStringConvertible {
 
 internal struct Response {
     var data: NSData?
-    var statusCode: Int = 500
+    var statusCode: Int = Static.DefaultStatusCodeError
     
     init(data: NSData?, urlResponse: NSURLResponse) {
         self.data = data
         if let httpResponse = urlResponse as? NSHTTPURLResponse {
             self.statusCode = httpResponse.statusCode
         }
+    }
+    
+    init(data: NSData?, statusCode: Int) {
+        self.data = data
+        self.statusCode = statusCode
     }
 }
 
@@ -155,17 +160,31 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
 }
 
 /**
+ This Operator equates to the andThen() method with the exception, that the result of the left-hand 
+ side Action will be ignored and not passed as paramter to the right-hand side Action.
+ 
+ - parameter a: An Action.
+ - parameter b: An Action.
+ 
+ - returns: An Action.
+ */
+public func >>><T, U>(a: Action<T>, b: Action<U>) -> Action<U> {
+    let f : (T -> Action<U>) = { _ in b }
+    return a.andThen(f)
+}
+
+/**
  This Operator starts the left-hand side Action and passes the result as Optional to the 
  function on the right-hand side.
  
  - parameter a:          An Action.
  - parameter completion: A Completion Block.
  */
-public func ===<T>(a: Action<T>, completion: (result: T?) -> Void) {
+public func ===<T>(a: Action<T>, completion: T? -> Void) {
     return a.start { result in
         switch result {
-        case .Success(let value): completion(result: value)
-        case .Error: completion(result: nil)
+        case .Success(let value): completion(value)
+        case .Error: completion(nil)
         }
     }
 }
@@ -196,6 +215,9 @@ internal func decodeResult<T: Page>(url: NSURL? = nil) -> (data: NSData?) -> Res
     }
 }
 
+internal func decodeString(data: NSData?) -> Result<String> {
+    return resultFromOptional(data?.toString(), error: .TransformFailure)
+}
 
 //========================================
 // MARK: Actions
@@ -246,6 +268,24 @@ public extension Action {
                 dispatch_async(dispatch_get_main_queue(), {
                     switch result {
                     case .Success(let value): completion(Result.Success(f(value)))
+                    case .Error(let error): completion(Result.Error(error))
+                    }
+                })
+            }
+        })
+    }
+    
+    public func flatMap<U>(f: T -> U?) -> Action<U> {
+        return Action<U>(operation: { completion in
+            self.start { result in
+                dispatch_async(dispatch_get_main_queue(), {
+                    switch result {
+                    case .Success(let value):
+                        if let result = f(value) {
+                            completion(Result.Success(result))
+                        } else {
+                            completion(Result.Error(.TransformFailure))
+                        }
                     case .Error(let error): completion(Result.Error(error))
                     }
                 })
@@ -439,5 +479,20 @@ extension Dictionary : JSONParsable {
 extension Array : JSONParsable {
     public func content() -> JSON? {
         return self as? JSON
+    }
+}
+
+extension String {
+    internal func terminate() -> String {
+        let terminator : Character = ";"
+        var trimmed = stringByTrimmingCharactersInSet(NSCharacterSet.whitespaceAndNewlineCharacterSet())
+        if (trimmed.characters.last != terminator) { trimmed += String(terminator) }
+        return trimmed
+    }
+}
+
+extension NSData {
+    internal func toString() -> String? {
+        return String(data: self, encoding: NSUTF8StringEncoding)
     }
 }
