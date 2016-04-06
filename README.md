@@ -59,7 +59,7 @@ Web page navigation is based on *Actions*, that can be executed **implicitly** w
 >>> browser.click
 >>> browser.get(by: .Text("Provisioning Profiles"))
 >>> browser.click(then: .Wait(0.5))
->>> browser.getAll(by: .Class("ui-ellipsis bold"))
+>>> browser.getAll(by: .Class("ui-ellipsis"))
 === myOutput
 ```
 
@@ -107,7 +107,7 @@ func open<T : Page>(then: PostAction) -> (url: NSURL) -> Action<T>
 
 ### Get the current Website
 
-The returned WKZombie Action will return the current page.
+The returned WKZombie Action will retrieve the current page.
 
 ```ruby
 func inspect<T: Page>() -> Action<T>
