@@ -123,7 +123,7 @@ extension Result: CustomDebugStringConvertible {
 
 internal struct Response {
     var data: NSData?
-    var statusCode: Int = 500
+    var statusCode: Int = Static.DefaultStatusCodeError
     
     init(data: NSData?, urlResponse: NSURLResponse) {
         self.data = data

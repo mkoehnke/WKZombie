@@ -60,11 +60,9 @@ public class WKZombie : NSObject {
     //========================================
     
     private func handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<NSData> {
-        var statusCode : Int = 200
+        var statusCode : Int = (error == nil) ? Static.DefaultStatusCodeSuccess : Static.DefaultStatusCodeError
         if let response = response as? NSHTTPURLResponse {
             statusCode = response.statusCode
-        } else if let _ = error {
-            statusCode = 500
         }
         let errorDomain : ActionError? = (error == nil) ? nil : .NetworkRequestFailure
         let responseResult: Result<Response> = Result(errorDomain, Response(data: data, statusCode: statusCode))
