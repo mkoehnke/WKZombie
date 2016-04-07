@@ -505,6 +505,3 @@ func dispatch_sync_on_main_thread(block: dispatch_block_t) {
         dispatch_sync(dispatch_get_main_queue(), block)
     }
 }
-
-
-
