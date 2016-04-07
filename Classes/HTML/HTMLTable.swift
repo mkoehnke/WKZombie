@@ -27,7 +27,7 @@ import Foundation
 public class HTMLTable : HTMLElement {
     
     /// Returns all row elements within this table
-    var rows : [HTMLTableRow]? {
+    public var rows : [HTMLTableRow]? {
         let rows : [HTMLTableRow]? = children()
         return (rows?.first?.tagName == "tbody") ? rows?.first?.children() : rows
     }
@@ -46,7 +46,7 @@ public class HTMLTable : HTMLElement {
 public class HTMLTableRow : HTMLElement {
     
     /// Returns all columns within this row.
-    var columns : [HTMLTableColumn]? {
+    public var columns : [HTMLTableColumn]? {
         return children()
     }
     

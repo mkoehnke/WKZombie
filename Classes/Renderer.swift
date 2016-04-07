@@ -99,7 +99,11 @@ internal class Renderer : NSObject {
     internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: RenderCompletion) {
         let requestBlock : (operation: RenderOperation) -> Void = { operation in
             if let url = request.URL where url.fileURL {
-                operation.webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent ?? url)
+                if #available(OSX 10.11, *) {
+                    operation.webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent ?? url)
+                } else {
+                    operation.webView?.loadRequest(request)
+                }
             } else {
                 operation.webView?.loadRequest(request)
             }
@@ -166,7 +170,9 @@ internal class Renderer : NSObject {
     internal func clearCache() {
         let distantPast = NSDate.distantPast()
         NSHTTPCookieStorage.sharedHTTPCookieStorage().removeCookiesSinceDate(distantPast)
-        let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
-        WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(websiteDataTypes, modifiedSince: distantPast, completionHandler:{ })
+        if #available(OSX 10.11, *) {
+            let websiteDataTypes = Set([WKWebsiteDataTypeDiskCache, WKWebsiteDataTypeMemoryCache])
+            WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(websiteDataTypes, modifiedSince: distantPast, completionHandler:{ })
+        }
     }
 }

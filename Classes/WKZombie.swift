@@ -480,7 +480,7 @@ extension WKZombie {
     /**
      Prints the current state of the WKZombie browser to the console.
      */
-    func dump() {
+    public func dump() {
         _renderer.currentContent { (result, response, error) in
             if let output = (result as? NSData)?.toString() {
                 WKZLog(output)
@@ -493,7 +493,7 @@ extension WKZombie {
     /**
      Clears the cache/cookie data (such as login data, etc).
      */
-    func clearCache() {
+    public func clearCache() {
         _renderer.clearCache()
     }
 }

@@ -1,0 +1,18 @@
+source 'https://github.com/CocoaPods/Specs.git'
+install! 'cocoapods', :deterministic_uuids => false
+inhibit_all_warnings!
+use_frameworks!
+
+def import_pods
+    pod 'WKZombie', :path => '../'
+end
+
+target 'Example iOS' do
+	platform :ios, '9.1'
+	import_pods
+end
+
+target 'Example OSX' do
+	platform :osx, '10.11'
+	import_pods
+end
