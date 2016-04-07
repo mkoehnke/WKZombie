@@ -84,19 +84,28 @@ internal class RenderOperation : NSOperation {
         if self.cancelled {
             return
         } else {
-            HLLog("\(name ?? String())")
-            HLLog("[", lineBreak: false)
+            WKZLog("\(name ?? String())")
+            WKZLog("[", lineBreak: false)
             executing = true
-            setupReferences()
             startTimeout()
+            
+            // Wait for WKWebView to finish loading before starting the operation.
+            wait { [unowned self] in self.webView?.loading == false ?? true }
+            
+            setupReferences()
             requestBlock?(operation: self)
             
-            let updateInterval : NSTimeInterval = 0.1
-            var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
-            while !stopRunLoop && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
-                loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
-                HLLog(".", lineBreak: false)
-            }
+            // Loading
+            wait { [unowned self] in self.stopRunLoop }
+        }
+    }
+    
+    func wait(condition: () -> Bool) {
+        let updateInterval : NSTimeInterval = 0.1
+        var loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
+        while condition() == false && NSRunLoop.currentRunLoop().runMode(NSDefaultRunLoopMode, beforeDate: loopUntil) {
+            loopUntil = NSDate(timeIntervalSinceNow: updateInterval)
+            WKZLog(".", lineBreak: false)
         }
     }
     
@@ -112,12 +121,12 @@ internal class RenderOperation : NSOperation {
             executing = false
             finished = true
             
-            HLLog("]\n")
+            WKZLog("]\n")
         }
     }
     
     override func cancel() {
-        HLLog("Cancelling Rendering - \(name)")
+        WKZLog("Cancelling Rendering - \(name)")
         super.cancel()
         stopTimeout()
         cleanupReferences()
@@ -238,7 +247,7 @@ extension RenderOperation {
         switch postAction {
         case .Validate(let script): validate(script, webView: webView)
         case .Wait(let time): waitAndFinish(time, webView: webView)
-        default: HLLog("Something went wrong!")
+        default: WKZLog("Something went wrong!")
         }
         self.postAction = .None
     }

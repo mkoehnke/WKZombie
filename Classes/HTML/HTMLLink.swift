@@ -24,15 +24,7 @@
 import Foundation
 
 /// HTML Link class, which represents the <a> element in the DOM.
-public class HTMLLink : HTMLElement, HTMLFetchable {
-
-    //========================================
-    // MARK: Initializer
-    //========================================
-    
-    public required init?(element: AnyObject, XPathQuery: String? = nil) {
-        super.init(element: element, XPathQuery: XPathQuery)
-    }
+public class HTMLLink : HTMLClickable, HTMLFetchable {
     
     /// Returns the value of the href attribute of the link.
     public var href : String? {
@@ -52,8 +44,8 @@ public class HTMLLink : HTMLElement, HTMLFetchable {
     // MARK: Link Click Script
     //========================================
     
-    internal func actionScript() -> String? {
-        if let onClick = objectForKey("onClick") {
+    internal override func actionScript() -> String? {
+        if let onClick = super.actionScript() {
             return onClick
         } else if let href = href {
            return "window.location.href='\(href)';"
