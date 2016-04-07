@@ -496,3 +496,15 @@ extension NSData {
         return String(data: self, encoding: NSUTF8StringEncoding)
     }
 }
+
+
+func dispatch_sync_on_main_thread(block: dispatch_block_t) {
+    if NSThread.isMainThread() {
+        block()
+    } else {
+        dispatch_sync(dispatch_get_main_queue(), block)
+    }
+}
+
+
+

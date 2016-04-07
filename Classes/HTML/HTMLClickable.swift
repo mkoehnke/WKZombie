@@ -24,7 +24,7 @@ public class HTMLClickable : HTMLElement {
     //========================================
     
     internal func actionScript() -> String? {
-        if let onClick = objectForKey("onClick") {
+        if let onClick = objectForKey("onclick") {
             return onClick
         }
         return nil

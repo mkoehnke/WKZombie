@@ -139,6 +139,8 @@ func click<T: Page>(then: PostAction) -> (link : HTMLLink) -> Action<T>
 func press<T: Page>(then: PostAction) -> (button : HTMLButton) -> Action<T>
 ```
 
+**Note: HTMLButton only works if the "onClick" HTML-Attribute is present. If you want to submit a HTML form, you should use [Submit](#submit-a-form) instead.**
+
 ### Find HTML Elements
 
 The returned WKZombie Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#special-parameters).

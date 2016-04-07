@@ -95,7 +95,7 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func open<T: Page>(then postAction: PostAction = .None) -> (url: NSURL) -> Action<T> {
+    public func open<T: Page>(then postAction: PostAction) -> (url: NSURL) -> Action<T> {
         return { (url: NSURL) -> Action<T> in
             return Action() { [unowned self] completion in
                 let request = NSURLRequest(URL: url)
@@ -147,7 +147,7 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func submit<T: Page>(then postAction: PostAction = .None) -> (form: HTMLForm) -> Action<T> {
+    public func submit<T: Page>(then postAction: PostAction) -> (form: HTMLForm) -> Action<T> {
         return { (form: HTMLForm) -> Action<T> in
             return Action() { [unowned self] completion in
                 if let script = form.actionScript() {
@@ -188,7 +188,7 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func click<T: Page>(then postAction: PostAction = .None) -> (link : HTMLLink) -> Action<T> {
+    public func click<T: Page>(then postAction: PostAction) -> (link : HTMLLink) -> Action<T> {
         return { [unowned self] (link: HTMLLink) -> Action<T> in
             return self._touch(then: postAction)(clickable: link)
         }
@@ -213,7 +213,7 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func press<T: Page>(then postAction: PostAction = .None) -> (button : HTMLButton) -> Action<T> {
+    public func press<T: Page>(then postAction: PostAction) -> (button : HTMLButton) -> Action<T> {
         return { [unowned self] (button: HTMLButton) -> Action<T> in
             return self._touch(then: postAction)(clickable: button)
         }

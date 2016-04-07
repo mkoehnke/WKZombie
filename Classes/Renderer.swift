@@ -66,35 +66,43 @@ internal class Renderer : NSObject {
         /// webview will be added to the view hierarchy (between the 
         /// rootViewController's view and the key window.
         /// Until there's no better solution, we'll have to roll with this.
-        #if os(iOS)
-            let bounds = UIScreen.mainScreen().bounds
-            webView = WKWebView(frame: bounds, configuration: config)
-            if let window = UIApplication.sharedApplication().keyWindow {
-                webView.alpha = 0.01
-                window.insertSubview(webView, atIndex: 0)
-            }
-        #elseif os(OSX)
-            if let size = NSScreen.mainScreen()?.frame.size {
-                webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
-                if let window = NSApplication.sharedApplication().keyWindow {
-                    webView.alphaValue = 0.01
-                    window.contentView?.addSubview(webView)
+        dispatch_sync_on_main_thread {
+            #if os(iOS)
+                let bounds = UIScreen.mainScreen().bounds
+                self.webView = WKWebView(frame: bounds, configuration: config)
+                if let window = UIApplication.sharedApplication().keyWindow {
+                    self.webView.alpha = 0.01
+                    window.insertSubview(self.webView, atIndex: 0)
                 }
-            }
-        #endif
+            #elseif os(OSX)
+                if let size = NSScreen.mainScreen()?.frame.size {
+                    self.webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
+                    if let window = NSApplication.sharedApplication().keyWindow {
+                        self.webView.alphaValue = 0.01
+                        window.contentView?.addSubview(self.webView)
+                    }
+                }
+            #endif
+        }
     }
     
     deinit {
-        webView.removeFromSuperview()
+        dispatch_sync_on_main_thread {
+            self.webView.removeFromSuperview()
+        }
     }
-    
+        
     //========================================
     // MARK: Render Page
     //========================================
     
     internal func renderPageWithRequest(request: NSURLRequest, postAction: PostAction = .None, completionHandler: RenderCompletion) {
         let requestBlock : (operation: RenderOperation) -> Void = { operation in
-            operation.webView?.loadRequest(request)
+            if let url = request.URL where url.fileURL {
+                operation.webView?.loadFileURL(url, allowingReadAccessToURL: url.URLByDeletingLastPathComponent ?? url)
+            } else {
+                operation.webView?.loadRequest(request)
+            }
         }
         let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
         operation.name = "Request".uppercaseString + "\n\(request.URL?.absoluteString ?? String())"
