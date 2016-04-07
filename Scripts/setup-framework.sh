@@ -6,4 +6,5 @@ if ! command -v carthage > /dev/null; then
   exit 1
 fi
 
-carthage update --platform all --use-submodules --no-use-binaries
+#carthage update --platform all --use-submodules --no-use-binaries
+carthage update --platform all --no-use-binaries
