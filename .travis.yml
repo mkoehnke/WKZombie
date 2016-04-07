@@ -1,5 +1,6 @@
 language: objective-c
 osx_image: xcode7.3
-podfile: Demo/iOS/Podfile
-#script: xctool -workspace Demo/iOS/WKZombieDemo.xcworkspace -scheme WKZombieDemo -sdk iphonesimulator build #test
-script: xcodebuild -workspace WKZombie.xcworkspace -scheme WKZombie -sdk iphonesimulator build test
+before_install:
+  - bash update-carthage.sh 0.11
+script:
+  - Scripts/test-framework.sh

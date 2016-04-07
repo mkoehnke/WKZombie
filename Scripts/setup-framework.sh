@@ -1,4 +1,4 @@
-#!/usr/bin/env sh
+#!/bin/bash
 
 if ! command -v carthage > /dev/null; then
   printf 'Carthage is not installed.\n'
