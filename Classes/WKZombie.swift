@@ -327,7 +327,7 @@ extension WKZombie {
                 self._renderer.executeScript(script, completionHandler: { result, response, error in
                     let data = self._handleResponse(result as? NSData, response: response, error: error)
                     let output = data >>> decodeString
-                    WKZLog("Script Result".uppercaseString + "\n\(output)\n")
+                    Logger.log("Script Result".uppercaseString + "\n\(output)\n")
                     completion(output)
                 })
             }
@@ -483,9 +483,9 @@ extension WKZombie {
     public func dump() {
         _renderer.currentContent { (result, response, error) in
             if let output = (result as? NSData)?.toString() {
-                WKZLog(output)
+                Logger.log(output)
             } else {
-                WKZLog("No Output available.")
+                Logger.log("No Output available.")
             }
         }
     }

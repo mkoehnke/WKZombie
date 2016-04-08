@@ -51,6 +51,8 @@
 		BFD2E8FC1CB7F2C00085B499 /* RenderOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91211CB6A52300A58A7F /* RenderOperation.swift */; };
 		BFD2E8FD1CB7F2C00085B499 /* WKZombie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91221CB6A52300A58A7F /* WKZombie.swift */; };
 		BFD2E8FE1CB7F2C40085B499 /* JSONPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F911D1CB6A52300A58A7F /* JSONPage.swift */; };
+		BFD2E9231CB800FE0085B499 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2E9221CB800FE0085B499 /* Logger.swift */; };
+		BFD2E9241CB800FE0085B499 /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = BFD2E9221CB800FE0085B499 /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -97,6 +99,7 @@
 		BFD2E8921CB7BD890085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = "../../Library/Developer/Xcode/DerivedData/WKZombie-acuscrvsvqppnlaazfyfqegvxyue/Build/Products/Debug/hpple.framework"; sourceTree = "<group>"; };
 		BFD2E8B31CB7D0830085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = Carthage/Build/Mac/hpple.framework; sourceTree = "<group>"; };
 		BFD2E8B51CB7D0A80085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = Carthage/Build/iOS/hpple.framework; sourceTree = "<group>"; };
+		BFD2E9221CB800FE0085B499 /* Logger.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -140,6 +143,7 @@
 				BF1F91201CB6A52300A58A7F /* Renderer.swift */,
 				BF1F91211CB6A52300A58A7F /* RenderOperation.swift */,
 				BF1F91221CB6A52300A58A7F /* WKZombie.swift */,
+				BFD2E9221CB800FE0085B499 /* Logger.swift */,
 			);
 			path = Classes;
 			sourceTree = SOURCE_ROOT;
@@ -394,6 +398,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD2E9241CB800FE0085B499 /* Logger.swift in Sources */,
 				BFD2E8F31CB7F2BB0085B499 /* HTMLLink.swift in Sources */,
 				BFD2E8FC1CB7F2C00085B499 /* RenderOperation.swift in Sources */,
 				BFD2E8F91CB7F2C00085B499 /* Page.swift in Sources */,
@@ -419,6 +424,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD2E9231CB800FE0085B499 /* Logger.swift in Sources */,
 				BF1F91281CB6A52300A58A7F /* HTMLElement.swift in Sources */,
 				BF1F91291CB6A52300A58A7F /* HTMLFetchable.swift in Sources */,
 				BF1F912A1CB6A52300A58A7F /* HTMLForm.swift in Sources */,
