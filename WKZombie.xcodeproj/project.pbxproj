@@ -33,6 +33,24 @@
 		BF1F919B1CB6DC8000A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFD2E8B41CB7D0830085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8B31CB7D0830085B499 /* hpple.framework */; };
 		BFD2E8B61CB7D0A80085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8B51CB7D0A80085B499 /* hpple.framework */; };
+		BFD2E8ED1CB7F2BB0085B499 /* HTMLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91131CB6A52300A58A7F /* HTMLButton.swift */; };
+		BFD2E8EE1CB7F2BB0085B499 /* HTMLClickable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91141CB6A52300A58A7F /* HTMLClickable.swift */; };
+		BFD2E8EF1CB7F2BB0085B499 /* HTMLElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91151CB6A52300A58A7F /* HTMLElement.swift */; };
+		BFD2E8F01CB7F2BB0085B499 /* HTMLFetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91161CB6A52300A58A7F /* HTMLFetchable.swift */; };
+		BFD2E8F11CB7F2BB0085B499 /* HTMLForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91171CB6A52300A58A7F /* HTMLForm.swift */; };
+		BFD2E8F21CB7F2BB0085B499 /* HTMLImage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91181CB6A52300A58A7F /* HTMLImage.swift */; };
+		BFD2E8F31CB7F2BB0085B499 /* HTMLLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91191CB6A52300A58A7F /* HTMLLink.swift */; };
+		BFD2E8F41CB7F2BB0085B499 /* HTMLPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F911A1CB6A52300A58A7F /* HTMLPage.swift */; };
+		BFD2E8F51CB7F2BB0085B499 /* HTMLTable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F911B1CB6A52300A58A7F /* HTMLTable.swift */; };
+		BFD2E8F61CB7F2C00085B499 /* ContentFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F910F1CB6A52300A58A7F /* ContentFetcher.swift */; };
+		BFD2E8F71CB7F2C00085B499 /* Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91101CB6A52300A58A7F /* Definitions.swift */; };
+		BFD2E8F81CB7F2C00085B499 /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91111CB6A52300A58A7F /* Error.swift */; };
+		BFD2E8F91CB7F2C00085B499 /* Page.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F911E1CB6A52300A58A7F /* Page.swift */; };
+		BFD2E8FA1CB7F2C00085B499 /* Parser.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F911F1CB6A52300A58A7F /* Parser.swift */; };
+		BFD2E8FB1CB7F2C00085B499 /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91201CB6A52300A58A7F /* Renderer.swift */; };
+		BFD2E8FC1CB7F2C00085B499 /* RenderOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91211CB6A52300A58A7F /* RenderOperation.swift */; };
+		BFD2E8FD1CB7F2C00085B499 /* WKZombie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91221CB6A52300A58A7F /* WKZombie.swift */; };
+		BFD2E8FE1CB7F2C40085B499 /* JSONPage.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F911D1CB6A52300A58A7F /* JSONPage.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -376,6 +394,24 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				BFD2E8F31CB7F2BB0085B499 /* HTMLLink.swift in Sources */,
+				BFD2E8FC1CB7F2C00085B499 /* RenderOperation.swift in Sources */,
+				BFD2E8F91CB7F2C00085B499 /* Page.swift in Sources */,
+				BFD2E8F61CB7F2C00085B499 /* ContentFetcher.swift in Sources */,
+				BFD2E8FE1CB7F2C40085B499 /* JSONPage.swift in Sources */,
+				BFD2E8F21CB7F2BB0085B499 /* HTMLImage.swift in Sources */,
+				BFD2E8ED1CB7F2BB0085B499 /* HTMLButton.swift in Sources */,
+				BFD2E8F81CB7F2C00085B499 /* Error.swift in Sources */,
+				BFD2E8FA1CB7F2C00085B499 /* Parser.swift in Sources */,
+				BFD2E8F71CB7F2C00085B499 /* Definitions.swift in Sources */,
+				BFD2E8F41CB7F2BB0085B499 /* HTMLPage.swift in Sources */,
+				BFD2E8F11CB7F2BB0085B499 /* HTMLForm.swift in Sources */,
+				BFD2E8F51CB7F2BB0085B499 /* HTMLTable.swift in Sources */,
+				BFD2E8F01CB7F2BB0085B499 /* HTMLFetchable.swift in Sources */,
+				BFD2E8EF1CB7F2BB0085B499 /* HTMLElement.swift in Sources */,
+				BFD2E8FD1CB7F2C00085B499 /* WKZombie.swift in Sources */,
+				BFD2E8FB1CB7F2C00085B499 /* Renderer.swift in Sources */,
+				BFD2E8EE1CB7F2BB0085B499 /* HTMLClickable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
