@@ -25,14 +25,14 @@
 		BF1F91321CB6A52300A58A7F /* Renderer.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91201CB6A52300A58A7F /* Renderer.swift */; };
 		BF1F91331CB6A52300A58A7F /* RenderOperation.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91211CB6A52300A58A7F /* RenderOperation.swift */; };
 		BF1F91341CB6A52300A58A7F /* WKZombie.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91221CB6A52300A58A7F /* WKZombie.swift */; };
-		BF1F91361CB6A5FB00A58A7F /* Hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1F91351CB6A5FB00A58A7F /* Hpple.framework */; };
 		BF1F91641CB6AF9300A58A7F /* WKZombie.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFAECCAC1CB69C0200C87F3B /* WKZombie.framework */; };
 		BF1F91751CB6B03700A58A7F /* Tests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F916C1CB6AFAF00A58A7F /* Tests.swift */; };
 		BF1F91761CB6B03B00A58A7F /* HTMLResultPage.html in Resources */ = {isa = PBXBuildFile; fileRef = BF1F916F1CB6AFAF00A58A7F /* HTMLResultPage.html */; };
 		BF1F91771CB6B03E00A58A7F /* HTMLTestPage.html in Resources */ = {isa = PBXBuildFile; fileRef = BF1F91701CB6AFAF00A58A7F /* HTMLTestPage.html */; };
-		BF1F91961CB6D9BF00A58A7F /* Hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BF1F91951CB6D9BF00A58A7F /* Hpple.framework */; };
 		BF1F919A1CB6DC6E00A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF1F919B1CB6DC8000A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		BFD2E8911CB7BD7F0085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8901CB7BD7F0085B499 /* hpple.framework */; };
+		BFD2E8931CB7BD890085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8921CB7BD890085B499 /* hpple.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +75,8 @@
 		BF1F91971CB6DC6E00A58A7F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Framework/Info.plist; sourceTree = SOURCE_ROOT; };
 		BF1F91981CB6DC6E00A58A7F /* WKZombie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WKZombie.h; path = Framework/WKZombie.h; sourceTree = SOURCE_ROOT; };
 		BFAECCAC1CB69C0200C87F3B /* WKZombie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WKZombie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFD2E8901CB7BD7F0085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = "../../Library/Developer/Xcode/DerivedData/WKZombie-acuscrvsvqppnlaazfyfqegvxyue/Build/Products/Debug-iphoneos/hpple.framework"; sourceTree = "<group>"; };
+		BFD2E8921CB7BD890085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = "../../Library/Developer/Xcode/DerivedData/WKZombie-acuscrvsvqppnlaazfyfqegvxyue/Build/Products/Debug/hpple.framework"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,7 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF1F91961CB6D9BF00A58A7F /* Hpple.framework in Frameworks */,
+				BFD2E8931CB7BD890085B499 /* hpple.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -98,7 +100,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BF1F91361CB6A5FB00A58A7F /* Hpple.framework in Frameworks */,
+				BFD2E8911CB7BD7F0085B499 /* hpple.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -149,6 +151,8 @@
 		BF1F91371CB6A61100A58A7F /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				BFD2E8921CB7BD890085B499 /* hpple.framework */,
+				BFD2E8901CB7BD7F0085B499 /* hpple.framework */,
 				BF1F91951CB6D9BF00A58A7F /* Hpple.framework */,
 				BF1F91351CB6A5FB00A58A7F /* Hpple.framework */,
 			);
@@ -614,6 +618,7 @@
 				BF1F91691CB6AF9300A58A7F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BF1F918E1CB6D83400A58A7F /* Build configuration list for PBXNativeTarget "WKZombie OSX" */ = {
 			isa = XCConfigurationList;
@@ -622,6 +627,7 @@
 				BF1F91901CB6D83400A58A7F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BFAECCA61CB69C0200C87F3B /* Build configuration list for PBXProject "WKZombie" */ = {
 			isa = XCConfigurationList;
