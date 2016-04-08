@@ -32,7 +32,7 @@
 		BF1F919A1CB6DC6E00A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF1F919B1CB6DC8000A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BFD2E8911CB7BD7F0085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8901CB7BD7F0085B499 /* hpple.framework */; };
-		BFD2E8931CB7BD890085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8921CB7BD890085B499 /* hpple.framework */; };
+		BFD2E8941CB7BF0E0085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8921CB7BD890085B499 /* hpple.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -92,7 +92,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				BFD2E8931CB7BD890085B499 /* hpple.framework in Frameworks */,
+				BFD2E8941CB7BF0E0085B499 /* hpple.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
