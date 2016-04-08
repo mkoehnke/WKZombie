@@ -28,13 +28,13 @@ import Foundation
 //========================================
 
 public func WKZLog(message: String, lineBreak: Bool = true) {
-    #if DEBUG
+    if _isDebugAssertConfiguration() {
         if lineBreak {
             print("\(message)")
         } else {
             print("\(message)", terminator: "")
         }
-    #endif
+    }
 }
 
 public enum SearchType<T: HTMLElement> {
