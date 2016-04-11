@@ -1,6 +1,7 @@
 # WKZombie
 [![Twitter: @mkoehnke](https://img.shields.io/badge/contact-@mkoehnke-blue.svg?style=flat)](https://twitter.com/mkoehnke)
 [![Version](https://img.shields.io/cocoapods/v/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
+[![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
 [![License](https://img.shields.io/cocoapods/l/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Build Status](https://travis-ci.org/mkoehnke/WKZombie.svg?branch=master)](https://travis-ci.org/mkoehnke/WKZombie)
@@ -35,6 +36,18 @@ When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically
 The same navigation process can be reproduced **automatically** within an iOS/OSX app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
 <img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/WKZombie-Simulator-Demo.gif" />
+
+# Getting Started
+
+The best way to get started is to look at the sample project. Just run the following commands in your shell and you're good to go:
+
+```bash
+$ cd Example
+$ pod install
+$ open Example.xcworkspace
+```
+
+__Note:__ You will need CocoaPods 1.0 beta4 or higher.
 
 # Usage
 A WKZombie instance equates to a web session, which can be created using the following line:
@@ -280,6 +293,14 @@ Clears the cache/cookie data (such as login data, etc).
 func clearCache()
 ```
 
+### Logging
+
+WKZombie logging can be enabled or disabled by setting the following _Logger_ variable:
+
+```ruby
+Logger.enabled = false
+```
+
 ## HTML Elements
 
 When using WKZombie, the following classes are involved when interacting with websites:
@@ -353,20 +374,14 @@ func myOutput(result: Book?) {
 }
 ```
 
-<!---
 # Installation
-## CocoaPods
-[CocoaPods](http://cocoapods.org) is a dependency manager for Cocoa projects. You can install it with the following command:
 
-```bash
-$ gem install cocoapods
-```
+## [CocoaPods](http://cocoapods.org)
 
-To integrate the WKZombie into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate **WKZombie** into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
-platform :ios, '9.0'
 use_frameworks!
 
 pod 'WKZombie'
@@ -377,10 +392,29 @@ Then, run the following command:
 ```bash
 $ pod install
 ```
--->
+
+## [Carthage](http://github.com/Carthage/Carthage)
+
+To integrate `WKZombie` into your Xcode project using Carthage, specify it in your `Cartfile`:
+
+```ogdl
+github "mkoehnke/WKZombie"
+```
+
+# Contributing
+
+See the CONTRIBUTING file for how to help out. You'll need to run
+
+```bash
+$ Scripts/setup-framework.sh
+```
+
+in the root WKZombie directory to set up a buildable framework project (`WKZombie.xcworkspace`).
 
 # TODOs
 * More Unit Tests
+* More examples
+* Replace hpple with more 'Swifty' implementation
 * ScreenCapture
 * More descriptive errors
 
