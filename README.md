@@ -12,8 +12,6 @@ WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It wa
 
 It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
-For more information, see [Usage](#usage).
-
 ## Use Cases
 There are many use cases for a Headless Browser. Some of them are:
 
