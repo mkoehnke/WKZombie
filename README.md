@@ -6,6 +6,8 @@
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Build Status](https://travis-ci.org/mkoehnke/WKZombie.svg?branch=master)](https://travis-ci.org/mkoehnke/WKZombie)
 
+[<img align="left" src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/Logo.png" hspace="30" width="125px">](#logo)
+
 WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift (>= 2.2).
 
 It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
