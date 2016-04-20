@@ -53,8 +53,10 @@ __Note:__ You will need CocoaPods 1.0 beta4 or higher.
 A WKZombie instance equates to a web session, which can be created using the following line:
 
 ```ruby
-let browser = WKZombie(name: "Demo")
+self.browser = WKZombie(name: "Demo")
 ```
+
+Be sure to keep `browser` in a stored property for the time of being used.
 
 #### Chaining Actions
 
