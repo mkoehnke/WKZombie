@@ -75,8 +75,8 @@ internal class Renderer : NSObject {
                     window.insertSubview(self.webView, atIndex: 0)
                 }
             #elseif os(OSX)
-                let window = NSApplication.sharedApplication().keyWindow!
-                let contentView = window.contentView!
+                guard let window = NSApplication.sharedApplication().keyWindow else { preconditionFailure("missing key window") }
+                guard let contentView = window.contentView else { preconditionFailure("key window is missing content view") }
                 let size = contentView.bounds.size
 
                 self.webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
