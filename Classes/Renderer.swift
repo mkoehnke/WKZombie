@@ -75,13 +75,14 @@ internal class Renderer : NSObject {
                     window.insertSubview(self.webView, atIndex: 0)
                 }
             #elseif os(OSX)
-                if let size = NSScreen.mainScreen()?.frame.size {
-                    self.webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
-                    if let window = NSApplication.sharedApplication().keyWindow {
-                        self.webView.alphaValue = 0.01
-                        window.contentView?.addSubview(self.webView)
-                    }
-                }
+                guard let window = NSApplication.sharedApplication().keyWindow else { preconditionFailure("missing key window") }
+                guard let contentView = window.contentView else { preconditionFailure("key window is missing content view") }
+                let size = contentView.bounds.size
+
+                self.webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
+                self.webView.alphaValue = 0.01
+
+                contentView.addSubview(self.webView)
             #endif
         }
     }
