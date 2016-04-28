@@ -67,22 +67,25 @@ internal class Renderer : NSObject {
         /// rootViewController's view and the key window.
         /// Until there's no better solution, we'll have to roll with this.
         dispatch_sync_on_main_thread {
+            let warning = "The keyWindow or contentView is missing."
             #if os(iOS)
                 let bounds = UIScreen.mainScreen().bounds
                 self.webView = WKWebView(frame: bounds, configuration: config)
                 if let window = UIApplication.sharedApplication().keyWindow {
                     self.webView.alpha = 0.01
                     window.insertSubview(self.webView, atIndex: 0)
+                } else {
+                    Logger.log(warning)
                 }
             #elseif os(OSX)
-                guard let window = NSApplication.sharedApplication().keyWindow else { preconditionFailure("missing key window") }
-                guard let contentView = window.contentView else { preconditionFailure("key window is missing content view") }
-                let size = contentView.bounds.size
-
-                self.webView = WKWebView(frame: CGRect(origin: CGPointZero, size: size), configuration: config)
-                self.webView.alphaValue = 0.01
-
-                contentView.addSubview(self.webView)
+                self.webView = WKWebView(frame: CGRectZero, configuration: config)
+                if let window = NSApplication.sharedApplication().keyWindow, view = window.contentView {
+                    self.webView.frame = CGRect(origin: CGPointZero, size: view.frame.size)
+                    self.webView.alphaValue = 0.01
+                    view.addSubview(self.webView)
+                } else {
+                    Logger.log(warning)
+                }
             #endif
         }
     }
