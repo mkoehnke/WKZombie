@@ -78,11 +78,24 @@ Web page navigation is based on *Actions*, that can be executed **implicitly** w
 === myOutput
 ```
 
-In order to output or process the collected data, one can either use a closure or implement a custom function taking the WKZombie optional result as parameter:
+In order to output or process the collected data, one can either use a closure or implement a custom function either taking the an optional result or the resulting *Action* as parameter:
 
 ```ruby
 func myOutput(result: [HTMLTableColumn]?) {
   // handle result
+}
+```
+
+or
+
+```ruby
+func myOutput(result: Action<[HTMLTableColumn]>) {
+    result.start { output in
+        switch output {
+        case .Success(let value): // handle success
+        case .Error(let error): // handle error
+        }
+    }
 }
 ```
 

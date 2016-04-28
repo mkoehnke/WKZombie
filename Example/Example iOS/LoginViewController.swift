@@ -59,23 +59,33 @@ class LoginViewController : UIViewController {
            >>> browser.get(by: .Contains("href", "/account/"))
            >>> browser.click(then: .Wait(2.5))
            >>> browser.getAll(by: .Contains("class", "row-"))
-           === output
+           === handleResult
     }
     
     //========================================
     // MARK: Handle Result
     //========================================
     
-    func output(rows: [HTMLTableRow]?) {
-        if let rows = rows where rows.count > 0 {
-            let columns = rows.flatMap { $0.columns?.first }
-            performSegueWithIdentifier("detailSegue", sender: columns)
-        } else {
-            loginButton.enabled = true
-            activityIndicator.stopAnimating()
-            browser.dump()
-            browser.clearCache()
+    func handleResult(result: Action<[HTMLTableRow]>) {
+        result.start { output in
+            switch output {
+            case .Success(let value): self.outputResult(value)
+            case .Error(let error): self.handleError(error)
+            }
         }
+    }
+    
+    func outputResult(rows: [HTMLTableRow]) {
+        let columns = rows.flatMap { $0.columns?.first }
+        performSegueWithIdentifier("detailSegue", sender: columns)
+    }
+    
+    func handleError(error: ActionError) {
+        print("Error loading page: \(error)")
+        loginButton.enabled = true
+        activityIndicator.stopAnimating()
+        browser.dump()
+        browser.clearCache()
     }
     
     //========================================

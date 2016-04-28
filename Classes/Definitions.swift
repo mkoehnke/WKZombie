@@ -176,6 +176,17 @@ public func ===<T>(a: Action<T>, completion: T? -> Void) {
     }
 }
 
+/**
+ This operator passes the left-hand side Action and passes it to the function/closure on
+ the right-hand side.
+ 
+ - parameter a:      An Action.
+ - parameter output: An output function/closure.
+ */
+public func ===<T>(a: Action<T>, output: Action<T> -> Void) {
+    output(a)
+}
+
 internal func parseResponse(response: Response) -> Result<NSData> {
     guard let data = response.data else {
         return .Error(.NetworkRequestFailure)
