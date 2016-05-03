@@ -294,6 +294,8 @@ The returned WKZombie Action will execute the specified action (with the result 
 func collect<T>(f: T -> Action<T>, until: T -> Bool) -> (initial: T) -> Action<[T]>
 ```
 
+## Test / Debug
+
 ### Dump
 
 This command is useful for **debugging**. It prints out the current state of the WKZombie browser represented as *DOM*.
@@ -315,6 +317,15 @@ WKZombie logging can be enabled or disabled by setting the following _Logger_ va
 ```ruby
 Logger.enabled = false
 ```
+
+### User Agent
+
+The user agent of WKZombie can be changed by setting the following variable:
+
+```ruby
+browser.userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.32 (KHTML, like Gecko) Mobile/13A4254v"
+```
+
 
 ## HTML Elements
 
