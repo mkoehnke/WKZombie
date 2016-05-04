@@ -41,6 +41,16 @@ public class WKZombie : NSObject {
         }
     }
     
+    /// The custom user agent string or nil if no custom user agent string has been set.
+    public var userAgent : String? {
+        get {
+            return self._renderer.userAgent
+        }
+        set {
+            self._renderer.userAgent = newValue
+        }
+    }
+    
     /**
      The designated initializer.
      

@@ -86,6 +86,20 @@ class Tests: XCTestCase {
         waitForExpectationsWithTimeout(20.0, handler: nil)
     }
     
+    func testUserAgent() {
+        let expectation = expectationWithDescription("UserAgent Test Done.")
+        browser.userAgent = "WKZombie"
+    
+        browser.open(startURL())
+        >>> browser.execute("navigator.userAgent")
+        === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
     //========================================
     // MARK: Helper Methods
     //========================================

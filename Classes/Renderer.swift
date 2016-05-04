@@ -31,6 +31,15 @@ internal class Renderer : NSObject {
     
     var loadMediaContent : Bool = true
     
+    var userAgent : String? {
+        get {
+            return self.webView.customUserAgent
+        }
+        set {
+            self.webView.customUserAgent = newValue
+        }
+    }
+    
     private var renderQueue : NSOperationQueue = {
         let instance = NSOperationQueue()
         instance.maxConcurrentOperationCount = 1
