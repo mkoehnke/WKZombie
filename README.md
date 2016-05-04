@@ -78,7 +78,7 @@ Web page navigation is based on *Actions*, that can be executed **implicitly** w
 === myOutput
 ```
 
-In order to output or process the collected data, one can either use a closure or implement a custom function either taking the an optional result or the resulting *Action* as parameter:
+In order to output or process the collected data, one can either use a closure or implement a custom function taking the result as parameter:
 
 ```ruby
 func myOutput(result: [HTMLTableColumn]?) {
@@ -89,13 +89,11 @@ func myOutput(result: [HTMLTableColumn]?) {
 or
 
 ```ruby
-func myOutput(result: Action<[HTMLTableColumn]>) {
-    result.start { output in
-        switch output {
-        case .Success(let value): // handle success
-        case .Error(let error): // handle error
-        }
-    }
+func myOutput(result: Result<[HTMLTableColumn]>) {
+  switch result {
+  case .Success(let value): // handle success
+  case .Error(let error): // handle error
+  }
 }
 ```
 

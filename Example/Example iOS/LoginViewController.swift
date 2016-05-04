@@ -66,12 +66,10 @@ class LoginViewController : UIViewController {
     // MARK: Handle Result
     //========================================
     
-    func handleResult(result: Action<[HTMLTableRow]>) {
-        result.start { output in
-            switch output {
-            case .Success(let value): self.outputResult(value)
-            case .Error(let error): self.handleError(error)
-            }
+    func handleResult(result: Result<[HTMLTableRow]>) {
+        switch result {
+        case .Success(let value): self.outputResult(value)
+        case .Error(let error): self.handleError(error)
         }
     }
     

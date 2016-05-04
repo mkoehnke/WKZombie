@@ -177,14 +177,16 @@ public func ===<T>(a: Action<T>, completion: T? -> Void) {
 }
 
 /**
- This operator passes the left-hand side Action and passes it to the function/closure on
- the right-hand side.
+ This operator passes the left-hand side Action and passes the result it to the 
+ function/closure on the right-hand side.
  
- - parameter a:      An Action.
- - parameter output: An output function/closure.
+ - parameter a:          An Action.
+ - parameter completion: An output function/closure.
  */
-public func ===<T>(a: Action<T>, output: Action<T> -> Void) {
-    output(a)
+public func ===<T>(a: Action<T>, completion: Result<T> -> Void) {
+    return a.start { result in
+        completion(result)
+    }
 }
 
 internal func parseResponse(response: Response) -> Result<NSData> {
