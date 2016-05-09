@@ -172,10 +172,14 @@ internal class Renderer : NSObject {
         }
     }
     
-    //========================================
-    // MARK: Cache
-    //========================================
-    
+}
+
+
+//========================================
+// MARK: Cache
+//========================================
+
+extension Renderer {
     internal func clearCache() {
         let distantPast = NSDate.distantPast()
         NSHTTPCookieStorage.sharedHTTPCookieStorage().removeCookiesSinceDate(distantPast)
@@ -183,3 +187,20 @@ internal class Renderer : NSObject {
         WKWebsiteDataStore.defaultDataStore().removeDataOfTypes(websiteDataTypes, modifiedSince: distantPast, completionHandler:{ })
     }
 }
+
+
+//========================================
+// MARK: Snapshot
+//========================================
+
+#if os(iOS)
+extension Renderer {
+    internal func screenshot() -> UIImage? {
+        UIGraphicsBeginImageContextWithOptions(webView.bounds.size, true, 0)
+        webView.scrollView.drawViewHierarchyInRect(webView.bounds, afterScreenUpdates: true)
+        let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        return screenshot
+    }
+}
+#endif
