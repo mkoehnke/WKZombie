@@ -34,7 +34,12 @@ class LoginViewController : UIViewController {
     let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
     
     lazy var browser : WKZombie = {
-        return WKZombie(name: "Developer Portal")
+        let instance = WKZombie(name: "Developer Portal")
+        instance.snapshotHandler = { (snapshot : Snapshot) in
+            let image = snapshot.image
+            print("snap")
+        }
+        return instance
     }()
     
     @IBAction func loginButtonTouched(button: UIButton) {
@@ -56,6 +61,7 @@ class LoginViewController : UIViewController {
            >>> browser.setAttribute("value", value: password)
            >>> browser.get(by: .Name("form2"))
            >>> browser.submit(then: .Wait(2.0))
+           >>> browser.snap()
            >>> browser.get(by: .Contains("href", "/account/"))
            >>> browser.click(then: .Wait(2.5))
            >>> browser.getAll(by: .Contains("class", "row-"))

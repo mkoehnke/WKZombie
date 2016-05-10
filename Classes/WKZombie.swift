@@ -51,6 +51,10 @@ public class WKZombie : NSObject {
         }
     }
     
+    #if os(iOS)
+    public var snapshotHandler : SnapshotHandler?
+    #endif
+    
     /**
      The designated initializer.
      
@@ -481,6 +485,30 @@ extension WKZombie {
     
 }
 
+//========================================
+// MARK: Snapshot Methods
+//========================================
+
+#if os(iOS)
+extension WKZombie {
+    public func snap<T: Page>() -> (page: T) -> Action<T> {
+        return { (page: T) -> Action<T> in
+            return Action() { [unowned self] completion in
+                if let snapshotHandler = self.snapshotHandler {
+                    if let snapshot = self._renderer.snapshot() {
+                        snapshotHandler(snapshot)
+                        completion(Result.Success(page))
+                    } else {
+                        completion(Result.Error(.SnapshotFailure))
+                    }
+                } else {
+                    completion(Result.Success(page))
+                }
+            }
+        }
+    }
+}
+#endif
 
 //========================================
 // MARK: Debug Methods

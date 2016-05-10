@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		BF09CBF31CE278B0009B97D2 /* Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF09CBF21CE278B0009B97D2 /* Snapshot.swift */; };
 		BF1F91231CB6A52300A58A7F /* ContentFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F910F1CB6A52300A58A7F /* ContentFetcher.swift */; };
 		BF1F91241CB6A52300A58A7F /* Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91101CB6A52300A58A7F /* Definitions.swift */; };
 		BF1F91251CB6A52300A58A7F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91111CB6A52300A58A7F /* Error.swift */; };
@@ -66,6 +67,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		BF09CBF21CE278B0009B97D2 /* Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapshot.swift; sourceTree = "<group>"; };
 		BF1F910F1CB6A52300A58A7F /* ContentFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentFetcher.swift; sourceTree = "<group>"; };
 		BF1F91101CB6A52300A58A7F /* Definitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Definitions.swift; sourceTree = "<group>"; };
 		BF1F91111CB6A52300A58A7F /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
@@ -144,6 +146,7 @@
 				BF1F91211CB6A52300A58A7F /* RenderOperation.swift */,
 				BF1F91221CB6A52300A58A7F /* WKZombie.swift */,
 				BFD2E9221CB800FE0085B499 /* Logger.swift */,
+				BF09CBF21CE278B0009B97D2 /* Snapshot.swift */,
 			);
 			path = Classes;
 			sourceTree = SOURCE_ROOT;
@@ -433,6 +436,7 @@
 				BF1F91331CB6A52300A58A7F /* RenderOperation.swift in Sources */,
 				BF1F912B1CB6A52300A58A7F /* HTMLImage.swift in Sources */,
 				BF1F91341CB6A52300A58A7F /* WKZombie.swift in Sources */,
+				BF09CBF31CE278B0009B97D2 /* Snapshot.swift in Sources */,
 				BF1F912E1CB6A52300A58A7F /* HTMLTable.swift in Sources */,
 				BF1F912F1CB6A52300A58A7F /* JSONPage.swift in Sources */,
 				BF1F912C1CB6A52300A58A7F /* HTMLLink.swift in Sources */,

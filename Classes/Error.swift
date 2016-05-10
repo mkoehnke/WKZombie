@@ -39,6 +39,7 @@ public enum ActionError: ErrorType {
     case NotFound
     case ParsingFailure
     case TransformFailure
+    case SnapshotFailure
 }
 
 extension ActionError: CustomDebugStringConvertible {
@@ -48,6 +49,7 @@ extension ActionError: CustomDebugStringConvertible {
         case .NotFound: return "Not Found"
         case .ParsingFailure: return "Parsing Failure"
         case .TransformFailure: return "Transform Failure"
+        case .SnapshotFailure: return "Snapshot Failure"
         }
     }
 }

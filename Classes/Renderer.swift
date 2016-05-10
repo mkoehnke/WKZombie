@@ -195,12 +195,25 @@ extension Renderer {
 
 #if os(iOS)
 extension Renderer {
-    internal func screenshot() -> UIImage? {
+    internal func snapshot() -> Snapshot? {
         UIGraphicsBeginImageContextWithOptions(webView.bounds.size, true, 0)
         webView.scrollView.drawViewHierarchyInRect(webView.bounds, afterScreenUpdates: true)
-        let screenshot = UIGraphicsGetImageFromCurrentImageContext()
+        let snapshot = UIGraphicsGetImageFromCurrentImageContext()
         UIGraphicsEndImageContext()
-        return screenshot
+        
+        let snapshotData = UIImagePNGRepresentation(snapshot)
+        let snapshotIdentifier = NSProcessInfo.processInfo().globallyUniqueString
+        
+        let fileName = String(format: "wkzombie-snapshot-%@", snapshotIdentifier)
+        let fileURL = NSURL(fileURLWithPath: NSTemporaryDirectory()).URLByAppendingPathComponent(fileName)
+
+        do {
+            try snapshotData?.writeToURL(fileURL, options: .AtomicWrite)
+            return Snapshot(file: fileURL, page: webView.URL)
+        } catch let error as NSError {
+            Logger.log("Could not take snapshot: \(error.localizedDescription)")
+            return nil
+        }
     }
 }
 #endif
