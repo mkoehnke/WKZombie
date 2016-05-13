@@ -51,7 +51,13 @@ public class Snapshot {
         return fileURL
     }
     
-    public func moveTo(directory directory: String) throws {
-        
+    public func moveTo(directory: NSURL) throws -> NSURL? {
+        let fileManager = NSFileManager.defaultManager()
+        if let fileName = file.lastPathComponent {
+            let destination = directory.URLByAppendingPathComponent(fileName)
+            try fileManager.moveItemAtURL(file, toURL: destination)
+            return destination
+        }
+        return nil
     }
 }
