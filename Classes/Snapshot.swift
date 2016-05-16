@@ -16,6 +16,7 @@ public typealias SnapshotImage = NSImage
     
 public typealias SnapshotHandler = Snapshot -> Void
 
+/// WKZombie Snapshot Helper Class
 public class Snapshot {
     public let page : NSURL?
     public let file : NSURL
