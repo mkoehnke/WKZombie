@@ -52,6 +52,7 @@ public class WKZombie : NSObject {
     }
     
     #if os(iOS)
+    /// Snapshot Handler
     public var snapshotHandler : SnapshotHandler?
     #endif
     
@@ -485,29 +486,37 @@ extension WKZombie {
     
 }
 
+#if os(iOS)
+    
 //========================================
 // MARK: Snapshot Methods
 //========================================
-
-#if os(iOS)
+    
 extension WKZombie {
-    public func snap<T: Page>() -> (page: T) -> Action<T> {
-        return { (page: T) -> Action<T> in
-            return Action() { [unowned self] completion in
-                if let snapshotHandler = self.snapshotHandler {
-                    if let snapshot = self._renderer.snapshot() {
-                        snapshotHandler(snapshot)
-                        completion(Result.Success(page))
-                    } else {
-                        completion(Result.Error(.SnapshotFailure))
-                    }
-                } else {
-                    completion(Result.Success(page))
-                }
-            }
+    
+    private func snap() -> Bool {
+        if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
+            snapshotHandler(snapshot)
+            return true
+        }
+        return false
+    }
+    
+    /**
+     The returned WKZombie Action will make a snapshot of the current page.
+     Note: This method only works under iOS. Also, a snapshotHandler must be registered.
+     
+     - returns: A snapshot class.
+     */
+    public func snap<T>() -> (element: T) -> Action<T> {
+        return { (element: T) -> Action<T> in
+            return Action<T>(operation: { [unowned self] completion in
+                completion(self.snap() ? Result.Success(element) : Result.Error(.SnapshotFailure))
+            })
         }
     }
 }
+    
 #endif
 
 //========================================
