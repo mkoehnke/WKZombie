@@ -52,6 +52,15 @@ public class Snapshot {
         return fileURL
     }
     
+    /**
+     Moves the snapshot file into the specified directory.
+     
+     - parameter directory: A Directory URL.
+     
+     - throws: Exception if the moving operation fails.
+     
+     - returns: The URL with the new file location.
+     */
     public func moveTo(directory: NSURL) throws -> NSURL? {
         let fileManager = NSFileManager.defaultManager()
         if let fileName = file.lastPathComponent {

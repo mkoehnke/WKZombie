@@ -254,17 +254,3 @@ extension RenderOperation {
     
 }
 
-//========================================
-// MARK: Helper Methods
-//========================================
-
-private func delay(time: NSTimeInterval, completion: () -> Void) {
-    if let currentQueue = NSOperationQueue.currentQueue()?.underlyingQueue {
-        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
-        dispatch_after(delayTime, currentQueue) {
-            completion()
-        }
-    } else {
-        completion()
-    }
-}

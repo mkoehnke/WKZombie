@@ -26,6 +26,12 @@ import WebKit
 
 public class WKZombie : NSObject {
     
+    /// A shared instance of `Manager`, used by top-level WKZombie methods,
+    /// and suitable for multiple web sessions.
+    public static let sharedInstance: WKZombie = {
+        return WKZombie()
+    }()
+    
     private var _renderer : Renderer!
     private var _fetcher : ContentFetcher!
     
@@ -492,15 +498,18 @@ extension WKZombie {
 // MARK: Snapshot Methods
 //========================================
     
-extension WKZombie {
+/**
+ This is a convenience operator for the _snap()_ command. It is equal to the __>>>__ operator with the difference
+ that a snapshot will be taken after the left Action has been finished.
+ */
+public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
+    return a >>> snap() >>> f
+}
+
+/// Default delay before taking snapshots
+private let DefaultSnapshotDelay = 0.1
     
-    private func snap() -> Bool {
-        if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
-            snapshotHandler(snapshot)
-            return true
-        }
-        return false
-    }
+extension WKZombie {
     
     /**
      The returned WKZombie Action will make a snapshot of the current page.
@@ -511,7 +520,14 @@ extension WKZombie {
     public func snap<T>() -> (element: T) -> Action<T> {
         return { (element: T) -> Action<T> in
             return Action<T>(operation: { [unowned self] completion in
-                completion(self.snap() ? Result.Success(element) : Result.Error(.SnapshotFailure))
+                delay(DefaultSnapshotDelay, completion: {
+                    if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
+                        snapshotHandler(snapshot)
+                        completion(Result.Success(element))
+                    } else {
+                        completion(Result.Error(.SnapshotFailure))
+                    }
+                })
             })
         }
     }
