@@ -31,21 +31,21 @@ class LoginViewController : UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loginButton : UIButton!
     
-    let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
-    
+    private let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
+    private var snapshots = [Snapshot]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        WKZombie.sharedInstance.snapshotHandler = { snapshot in
-            let image = snapshot.image!
-            print("snapshot")
+        WKZombie.sharedInstance.snapshotHandler = { [weak self] snapshot in
+            self?.snapshots.append(snapshot)
         }
     }
     
     @IBAction func loginButtonTouched(button: UIButton) {
         guard let user = nameTextField.text, password = passwordTextField.text else { return }
         button.enabled = false
+        snapshots.removeAll()
         activityIndicator.startAnimating()
         getProvisioningProfiles(url, user: user, password: password)
     }
@@ -99,8 +99,9 @@ class LoginViewController : UIViewController {
     
     override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
         if segue.identifier == "detailSegue" {
-            if let vc = segue.destinationViewController as? ViewController, items = sender as? [HTMLTableColumn] {
+            if let vc = segue.destinationViewController as? ProfileViewController, items = sender as? [HTMLTableColumn] {
                 vc.items = items
+                vc.snapshots = snapshots
             }
         }
     }

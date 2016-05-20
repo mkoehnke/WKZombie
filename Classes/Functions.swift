@@ -23,6 +23,11 @@
 
 import Foundation
 
+
+/**
+ Convenience functions for accessing the WKZombie shared instance functionality.
+ */
+
 //========================================
 // MARK: Get Page
 //========================================
@@ -273,3 +278,24 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
     }
     
 #endif
+
+
+//========================================
+// MARK: Debug Methods
+//========================================
+
+
+/**
+ Prints the current state of the WKZombie browser to the console.
+ */
+public func dump() {
+    WKZombie.sharedInstance.dump()
+}
+
+/**
+ Clears the cache/cookie data (such as login data, etc).
+ */
+public func clearCache() {
+    WKZombie.sharedInstance.clearCache()
+}
+

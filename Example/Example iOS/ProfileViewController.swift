@@ -24,13 +24,13 @@
 import UIKit
 import WKZombie
 
-class ViewController: UITableViewController {
+class ProfileViewController: UITableViewController {
 
     var items : [HTMLTableColumn]?
+    var snapshots : [Snapshot]?
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        title = "Provisioning Profiles"
         navigationItem.hidesBackButton = true
     }
     
@@ -43,6 +43,13 @@ class ViewController: UITableViewController {
         let item = items?[indexPath.row].children()?.first as HTMLElement?
         cell.textLabel?.text = item?.text
         return cell
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "snapshotSegue" {
+            let vc = segue.destinationViewController as? SnapshotViewController
+            vc?.snapshots = snapshots
+        }
     }
 }
 
