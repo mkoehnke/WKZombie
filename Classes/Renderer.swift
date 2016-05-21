@@ -196,6 +196,7 @@ extension Renderer {
 #if os(iOS)
 extension Renderer {
     internal func snapshot() -> Snapshot? {
+        precondition(webView.superview != nil, "WKWebView has no superview. Cannot take snapshot.")
         UIGraphicsBeginImageContextWithOptions(webView.bounds.size, true, 0)
         webView.scrollView.drawViewHierarchyInRect(webView.bounds, afterScreenUpdates: true)
         let snapshot = UIGraphicsGetImageFromCurrentImageContext()

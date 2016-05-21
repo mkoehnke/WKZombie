@@ -110,7 +110,7 @@ extension Result: CustomDebugStringConvertible {
 
 internal struct Response {
     var data: NSData?
-    var statusCode: Int = Static.DefaultStatusCodeError
+    var statusCode: Int = ActionError.Static.DefaultStatusCodeError
     
     init(data: NSData?, urlResponse: NSURLResponse) {
         self.data = data
@@ -126,7 +126,6 @@ internal struct Response {
 }
 
 infix operator >>> { associativity left precedence 150 }
-infix operator >>* { associativity left precedence 150 }
 internal func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
     case let .Success(x):   return f(x)

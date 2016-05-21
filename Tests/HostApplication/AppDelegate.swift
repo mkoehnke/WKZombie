@@ -1,5 +1,5 @@
 //
-// Logger.swift
+// TestAppDelegate.swift
 //
 // Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
@@ -21,20 +21,21 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
+import UIKit
 
-/// WKZombie Console Logger
-public class Logger : NSObject {
-    
-    public static var enabled : Bool = true
-    
-    public class func log(message: String, lineBreak: Bool = true) {
-        if enabled {
-            if lineBreak {
-                print("\(message)")
-            } else {
-                print("\(message)", terminator: "")
-            }
-        }
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
+
+    var window: UIWindow?
+    var viewController : UIViewController?
+
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        window?.backgroundColor = .whiteColor()
+        viewController = UIViewController(nibName: nil, bundle: nil)
+        window?.rootViewController = viewController
+        window?.makeKeyAndVisible()
+        return true
     }
 }
+

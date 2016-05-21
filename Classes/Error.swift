@@ -23,11 +23,6 @@
 
 import Foundation
 
-internal struct Static {
-    static let DefaultStatusCodeSuccess : Int = 200
-    static let DefaultStatusCodeError : Int = 500
-}
-
 public protocol ErrorType { }
 
 public enum NoError: ErrorType { }
@@ -40,6 +35,11 @@ public enum ActionError: ErrorType {
     case ParsingFailure
     case TransformFailure
     case SnapshotFailure
+    
+    internal struct Static {
+        static let DefaultStatusCodeSuccess : Int = 200
+        static let DefaultStatusCodeError : Int = 500
+    }
 }
 
 extension ActionError: CustomDebugStringConvertible {

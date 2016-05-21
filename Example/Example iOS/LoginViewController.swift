@@ -89,8 +89,8 @@ class LoginViewController : UIViewController {
         loginButton.enabled = true
         activityIndicator.stopAnimating()
         
-        WKZombie.sharedInstance.dump()
-        WKZombie.sharedInstance.clearCache()
+        dump()
+        clearCache()
     }
     
     //========================================

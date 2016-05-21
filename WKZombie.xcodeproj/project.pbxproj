@@ -33,6 +33,9 @@
 		BF1F919A1CB6DC6E00A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF1F919B1CB6DC8000A58A7F /* WKZombie.h in Headers */ = {isa = PBXBuildFile; fileRef = BF1F91981CB6DC6E00A58A7F /* WKZombie.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		BF455D261CED11AE006D97D0 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF455D251CED11AE006D97D0 /* Functions.swift */; };
+		BF455D9E1CEFBF99006D97D0 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF455D9D1CEFBF99006D97D0 /* AppDelegate.swift */; };
+		BF455DAE1CEFC077006D97D0 /* Default-568h@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = BF455DAD1CEFC077006D97D0 /* Default-568h@2x.png */; };
+		BF455DB11CEFC267006D97D0 /* Functions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF455D251CED11AE006D97D0 /* Functions.swift */; };
 		BFD2E8B41CB7D0830085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8B31CB7D0830085B499 /* hpple.framework */; };
 		BFD2E8B61CB7D0A80085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8B51CB7D0A80085B499 /* hpple.framework */; };
 		BFD2E8ED1CB7F2BB0085B499 /* HTMLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91131CB6A52300A58A7F /* HTMLButton.swift */; };
@@ -64,6 +67,13 @@
 			proxyType = 1;
 			remoteGlobalIDString = BFAECCAB1CB69C0200C87F3B;
 			remoteInfo = WKZombie;
+		};
+		BF455DAF1CEFC127006D97D0 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = BFAECCA31CB69C0200C87F3B /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = BF455D9A1CEFBF99006D97D0;
+			remoteInfo = HostApplication;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -98,6 +108,10 @@
 		BF1F91971CB6DC6E00A58A7F /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = Framework/Info.plist; sourceTree = SOURCE_ROOT; };
 		BF1F91981CB6DC6E00A58A7F /* WKZombie.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = WKZombie.h; path = Framework/WKZombie.h; sourceTree = SOURCE_ROOT; };
 		BF455D251CED11AE006D97D0 /* Functions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Functions.swift; sourceTree = "<group>"; };
+		BF455D9B1CEFBF99006D97D0 /* HostApplication.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = HostApplication.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		BF455D9D1CEFBF99006D97D0 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		BF455DA91CEFBF99006D97D0 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BF455DAD1CEFC077006D97D0 /* Default-568h@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Default-568h@2x.png"; sourceTree = "<group>"; };
 		BFAECCAC1CB69C0200C87F3B /* WKZombie.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = WKZombie.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		BFD2E8901CB7BD7F0085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = "../../Library/Developer/Xcode/DerivedData/WKZombie-acuscrvsvqppnlaazfyfqegvxyue/Build/Products/Debug-iphoneos/hpple.framework"; sourceTree = "<group>"; };
 		BFD2E8921CB7BD890085B499 /* hpple.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = hpple.framework; path = "../../Library/Developer/Xcode/DerivedData/WKZombie-acuscrvsvqppnlaazfyfqegvxyue/Build/Products/Debug/hpple.framework"; sourceTree = "<group>"; };
@@ -120,6 +134,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				BFD2E8B41CB7D0830085B499 /* hpple.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF455D981CEFBF99006D97D0 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -218,11 +239,23 @@
 			path = Resources;
 			sourceTree = "<group>";
 		};
+		BF455D9C1CEFBF99006D97D0 /* HostApplication */ = {
+			isa = PBXGroup;
+			children = (
+				BF455D9D1CEFBF99006D97D0 /* AppDelegate.swift */,
+				BF455DA91CEFBF99006D97D0 /* Info.plist */,
+				BF455DAD1CEFC077006D97D0 /* Default-568h@2x.png */,
+			);
+			name = HostApplication;
+			path = Tests/HostApplication;
+			sourceTree = "<group>";
+		};
 		BFAECCA21CB69C0200C87F3B = {
 			isa = PBXGroup;
 			children = (
 				BFAECCAE1CB69C0200C87F3B /* WKZombie */,
 				BF1F916A1CB6AFAF00A58A7F /* Tests */,
+				BF455D9C1CEFBF99006D97D0 /* HostApplication */,
 				BFAECCAD1CB69C0200C87F3B /* Products */,
 				BF1F91371CB6A61100A58A7F /* Frameworks */,
 			);
@@ -234,6 +267,7 @@
 				BFAECCAC1CB69C0200C87F3B /* WKZombie.framework */,
 				BF1F915F1CB6AF9300A58A7F /* Tests.xctest */,
 				BF1F917D1CB6D83400A58A7F /* WKZombie.framework */,
+				BF455D9B1CEFBF99006D97D0 /* HostApplication.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -282,6 +316,7 @@
 			);
 			dependencies = (
 				BF1F91661CB6AF9300A58A7F /* PBXTargetDependency */,
+				BF455DB01CEFC127006D97D0 /* PBXTargetDependency */,
 			);
 			name = Tests;
 			productName = WKZombieTests;
@@ -305,6 +340,23 @@
 			productName = "WKZombie OSX";
 			productReference = BF1F917D1CB6D83400A58A7F /* WKZombie.framework */;
 			productType = "com.apple.product-type.framework";
+		};
+		BF455D9A1CEFBF99006D97D0 /* HostApplication */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BF455DAA1CEFBF99006D97D0 /* Build configuration list for PBXNativeTarget "HostApplication" */;
+			buildPhases = (
+				BF455D971CEFBF99006D97D0 /* Sources */,
+				BF455D981CEFBF99006D97D0 /* Frameworks */,
+				BF455D991CEFBF99006D97D0 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = HostApplication;
+			productName = HostApplication;
+			productReference = BF455D9B1CEFBF99006D97D0 /* HostApplication.app */;
+			productType = "com.apple.product-type.application";
 		};
 		BFAECCAB1CB69C0200C87F3B /* WKZombie */ = {
 			isa = PBXNativeTarget;
@@ -336,9 +388,13 @@
 				TargetAttributes = {
 					BF1F915E1CB6AF9300A58A7F = {
 						CreatedOnToolsVersion = 7.3;
+						TestTargetID = BF455D9A1CEFBF99006D97D0;
 					};
 					BF1F917C1CB6D83400A58A7F = {
 						CreatedOnToolsVersion = 7.3;
+					};
+					BF455D9A1CEFBF99006D97D0 = {
+						CreatedOnToolsVersion = 7.3.1;
 					};
 					BFAECCAB1CB69C0200C87F3B = {
 						CreatedOnToolsVersion = 7.3;
@@ -361,6 +417,7 @@
 				BFAECCAB1CB69C0200C87F3B /* WKZombie */,
 				BF1F917C1CB6D83400A58A7F /* WKZombie OSX */,
 				BF1F915E1CB6AF9300A58A7F /* Tests */,
+				BF455D9A1CEFBF99006D97D0 /* HostApplication */,
 			);
 		};
 /* End PBXProject section */
@@ -379,6 +436,14 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF455D991CEFBF99006D97D0 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF455DAE1CEFC077006D97D0 /* Default-568h@2x.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -407,6 +472,7 @@
 				BFD2E9241CB800FE0085B499 /* Logger.swift in Sources */,
 				BFD2E8F31CB7F2BB0085B499 /* HTMLLink.swift in Sources */,
 				BFD2E8FC1CB7F2C00085B499 /* RenderOperation.swift in Sources */,
+				BF455DB11CEFC267006D97D0 /* Functions.swift in Sources */,
 				BFD2E8F91CB7F2C00085B499 /* Page.swift in Sources */,
 				BFD2E8F61CB7F2C00085B499 /* ContentFetcher.swift in Sources */,
 				BFD2E8FE1CB7F2C40085B499 /* JSONPage.swift in Sources */,
@@ -423,6 +489,14 @@
 				BFD2E8FD1CB7F2C00085B499 /* WKZombie.swift in Sources */,
 				BFD2E8FB1CB7F2C00085B499 /* Renderer.swift in Sources */,
 				BFD2E8EE1CB7F2BB0085B499 /* HTMLClickable.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		BF455D971CEFBF99006D97D0 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BF455D9E1CEFBF99006D97D0 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -462,26 +536,35 @@
 			target = BFAECCAB1CB69C0200C87F3B /* WKZombie */;
 			targetProxy = BF1F91651CB6AF9300A58A7F /* PBXContainerItemProxy */;
 		};
+		BF455DB01CEFC127006D97D0 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = BF455D9A1CEFBF99006D97D0 /* HostApplication */;
+			targetProxy = BF455DAF1CEFC127006D97D0 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		BF1F91681CB6AF9300A58A7F /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.WKZombieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HostApplication.app/HostApplication";
 			};
 			name = Debug;
 		};
 		BF1F91691CB6AF9300A58A7F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
 				INFOPLIST_FILE = Tests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.WKZombieTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/HostApplication.app/HostApplication";
 			};
 			name = Release;
 		};
@@ -534,6 +617,30 @@
 				PRODUCT_NAME = WKZombie;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
+			};
+			name = Release;
+		};
+		BF455DAB1CEFBF99006D97D0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "$(SRCROOT)/Tests/HostApplication/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.HostApplication;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		BF455DAC1CEFBF99006D97D0 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				INFOPLIST_FILE = "$(SRCROOT)/Tests/HostApplication/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = de.mathiaskoehnke.HostApplication;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = 1;
 			};
 			name = Release;
 		};
@@ -696,6 +803,14 @@
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
+		};
+		BF455DAA1CEFBF99006D97D0 /* Build configuration list for PBXNativeTarget "HostApplication" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BF455DAB1CEFBF99006D97D0 /* Debug */,
+				BF455DAC1CEFBF99006D97D0 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
 		};
 		BFAECCA61CB69C0200C87F3B /* Build configuration list for PBXProject "WKZombie" */ = {
 			isa = XCConfigurationList;

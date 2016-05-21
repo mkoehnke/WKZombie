@@ -1,7 +1,7 @@
 //
 // Functions.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -266,6 +266,16 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
     //========================================
     // MARK: Snapshot Methods
     //========================================
+    
+    /**
+     This is a convenience operator for the _snap()_ command. It is equal to the __>>>__ operator with the difference
+     that a snapshot will be taken after the left Action has been finished.
+     */
+    infix operator >>* { associativity left precedence 150 }
+    public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
+        assert(WKZombie.Static.instance != nil, "The >>* operator can only be used with the WKZombie shared instance.")
+        return a >>> snap() >>> f
+    }
     
     /**
      The returned WKZombie Action will make a snapshot of the current page.
