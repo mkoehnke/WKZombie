@@ -1,6 +1,6 @@
 PODS:
   - hpple (0.2.0)
-  - WKZombie (0.9.3):
+  - WKZombie (0.9.4):
     - hpple (= 0.2.0)
 
 DEPENDENCIES:
@@ -12,7 +12,7 @@ EXTERNAL SOURCES:
 
 SPEC CHECKSUMS:
   hpple: 3b765f96fc2cd56ad1a49aef6f7be5cb2aa64b57
-  WKZombie: 40f8cd6c880b209874851b06cf2a4bb2e4f6ca41
+  WKZombie: 18d87bc1929a53f0ec70d4d859f9e69871d03634
 
 PODFILE CHECKSUM: d45dbdf0b486677d4fa53af69a6fdd24430a4ac5
 
