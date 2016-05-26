@@ -50,12 +50,16 @@ $ open Example.xcworkspace
 __Note:__ You will need CocoaPods 1.0 beta4 or higher.
 
 # Usage
-A WKZombie instance equates to a web session. Top-level convenience methods like WKZombie.open use a shared instance, which is configured with the default settings.
+A WKZombie instance equates to a web session. Top-level convenience methods like *WKZombie.open()* use a shared instance, which is configured with the default settings.
 
-As such, the following two statements are equivalent:
+As such, the following three statements are equivalent:
 
 ```ruby
 let action : Action<HTMLPage> = open(url)
+```
+
+```ruby
+let action : Action<HTMLPage> = WKZombie.open(url)
 ```
 
 ```ruby
@@ -73,7 +77,7 @@ Be sure to keep `browser` in a stored property for the time of being used.
 
 #### Chaining Actions
 
-Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the [`>>>`](#operators) or [`>>*`](#operators) (for snapshots) operator. All chained actions pass their result to the next action. The [`===`](#operators) operator then starts the execution of the action chain.
+Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the [`>>>`](#operators) or [`>>*`](#operators) (for snapshots) operators. All chained actions pass their result to the next action. The [`===`](#operators) operator then starts the execution of the action chain.
 
 The following snippet demonstrates how you would use WKZombie to **collect all Provisioning Profiles** from the Developer Portal and **take snapshots of every page**:
 
