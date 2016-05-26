@@ -1,7 +1,7 @@
 //
-// Logger.swift
+// ViewController.swift
 //
-// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -21,20 +21,35 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 
-import Foundation
+import UIKit
+import WKZombie
 
-/// WKZombie Console Logger
-public class Logger : NSObject {
+class ProfileViewController: UITableViewController {
+
+    var items : [HTMLTableColumn]?
+    var snapshots : [Snapshot]?
     
-    public static var enabled : Bool = true
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        navigationItem.hidesBackButton = true
+    }
     
-    public class func log(message: String, lineBreak: Bool = true) {
-        if enabled {
-            if lineBreak {
-                print("\(message)")
-            } else {
-                print("\(message)", terminator: "")
-            }
+    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return items?.count ?? 0
+    }
+
+    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+        let item = items?[indexPath.row].children()?.first as HTMLElement?
+        cell.textLabel?.text = item?.text
+        return cell
+    }
+    
+    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+        if segue.identifier == "snapshotSegue" {
+            let vc = segue.destinationViewController as? SnapshotViewController
+            vc?.snapshots = snapshots
         }
     }
 }
+

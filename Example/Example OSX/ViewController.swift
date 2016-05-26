@@ -31,10 +31,6 @@ class ViewController: NSViewController {
     
     let url = NSURL(string: "https://github.com/logos")!
     
-    lazy var browser : WKZombie = {
-        return WKZombie(name: "Github Logo")
-    }()
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         activityIndicator.startAnimation(nil)
@@ -42,9 +38,9 @@ class ViewController: NSViewController {
     }
 
     func getTopTrendingEntry(url: NSURL) {
-            browser.open(url)
-        >>> browser.get(by: .XPathQuery("//img[contains(@class, 'gh-octocat')]"))
-        >>> browser.fetch
+            open(url)
+        >>> get(by: .XPathQuery("//img[contains(@class, 'gh-octocat')]"))
+        >>> fetch
         === output
     }
     

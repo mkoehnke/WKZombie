@@ -110,7 +110,7 @@ extension Result: CustomDebugStringConvertible {
 
 internal struct Response {
     var data: NSData?
-    var statusCode: Int = Static.DefaultStatusCodeError
+    var statusCode: Int = ActionError.Static.DefaultStatusCodeError
     
     init(data: NSData?, urlResponse: NSURLResponse) {
         self.data = data
@@ -461,7 +461,13 @@ internal func decodeJSON<U: JSONDecodable>(json: JSON?) -> Result<[U]> {
     return Result.Success(result)
 }
 
-/// Helper methods
+
+
+//========================================
+// MARK: Helper Methods
+//========================================
+
+
 private func htmlToData(html: NSString?) -> NSData? {
     if let html = html {
         let json = html.stringByReplacingOccurrencesOfString("<[^>]+>", withString: "", options: .RegularExpressionSearch, range: NSMakeRange(0, html.length))
@@ -503,5 +509,16 @@ func dispatch_sync_on_main_thread(block: dispatch_block_t) {
         block()
     } else {
         dispatch_sync(dispatch_get_main_queue(), block)
+    }
+}
+
+internal func delay(time: NSTimeInterval, completion: () -> Void) {
+    if let currentQueue = NSOperationQueue.currentQueue()?.underlyingQueue {
+        let delayTime = dispatch_time(DISPATCH_TIME_NOW, Int64(time * Double(NSEC_PER_SEC)))
+        dispatch_after(delayTime, currentQueue) {
+            completion()
+        }
+    } else {
+        completion()
     }
 }

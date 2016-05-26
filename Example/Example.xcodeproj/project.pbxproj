@@ -17,9 +17,10 @@
 		BF01D1771CB6F3720095BCE4 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BF01D16D1CB6F3720095BCE4 /* Assets.xcassets */; };
 		BF01D17A1CB6F3720095BCE4 /* Button.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF01D1731CB6F3720095BCE4 /* Button.swift */; };
 		BF01D17B1CB6F3720095BCE4 /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF01D1741CB6F3720095BCE4 /* LoginViewController.swift */; };
-		BF01D17C1CB6F3720095BCE4 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF01D1751CB6F3720095BCE4 /* ViewController.swift */; };
+		BF01D17C1CB6F3720095BCE4 /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF01D1751CB6F3720095BCE4 /* ProfileViewController.swift */; };
 		BF01D1811CB6F3950095BCE4 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF01D17D1CB6F3950095BCE4 /* LaunchScreen.storyboard */; };
 		BF01D1821CB6F3950095BCE4 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = BF01D17F1CB6F3950095BCE4 /* Main.storyboard */; };
+		BF455D281CEECF60006D97D0 /* SnapshotViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF455D271CEECF60006D97D0 /* SnapshotViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -41,9 +42,10 @@
 		BF01D16D1CB6F3720095BCE4 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BF01D1731CB6F3720095BCE4 /* Button.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Button.swift; sourceTree = "<group>"; };
 		BF01D1741CB6F3720095BCE4 /* LoginViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
-		BF01D1751CB6F3720095BCE4 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		BF01D1751CB6F3720095BCE4 /* ProfileViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
 		BF01D17E1CB6F3950095BCE4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BF01D1801CB6F3950095BCE4 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		BF455D271CEECF60006D97D0 /* SnapshotViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SnapshotViewController.swift; sourceTree = "<group>"; };
 		E524A5A77547899C72AB259A /* Pods-Example OSX.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example OSX.release.xcconfig"; path = "Pods/Target Support Files/Pods-Example OSX/Pods-Example OSX.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -105,7 +107,8 @@
 				BF01D16C1CB6F3720095BCE4 /* AppDelegate.swift */,
 				BF01D1731CB6F3720095BCE4 /* Button.swift */,
 				BF01D1741CB6F3720095BCE4 /* LoginViewController.swift */,
-				BF01D1751CB6F3720095BCE4 /* ViewController.swift */,
+				BF01D1751CB6F3720095BCE4 /* ProfileViewController.swift */,
+				BF455D271CEECF60006D97D0 /* SnapshotViewController.swift */,
 				BF01D1831CB6F3A20095BCE4 /* Resources */,
 			);
 			path = "Example iOS";
@@ -345,7 +348,8 @@
 			files = (
 				BF01D17B1CB6F3720095BCE4 /* LoginViewController.swift in Sources */,
 				BF01D1761CB6F3720095BCE4 /* AppDelegate.swift in Sources */,
-				BF01D17C1CB6F3720095BCE4 /* ViewController.swift in Sources */,
+				BF01D17C1CB6F3720095BCE4 /* ProfileViewController.swift in Sources */,
+				BF455D281CEECF60006D97D0 /* SnapshotViewController.swift in Sources */,
 				BF01D17A1CB6F3720095BCE4 /* Button.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

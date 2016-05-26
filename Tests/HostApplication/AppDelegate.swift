@@ -1,7 +1,7 @@
 //
-// ViewController.swift
+// TestAppDelegate.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -22,27 +22,20 @@
 // THE SOFTWARE.
 
 import UIKit
-import WKZombie
 
-class ViewController: UITableViewController {
+@UIApplicationMain
+class AppDelegate: UIResponder, UIApplicationDelegate {
 
-    var items : [HTMLTableColumn]?
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        title = "Provisioning Profiles"
-        navigationItem.hidesBackButton = true
-    }
-    
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return items?.count ?? 0
-    }
+    var window: UIWindow?
+    var viewController : UIViewController?
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
-        let item = items?[indexPath.row].children()?.first as HTMLElement?
-        cell.textLabel?.text = item?.text
-        return cell
+    func application(application: UIApplication, didFinishLaunchingWithOptions launchOptions: [NSObject: AnyObject]?) -> Bool {
+        window = UIWindow(frame: UIScreen.mainScreen().bounds)
+        window?.backgroundColor = .whiteColor()
+        viewController = UIViewController(nibName: nil, bundle: nil)
+        window?.rootViewController = viewController
+        window?.makeKeyAndVisible()
+        return true
     }
 }
 

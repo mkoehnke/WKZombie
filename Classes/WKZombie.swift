@@ -26,6 +26,18 @@ import WebKit
 
 public class WKZombie : NSObject {
     
+    /// A shared instance of `Manager`, used by top-level WKZombie methods,
+    /// and suitable for multiple web sessions.
+    public class var sharedInstance: WKZombie {
+        dispatch_once(&Static.token) {  Static.instance = WKZombie() }
+        return Static.instance!
+    }
+    
+    internal struct Static {
+        static var token : dispatch_once_t = 0
+        static var instance : WKZombie?
+    }
+    
     private var _renderer : Renderer!
     private var _fetcher : ContentFetcher!
     
@@ -51,6 +63,11 @@ public class WKZombie : NSObject {
         }
     }
     
+    #if os(iOS)
+    /// Snapshot Handler
+    public var snapshotHandler : SnapshotHandler?
+    #endif
+    
     /**
      The designated initializer.
      
@@ -70,7 +87,7 @@ public class WKZombie : NSObject {
     //========================================
     
     private func _handleResponse(data: NSData?, response: NSURLResponse?, error: NSError?) -> Result<NSData> {
-        var statusCode : Int = (error == nil) ? Static.DefaultStatusCodeSuccess : Static.DefaultStatusCodeError
+        var statusCode : Int = (error == nil) ? ActionError.Static.DefaultStatusCodeSuccess : ActionError.Static.DefaultStatusCodeError
         if let response = response as? NSHTTPURLResponse {
             statusCode = response.statusCode
         }
@@ -481,6 +498,40 @@ extension WKZombie {
     
 }
 
+#if os(iOS)
+    
+//========================================
+// MARK: Snapshot Methods
+//========================================
+    
+/// Default delay before taking snapshots
+private let DefaultSnapshotDelay = 0.1
+    
+extension WKZombie {
+    
+    /**
+     The returned WKZombie Action will make a snapshot of the current page.
+     Note: This method only works under iOS. Also, a snapshotHandler must be registered.
+     
+     - returns: A snapshot class.
+     */
+    public func snap<T>() -> (element: T) -> Action<T> {
+        return { (element: T) -> Action<T> in
+            return Action<T>(operation: { [unowned self] completion in
+                delay(DefaultSnapshotDelay, completion: {
+                    if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
+                        snapshotHandler(snapshot)
+                        completion(Result.Success(element))
+                    } else {
+                        completion(Result.Error(.SnapshotFailure))
+                    }
+                })
+            })
+        }
+    }
+}
+    
+#endif
 
 //========================================
 // MARK: Debug Methods

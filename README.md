@@ -10,7 +10,7 @@
 
 WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift (>= 2.2).
 
-It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it has rudimentary support for parsing and decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
+It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it can take snapshots and has rudimentary support for parsing/decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
 ## Use Cases
 There are many use cases for a Headless Browser. Some of them are:
@@ -19,7 +19,7 @@ There are many use cases for a Headless Browser. Some of them are:
 * Scraping websites
 * Automating interaction of websites
 * Manipulation of websites
-* Running automated tests
+* Running automated tests / snapshots
 * etc.
 
 ## Example
@@ -50,7 +50,24 @@ $ open Example.xcworkspace
 __Note:__ You will need CocoaPods 1.0 beta4 or higher.
 
 # Usage
-A WKZombie instance equates to a web session, which can be created using the following line:
+A WKZombie instance equates to a web session. Top-level convenience methods like *WKZombie.open()* use a shared instance, which is configured with the default settings.
+
+As such, the following three statements are equivalent:
+
+```ruby
+let action : Action<HTMLPage> = open(url)
+```
+
+```ruby
+let action : Action<HTMLPage> = WKZombie.open(url)
+```
+
+```ruby
+let browser = WKZombie.sharedInstance
+let action : Action<HTMLPage> = browser.open(url)
+```
+
+Applications can also create their own WKZombie instance:
 
 ```ruby
 self.browser = WKZombie(name: "Demo")
@@ -60,22 +77,22 @@ Be sure to keep `browser` in a stored property for the time of being used.
 
 #### Chaining Actions
 
-Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the **[>>>](#operators)** operator. All chained actions pass their result to the next action. The **[===](#operators)** operator then starts the execution of the action chain. **The following snippet demonstrates how you would use WKZombie to collect all Provisioning Profiles from the Developer Portal:**
+Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the [`>>>`](#operators) or [`>>*`](#operators) (for snapshots) operators. All chained actions pass their result to the next action. The [`===`](#operators) operator then starts the execution of the action chain.
+
+The following snippet demonstrates how you would use WKZombie to **collect all Provisioning Profiles** from the Developer Portal and **take snapshots of every page**:
 
 ```ruby
-    browser.open(url)
->>> browser.get(by: .Id("name"))
->>> browser.setAttribute("value", value: user)
->>> browser.get(by: .Id("password"))
->>> browser.setAttribute("value", value: password)
->>> browser.get(by: .Name("form"))
->>> browser.submit
->>> browser.get(by: .Attribute("href", "/account"))
->>> browser.click
->>> browser.get(by: .Text("Provisioning Profiles"))
->>> browser.click(then: .Wait(0.5))
->>> browser.getAll(by: .Class("ui-ellipsis"))
-=== myOutput
+    open(url)
+>>* get(by: .Id("accountname"))
+>>> setAttribute("value", value: user)
+>>* get(by: .Id("accountpassword"))
+>>> setAttribute("value", value: password)
+>>* get(by: .Name("form2"))
+>>> submit
+>>* get(by: .Contains("href", "/account/"))
+>>> click(then: .Wait(2.5))
+>>* getAll(by: .Contains("class", "row-"))
+=== handleResult
 ```
 
 In order to output or process the collected data, one can either use a closure or implement a custom function taking the result as parameter:
@@ -236,6 +253,36 @@ The returned WKZombie Action will transform a WKZombie object into another objec
 func map<T, A>(f: T -> A) -> (element: T) -> Action<A>
 ```
 
+## Taking Snapshots
+
+Taking snapshots is **available for iOS**. First, a *snapshotHandler* must be registered, that will be called each time a snapshot has been taken:
+
+```ruby
+WKZombie.sharedInstance.snapshotHandler = { snapshot in
+    let image = snapshot.image
+}
+```
+
+Secondly, adding the `>>*` operator will trigger the snapshot event:
+
+```ruby
+    open(url)
+>>* get(by: .Id("element"))
+=== myOutput
+```
+**Note: This operator only works with the WKZombie shared instance.**
+
+Alternatively, one can use the *snap()* command:
+```ruby
+    browser.open(url)
+>>> browser.snap()
+>>> browser.get(by: .Id("element"))
+=== myOutput
+```
+
+Take a look at the **iOS example for more information** of how to take snapshots.
+
+
 ## Special Parameters
 
 ### 1. PostAction
@@ -271,10 +318,11 @@ SearchType                     | Description
 
 The following Operators can be applied to *Actions*, which makes chained *Actions* easier to read:
 
-Operator       | Description
--------------- | -------------
-**>>>**        | This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*. **Note:** If the right-hand side *Action* doesn't take a parameter, the result of the left-hand side *Action* will be ignored and not passed.
-**===**        | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
+Operator    | iOS | OSX | Description
+:----------:|:---:|:---:| ---------------
+`>>>`       | x   | x   | This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*. **Note:** If the right-hand side *Action* doesn't take a parameter, the result of the left-hand side *Action* will be ignored and not passed.
+`>>*`       | x   |     | This is a convenience operator for the _snap()_ command. It is equal to the `>>>` operator with the difference that a snapshot will be taken after the left Action has been finished. **Note: This operator throws an assert if used with any other than the shared instance.**
+`===`       | x   | x   | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
 ## Advanced Actions
 
@@ -439,7 +487,6 @@ in the root WKZombie directory to set up a buildable framework project (`WKZombi
 * More Unit Tests
 * More examples
 * Replace hpple with more 'Swifty' implementation
-* ScreenCapture
 * More descriptive errors
 
 # Author

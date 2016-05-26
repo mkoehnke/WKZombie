@@ -100,6 +100,29 @@ class Tests: XCTestCase {
         waitForExpectationsWithTimeout(20.0, handler: nil)
     }
     
+    func testSnapshot() {
+        let expectation = expectationWithDescription("Snapshot Test Done.")
+
+        var snapshots = [Snapshot]()
+        
+        browser.snapshotHandler = { snapshot in
+            XCTAssertNotNil(snapshot.image)
+            snapshots.append(snapshot)
+        }
+        
+        browser.open(startURL())
+        >>> browser.get(by: .Name("button"))
+        >>> browser.snap()
+        >>> browser.press
+        >>> browser.snap()
+        === { (result: HTMLPage?) in
+            XCTAssertEqual(snapshots.count, 2)
+            expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
     //========================================
     // MARK: Helper Methods
     //========================================
