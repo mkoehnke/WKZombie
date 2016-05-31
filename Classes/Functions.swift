@@ -116,6 +116,25 @@ public func press<T: Page>(then postAction: PostAction) -> (button : HTMLButton)
     return WKZombie.sharedInstance.press(then: postAction)
 }
 
+//========================================
+// MARK: Swap Page Context
+//========================================
+
+/**
+ Swaps the current page context with the context of an embedded iFrame.
+ - seealso: _swap()_ function in _WKZombie_ class for more info.
+ */
+public func swap<T: Page>(iframe : HTMLFrame) -> Action<T> {
+    return WKZombie.sharedInstance.swap(iframe)
+}
+
+/**
+ Swaps the current page context with the context of an embedded iFrame.
+ - seealso: _swap()_ function in _WKZombie_ class for more info.
+ */
+public func swap<T: Page>(then postAction: PostAction) -> (iframe : HTMLFrame) -> Action<T> {
+    return WKZombie.sharedInstance.swap(then: postAction)
+}
 
 //========================================
 // MARK: DOM Modification Methods
