@@ -123,6 +123,23 @@ class Tests: XCTestCase {
         waitForExpectationsWithTimeout(20.0, handler: nil)
     }
     
+    func testSwap() {
+        let expectation = expectationWithDescription("iFrame Button Test Done.")
+        
+        browser.open(startURL())
+        >>> browser.get(by: .XPathQuery("//iframe[@name='button_frame']"))
+        >>> browser.swap
+        >>> browser.get(by: .XPathQuery("//button[@name='button2']"))
+        >>> browser.press
+        >>> browser.execute("document.title")
+        === { (result: JavaScriptResult?) in
+            XCTAssertEqual(result, "WKZombie Result Page")
+            expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
     //========================================
     // MARK: Helper Methods
     //========================================

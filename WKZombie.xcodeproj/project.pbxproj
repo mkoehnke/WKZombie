@@ -8,11 +8,14 @@
 
 /* Begin PBXBuildFile section */
 		BF09CBF31CE278B0009B97D2 /* Snapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF09CBF21CE278B0009B97D2 /* Snapshot.swift */; };
+		BF18445C1CFE12D6002C31B5 /* HTMLEmbeddedPage.html in Resources */ = {isa = PBXBuildFile; fileRef = BF18445B1CFE12D6002C31B5 /* HTMLEmbeddedPage.html */; };
+		BF18445E1CFE1A5C002C31B5 /* HTMLFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18445D1CFE1A5C002C31B5 /* HTMLFrame.swift */; };
+		BF18445F1CFE1A5C002C31B5 /* HTMLFrame.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF18445D1CFE1A5C002C31B5 /* HTMLFrame.swift */; };
 		BF1F91231CB6A52300A58A7F /* ContentFetcher.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F910F1CB6A52300A58A7F /* ContentFetcher.swift */; };
 		BF1F91241CB6A52300A58A7F /* Definitions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91101CB6A52300A58A7F /* Definitions.swift */; };
 		BF1F91251CB6A52300A58A7F /* Error.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91111CB6A52300A58A7F /* Error.swift */; };
 		BF1F91261CB6A52300A58A7F /* HTMLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91131CB6A52300A58A7F /* HTMLButton.swift */; };
-		BF1F91271CB6A52300A58A7F /* HTMLClickable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91141CB6A52300A58A7F /* HTMLClickable.swift */; };
+		BF1F91271CB6A52300A58A7F /* HTMLRedirectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91141CB6A52300A58A7F /* HTMLRedirectable.swift */; };
 		BF1F91281CB6A52300A58A7F /* HTMLElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91151CB6A52300A58A7F /* HTMLElement.swift */; };
 		BF1F91291CB6A52300A58A7F /* HTMLFetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91161CB6A52300A58A7F /* HTMLFetchable.swift */; };
 		BF1F912A1CB6A52300A58A7F /* HTMLForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91171CB6A52300A58A7F /* HTMLForm.swift */; };
@@ -39,7 +42,7 @@
 		BFD2E8B41CB7D0830085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8B31CB7D0830085B499 /* hpple.framework */; };
 		BFD2E8B61CB7D0A80085B499 /* hpple.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = BFD2E8B51CB7D0A80085B499 /* hpple.framework */; };
 		BFD2E8ED1CB7F2BB0085B499 /* HTMLButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91131CB6A52300A58A7F /* HTMLButton.swift */; };
-		BFD2E8EE1CB7F2BB0085B499 /* HTMLClickable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91141CB6A52300A58A7F /* HTMLClickable.swift */; };
+		BFD2E8EE1CB7F2BB0085B499 /* HTMLRedirectable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91141CB6A52300A58A7F /* HTMLRedirectable.swift */; };
 		BFD2E8EF1CB7F2BB0085B499 /* HTMLElement.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91151CB6A52300A58A7F /* HTMLElement.swift */; };
 		BFD2E8F01CB7F2BB0085B499 /* HTMLFetchable.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91161CB6A52300A58A7F /* HTMLFetchable.swift */; };
 		BFD2E8F11CB7F2BB0085B499 /* HTMLForm.swift in Sources */ = {isa = PBXBuildFile; fileRef = BF1F91171CB6A52300A58A7F /* HTMLForm.swift */; };
@@ -79,11 +82,13 @@
 
 /* Begin PBXFileReference section */
 		BF09CBF21CE278B0009B97D2 /* Snapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Snapshot.swift; sourceTree = "<group>"; };
+		BF18445B1CFE12D6002C31B5 /* HTMLEmbeddedPage.html */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.html; path = HTMLEmbeddedPage.html; sourceTree = "<group>"; };
+		BF18445D1CFE1A5C002C31B5 /* HTMLFrame.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLFrame.swift; sourceTree = "<group>"; };
 		BF1F910F1CB6A52300A58A7F /* ContentFetcher.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ContentFetcher.swift; sourceTree = "<group>"; };
 		BF1F91101CB6A52300A58A7F /* Definitions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Definitions.swift; sourceTree = "<group>"; };
 		BF1F91111CB6A52300A58A7F /* Error.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Error.swift; sourceTree = "<group>"; };
 		BF1F91131CB6A52300A58A7F /* HTMLButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLButton.swift; sourceTree = "<group>"; };
-		BF1F91141CB6A52300A58A7F /* HTMLClickable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLClickable.swift; sourceTree = "<group>"; };
+		BF1F91141CB6A52300A58A7F /* HTMLRedirectable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLRedirectable.swift; sourceTree = "<group>"; };
 		BF1F91151CB6A52300A58A7F /* HTMLElement.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLElement.swift; sourceTree = "<group>"; };
 		BF1F91161CB6A52300A58A7F /* HTMLFetchable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLFetchable.swift; sourceTree = "<group>"; };
 		BF1F91171CB6A52300A58A7F /* HTMLForm.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HTMLForm.swift; sourceTree = "<group>"; };
@@ -179,7 +184,7 @@
 			isa = PBXGroup;
 			children = (
 				BF1F91131CB6A52300A58A7F /* HTMLButton.swift */,
-				BF1F91141CB6A52300A58A7F /* HTMLClickable.swift */,
+				BF1F91141CB6A52300A58A7F /* HTMLRedirectable.swift */,
 				BF1F91151CB6A52300A58A7F /* HTMLElement.swift */,
 				BF1F91161CB6A52300A58A7F /* HTMLFetchable.swift */,
 				BF1F91171CB6A52300A58A7F /* HTMLForm.swift */,
@@ -187,6 +192,7 @@
 				BF1F91191CB6A52300A58A7F /* HTMLLink.swift */,
 				BF1F911A1CB6A52300A58A7F /* HTMLPage.swift */,
 				BF1F911B1CB6A52300A58A7F /* HTMLTable.swift */,
+				BF18445D1CFE1A5C002C31B5 /* HTMLFrame.swift */,
 			);
 			path = HTML;
 			sourceTree = "<group>";
@@ -233,8 +239,9 @@
 		BF1F916E1CB6AFAF00A58A7F /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				BF1F916F1CB6AFAF00A58A7F /* HTMLResultPage.html */,
 				BF1F91701CB6AFAF00A58A7F /* HTMLTestPage.html */,
+				BF1F916F1CB6AFAF00A58A7F /* HTMLResultPage.html */,
+				BF18445B1CFE12D6002C31B5 /* HTMLEmbeddedPage.html */,
 			);
 			path = Resources;
 			sourceTree = "<group>";
@@ -428,6 +435,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BF1F91771CB6B03E00A58A7F /* HTMLTestPage.html in Resources */,
+				BF18445C1CFE12D6002C31B5 /* HTMLEmbeddedPage.html in Resources */,
 				BF1F91761CB6B03B00A58A7F /* HTMLResultPage.html in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -488,7 +496,8 @@
 				BFD2E8EF1CB7F2BB0085B499 /* HTMLElement.swift in Sources */,
 				BFD2E8FD1CB7F2C00085B499 /* WKZombie.swift in Sources */,
 				BFD2E8FB1CB7F2C00085B499 /* Renderer.swift in Sources */,
-				BFD2E8EE1CB7F2BB0085B499 /* HTMLClickable.swift in Sources */,
+				BF18445F1CFE1A5C002C31B5 /* HTMLFrame.swift in Sources */,
+				BFD2E8EE1CB7F2BB0085B499 /* HTMLRedirectable.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -517,7 +526,8 @@
 				BF1F912E1CB6A52300A58A7F /* HTMLTable.swift in Sources */,
 				BF1F912F1CB6A52300A58A7F /* JSONPage.swift in Sources */,
 				BF1F912C1CB6A52300A58A7F /* HTMLLink.swift in Sources */,
-				BF1F91271CB6A52300A58A7F /* HTMLClickable.swift in Sources */,
+				BF1F91271CB6A52300A58A7F /* HTMLRedirectable.swift in Sources */,
+				BF18445E1CFE1A5C002C31B5 /* HTMLFrame.swift in Sources */,
 				BF1F912D1CB6A52300A58A7F /* HTMLPage.swift in Sources */,
 				BF1F91261CB6A52300A58A7F /* HTMLButton.swift in Sources */,
 				BF1F91241CB6A52300A58A7F /* Definitions.swift in Sources */,
@@ -811,6 +821,7 @@
 				BF455DAC1CEFBF99006D97D0 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		BFAECCA61CB69C0200C87F3B /* Build configuration list for PBXProject "WKZombie" */ = {
 			isa = XCConfigurationList;

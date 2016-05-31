@@ -92,7 +92,7 @@ The following snippet demonstrates how you would use WKZombie to **collect all P
 >>* get(by: .Contains("href", "/account/"))
 >>> click(then: .Wait(2.5))
 >>* getAll(by: .Contains("class", "row-"))
-=== handleResult
+=== myOutput
 ```
 
 In order to output or process the collected data, one can either use a closure or implement a custom function taking the result as parameter:

@@ -1,5 +1,5 @@
 //
-//  HTMLClickable.swift
+//  HTMLRedirectable.swift
 //  WKZombieDemo
 //
 //  Created by Mathias Köhnke on 06/04/16.
@@ -8,8 +8,8 @@
 
 import Foundation
 
-/// Base class for clickable HTML elements (e.g. HTMLLink, HTMLButton).
-public class HTMLClickable : HTMLElement {
+/// Base class for redirectable HTML elements (e.g. HTMLLink, HTMLButton).
+public class HTMLRedirectable : HTMLElement {
 
     //========================================
     // MARK: Initializer
@@ -20,7 +20,7 @@ public class HTMLClickable : HTMLElement {
     }
     
     //========================================
-    // MARK: Link Click Script
+    // MARK: Link Redirectable Script
     //========================================
     
     internal func actionScript() -> String? {

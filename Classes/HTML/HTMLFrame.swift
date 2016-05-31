@@ -1,7 +1,7 @@
 //
-// HTMLImage.swift
+// HTMLFrame.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,29 +23,21 @@
 
 import Foundation
 
-/// HTML Image class, which represents the <img> element in the DOM.
-public class HTMLImage : HTMLElement, HTMLFetchable {
+/// HTML iFrame Class, which represents the <iframe> element in the DOM.
+public class HTMLFrame : HTMLRedirectable {
     
-    //========================================
-    // MARK: Initializer
-    //========================================
-    
-    public required init?(element: AnyObject, XPathQuery: String? = nil) {
-        super.init(element: element, XPathQuery: XPathQuery)
-    }
-    
-    /// Returns the value of the src attribute of the image.
+    /// Returns the value of the src attribute of the iframe.
     public var source : String? {
         return objectForKey("src")
     }
-
+    
     //========================================
-    // MARK: HTMLFetchable Protocol
+    // MARK: Redirect Script
     //========================================
     
-    public var fetchURL : NSURL? {
+    internal override func actionScript() -> String? {
         if let source = source {
-            return NSURL(string: source)
+            return "window.top.location.href='\(source)';"
         }
         return nil
     }
@@ -55,6 +47,6 @@ public class HTMLImage : HTMLElement, HTMLFetchable {
     //========================================
     
     internal override class func createXPathQuery(parameters: String) -> String {
-        return "//img\(parameters)"
+        return "//iframe\(parameters)"
     }
 }
