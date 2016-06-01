@@ -86,6 +86,21 @@ class Tests: XCTestCase {
         waitForExpectationsWithTimeout(20.0, handler: nil)
     }
     
+    func testFormSubmit() {
+        let expectation = expectationWithDescription("Form Submit Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .Id("test_form"))
+            >>> browser.submit
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
     func testUserAgent() {
         let expectation = expectationWithDescription("UserAgent Test Done.")
         browser.userAgent = "WKZombie"
