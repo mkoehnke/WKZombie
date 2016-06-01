@@ -187,6 +187,10 @@ public func execute() -> (script: JavaScript) -> Action<JavaScriptResult> {
     return WKZombie.sharedInstance.execute()
 }
 
+/**
+ The returned WKZombie Action will execute a JavaScript string __using the shared WKZombie instance__.
+ - seealso: _execute()_ function in _WKZombie_ class for more info.
+ */
 public func execute<T: HTMLPage>(script: JavaScript) -> (page: T) -> Action<JavaScriptResult> {
     return WKZombie.sharedInstance.execute(script)
 }
@@ -220,6 +224,13 @@ public func map<T, A>(f: T -> A) -> (object: T) -> Action<A> {
     return WKZombie.sharedInstance.map(f)
 }
 
+/**
+ This function transforms an object into another object using the specified closure.
+ - seealso: _map()_ function in _WKZombie_ class for more info.
+ */
+public func map<T, A>(f: T -> A) -> (object: T) -> A {
+    return WKZombie.sharedInstance.map(f)
+}
 
 //========================================
 // MARK: Advanced Actions
