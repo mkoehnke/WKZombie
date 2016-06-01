@@ -107,7 +107,7 @@ class Tests: XCTestCase {
         browser.open(startURL())
             >>> browser.get(by: .Id("onClick_div"))
             >>> browser.map { $0.objectForKey("onClick")! }
-            >>> browser.execute()
+            >>> browser.execute
             >>> browser.inspect()
             >>> browser.execute("document.title")
             === { (result: JavaScriptResult?) in
@@ -124,7 +124,7 @@ class Tests: XCTestCase {
         browser.open(startURL())
             >>> browser.get(by: .Id("href_div"))
             >>> browser.map { "window.location.href='\($0.objectForKey("href")!)'" }
-            >>> browser.execute()
+            >>> browser.execute
             >>> browser.inspect()
             >>> browser.execute("document.title")
             === { (result: JavaScriptResult?) in
@@ -160,10 +160,10 @@ class Tests: XCTestCase {
         }
         
         browser.open(startURL())
+        >>> browser.snap
         >>> browser.get(by: .Name("button"))
-        >>> browser.snap()
         >>> browser.press
-        >>> browser.snap()
+        >>> browser.snap
         === { (result: HTMLPage?) in
             XCTAssertEqual(snapshots.count, 2)
             expectation.fulfill()

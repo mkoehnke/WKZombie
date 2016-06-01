@@ -382,16 +382,14 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func execute() -> (script: JavaScript) -> Action<JavaScriptResult> {
-        return { (script: JavaScript) -> Action<JavaScriptResult> in
-            return Action() { [unowned self] completion in
-                self._renderer.executeScript(script, completionHandler: { result, response, error in
-                    let data = self._handleResponse(result as? NSData, response: response, error: error)
-                    let output = data >>> decodeString
-                    Logger.log("Script Result".uppercaseString + "\n\(output)\n")
-                    completion(output)
-                })
-            }
+    public func execute(script: JavaScript) -> Action<JavaScriptResult> {
+        return Action() { [unowned self] completion in
+            self._renderer.executeScript(script, completionHandler: { result, response, error in
+                let data = self._handleResponse(result as? NSData, response: response, error: error)
+                let output = data >>> decodeString
+                Logger.log("Script Result".uppercaseString + "\n\(output)\n")
+                completion(output)
+            })
         }
     }
     
@@ -405,7 +403,7 @@ extension WKZombie {
      */
     public func execute<T: HTMLPage>(script: JavaScript) -> (page : T) -> Action<JavaScriptResult> {
         return { [unowned self] (page : T) -> Action<JavaScriptResult> in
-            return self.execute()(script: script)
+            return self.execute(script)
         }
     }
 }
@@ -577,19 +575,17 @@ extension WKZombie {
      
      - returns: A snapshot class.
      */
-    public func snap<T>() -> (element: T) -> Action<T> {
-        return { (element: T) -> Action<T> in
-            return Action<T>(operation: { [unowned self] completion in
-                delay(DefaultSnapshotDelay, completion: {
-                    if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
-                        snapshotHandler(snapshot)
-                        completion(Result.Success(element))
-                    } else {
-                        completion(Result.Error(.SnapshotFailure))
-                    }
-                })
+    public func snap<T>(element: T) -> Action<T> {
+        return Action<T>(operation: { [unowned self] completion in
+            delay(DefaultSnapshotDelay, completion: {
+                if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
+                    snapshotHandler(snapshot)
+                    completion(Result.Success(element))
+                } else {
+                    completion(Result.Error(.SnapshotFailure))
+                }
             })
-        }
+        })
     }
 }
     

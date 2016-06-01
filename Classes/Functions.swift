@@ -183,8 +183,8 @@ public func get<T: HTMLElement>(by searchType: SearchType<T>) -> (page: HTMLPage
  The returned WKZombie Action will execute a JavaScript string __using the shared WKZombie instance__.
  - seealso: _execute()_ function in _WKZombie_ class for more info.
  */
-public func execute() -> (script: JavaScript) -> Action<JavaScriptResult> {
-    return WKZombie.sharedInstance.execute()
+public func execute(script: JavaScript) -> Action<JavaScriptResult> {
+    return WKZombie.sharedInstance.execute(script)
 }
 
 /**
@@ -308,7 +308,7 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
     infix operator >>* { associativity left precedence 150 }
     public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
         assert(WKZombie.Static.instance != nil, "The >>* operator can only be used with the WKZombie shared instance.")
-        return a >>> snap() >>> f
+        return a >>> snap >>> f
     }
     
     /**
@@ -317,8 +317,8 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
      __The shared WKZombie instance will be used__.
      - seealso: _snap()_ function in _WKZombie_ class for more info.
      */
-    public func snap<T>() -> (element: T) -> Action<T> {
-        return WKZombie.sharedInstance.snap()
+    public func snap<T>(element: T) -> Action<T> {
+        return WKZombie.sharedInstance.snap(element)
     }
     
 #endif
