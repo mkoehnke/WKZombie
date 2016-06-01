@@ -382,8 +382,8 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult> {
-        return { (page: HTMLPage) -> Action<JavaScriptResult> in
+    public func execute() -> (script: JavaScript) -> Action<JavaScriptResult> {
+        return { (script: JavaScript) -> Action<JavaScriptResult> in
             return Action() { [unowned self] completion in
                 self._renderer.executeScript(script, completionHandler: { result, response, error in
                     let data = self._handleResponse(result as? NSData, response: response, error: error)
@@ -392,6 +392,20 @@ extension WKZombie {
                     completion(output)
                 })
             }
+        }
+    }
+    
+    /**
+     The returned WKZombie Action will execute a JavaScript string.
+     
+     - parameter script: A JavaScript string.
+     - parameter page: A HTML page.
+     
+     - returns: The WKZombie Action.
+     */
+    public func execute<T: HTMLPage>(script: JavaScript) -> (page : T) -> Action<JavaScriptResult> {
+        return { [unowned self] (page : T) -> Action<JavaScriptResult> in
+            return self.execute()(script: script)
         }
     }
 }
@@ -439,13 +453,27 @@ extension WKZombie {
      The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function.
      
      - parameter f: The function that takes a certain HTMLElement as parameter and transforms it into another HTMLElement.
-     - parameter element: A HTML element.
+     - parameter object: A HTML element.
      
      - returns: The WKZombie Action.
      */
     public func map<T, A>(f: T -> A) -> (object: T) -> Action<A> {
         return { (object: T) -> Action<A> in
             return Action(result: resultFromOptional(f(object), error: .NotFound))
+        }
+    }
+    
+    /**
+     This function transforms an object into another object using the specified closure.
+     
+     - parameter f: The closure that takes an object as parameter and transforms it into another object.
+     - parameter object: An object.
+     
+     - returns: The transformed object.
+     */
+    public func map<T, A>(f: T -> A) -> (object: T) -> A {
+        return { (object: T) -> A in
+            return f(object)
         }
     }
 }

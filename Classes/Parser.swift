@@ -104,7 +104,7 @@ public class HTMLParserElement : NSObject {
     }
     
     public func objectForKey(key: String) -> String? {
-        return element?.objectForKey(key) as String?
+        return element?.objectForKey(key.lowercaseString) as String?
     }
     
     public func childrenWithTagName<T: HTMLElement>(tagName: String) -> [T]? {

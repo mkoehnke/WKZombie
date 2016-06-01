@@ -101,6 +101,40 @@ class Tests: XCTestCase {
         waitForExpectationsWithTimeout(20.0, handler: nil)
     }
     
+    func testDivOnClick() {
+        let expectation = expectationWithDescription("DIV OnClick Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .Id("onClick_div"))
+            >>> browser.map { $0.objectForKey("onClick")! }
+            >>> browser.execute()
+            >>> browser.inspect()
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
+    func testDivHref() {
+        let expectation = expectationWithDescription("DIV Href Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .Id("href_div"))
+            >>> browser.map { "window.location.href='\($0.objectForKey("href")!)'" }
+            >>> browser.execute()
+            >>> browser.inspect()
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
     func testUserAgent() {
         let expectation = expectationWithDescription("UserAgent Test Done.")
         browser.userAgent = "WKZombie"

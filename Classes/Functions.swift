@@ -183,7 +183,11 @@ public func get<T: HTMLElement>(by searchType: SearchType<T>) -> (page: HTMLPage
  The returned WKZombie Action will execute a JavaScript string __using the shared WKZombie instance__.
  - seealso: _execute()_ function in _WKZombie_ class for more info.
  */
-public func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult> {
+public func execute() -> (script: JavaScript) -> Action<JavaScriptResult> {
+    return WKZombie.sharedInstance.execute()
+}
+
+public func execute<T: HTMLPage>(script: JavaScript) -> (page: T) -> Action<JavaScriptResult> {
     return WKZombie.sharedInstance.execute(script)
 }
 

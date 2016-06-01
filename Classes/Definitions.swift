@@ -190,15 +190,11 @@ public func ===<T>(a: Action<T>, completion: Result<T> -> Void) {
 }
 
 internal func parseResponse(response: Response) -> Result<NSData> {
-    guard let data = response.data else {
-        return .Error(.NetworkRequestFailure)
-    }
-    
     let successRange = 200..<300
     if !successRange.contains(response.statusCode) {
         return .Error(.NetworkRequestFailure)
     }
-    return Result(nil, data)
+    return Result(nil, response.data ?? NSData())
 }
 
 internal func resultFromOptional<A>(optional: A?, error: ActionError) -> Result<A> {
