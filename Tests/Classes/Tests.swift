@@ -101,6 +101,21 @@ class Tests: XCTestCase {
         waitForExpectationsWithTimeout(20.0, handler: nil)
     }
     
+    func testFormWithXPathQuerySubmit() {
+        let expectation = expectationWithDescription("Form XPathQuery Submit Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .XPathQuery("//form[1]"))
+            >>> browser.submit
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
     func testDivOnClick() {
         let expectation = expectationWithDescription("DIV OnClick Done.")
         
