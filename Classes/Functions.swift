@@ -121,7 +121,7 @@ public func press<T: Page>(then postAction: PostAction) -> (button : HTMLButton)
 //========================================
 
 /**
- Swaps the current page context with the context of an embedded iFrame.
+ The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
  - seealso: _swap()_ function in _WKZombie_ class for more info.
  */
 public func swap<T: Page>(iframe : HTMLFrame) -> Action<T> {
@@ -129,7 +129,7 @@ public func swap<T: Page>(iframe : HTMLFrame) -> Action<T> {
 }
 
 /**
- Swaps the current page context with the context of an embedded iFrame.
+ The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
  - seealso: _swap()_ function in _WKZombie_ class for more info.
  */
 public func swap<T: Page>(then postAction: PostAction) -> (iframe : HTMLFrame) -> Action<T> {

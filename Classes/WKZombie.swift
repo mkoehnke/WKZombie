@@ -272,7 +272,7 @@ extension WKZombie {
 
 extension WKZombie {
     /**
-     Swaps the current page context with the context of an embedded iFrame.
+     The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
      
      - parameter iframe: The HTMLFrame (iFrame).
      
@@ -283,7 +283,7 @@ extension WKZombie {
     }
     
     /**
-     Swaps the current page context with the context of an iFrame.
+     The returned WKZombie Action will swap the current page context with the context of an embedded iFrame.
      
      - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
      - parameter iframe: The HTMLFrame (iFrame).

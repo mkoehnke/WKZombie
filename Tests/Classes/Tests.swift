@@ -188,7 +188,7 @@ class Tests: XCTestCase {
     }
     
     func testSwap() {
-        let expectation = expectationWithDescription("iFrame Button Test Done.")
+        let expectation = expectationWithDescription("iframe Button Test Done.")
         
         browser.open(startURL())
         >>> browser.get(by: .XPathQuery("//iframe[@name='button_frame']"))

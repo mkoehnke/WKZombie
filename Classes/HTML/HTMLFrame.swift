@@ -23,7 +23,7 @@
 
 import Foundation
 
-/// HTML iFrame Class, which represents the <iframe> element in the DOM.
+/// HTML iframe Class, which represents the <iframe> element in the DOM.
 public class HTMLFrame : HTMLRedirectable {
     
     /// Returns the value of the src attribute of the iframe.
