@@ -55,9 +55,9 @@ class Tests: XCTestCase {
         let expectation = expectationWithDescription("Inspect Done.")
         var originalPage : HTMLPage?
         
-        browser.open(startURL())
+            browser.open(startURL())
         >>> browser.map { originalPage = $0 as HTMLPage }
-        >>> browser.inspect()
+        >>> browser.inspect
         === { (result: HTMLPage?) in
             if let result = result, originalPage = originalPage {
                 XCTAssertEqual(result.data, originalPage.data)
@@ -118,7 +118,7 @@ class Tests: XCTestCase {
     
     func testDivOnClick() {
         let expectation = expectationWithDescription("DIV OnClick Done.")
-        
+    
         browser.open(startURL())
             >>> browser.get(by: .Id("onClick_div"))
             >>> browser.map { $0.objectForKey("onClick")! }
