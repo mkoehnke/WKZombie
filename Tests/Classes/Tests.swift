@@ -123,7 +123,7 @@ class Tests: XCTestCase {
             >>> browser.get(by: .Id("onClick_div"))
             >>> browser.map { $0.objectForKey("onClick")! }
             >>> browser.execute
-            >>> browser.inspect()
+            >>> browser.inspect
             >>> browser.execute("document.title")
             === { (result: JavaScriptResult?) in
                 XCTAssertEqual(result, "WKZombie Result Page")
@@ -140,7 +140,7 @@ class Tests: XCTestCase {
             >>> browser.get(by: .Id("href_div"))
             >>> browser.map { "window.location.href='\($0.objectForKey("href")!)'" }
             >>> browser.execute
-            >>> browser.inspect()
+            >>> browser.inspect
             >>> browser.execute("document.title")
             === { (result: JavaScriptResult?) in
                 XCTAssertEqual(result, "WKZombie Result Page")

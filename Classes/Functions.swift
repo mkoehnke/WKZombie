@@ -305,7 +305,7 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
      This is a convenience operator for the _snap()_ command. It is equal to the __>>>__ operator with the difference
      that a snapshot will be taken after the left Action has been finished.
      */
-    infix operator >>* { associativity left precedence 150 }
+    infix operator >>* { associativity left precedence 170 }
     public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
         assert(WKZombie.Static.instance != nil, "The >>* operator can only be used with the WKZombie shared instance.")
         return a >>> snap >>> f

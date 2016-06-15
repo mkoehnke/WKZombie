@@ -216,7 +216,7 @@ func execute(script: JavaScript) -> Action<JavaScriptResult>
 For example, the following example shows how retrieve the title of the currently loaded website using the *execute()* method:
 
 ```ruby
-    browser.inspect()
+    browser.inspect
 >>> browser.execute("document.title")
 === myOutput
 
@@ -231,7 +231,7 @@ The following code shows another way to execute JavaScript, that is e.g. value o
 >>> browser.get(by: .Id("div"))
 >>> browser.map { $0.objectForKey("onClick")! }
 >>> browser.execute
->>> browser.inspect()
+>>> browser.inspect
 === myOutput
 
 func myOutput(result: HTMLPage?) {
