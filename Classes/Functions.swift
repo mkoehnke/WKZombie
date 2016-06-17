@@ -306,8 +306,28 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
      that a snapshot will be taken after the left Action has been finished.
      */
     infix operator >>* { associativity left precedence 170 }
-    public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
+    
+    private func assertIfNotSharedInstance() {
         assert(WKZombie.Static.instance != nil, "The >>* operator can only be used with the WKZombie shared instance.")
+    }
+    
+    public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> f
+    }
+    
+    public func >>*<T, U>(a: Action<T>, b: Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> b
+    }
+    
+    public func >>*<T, U: Page>(a: Action<T>, f: () -> Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> f
+    }
+    
+    public func >>*<T:Page, U>(a: () -> Action<T>, f: T -> Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
         return a >>> snap >>> f
     }
     
