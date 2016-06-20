@@ -1,8 +1,25 @@
 <html>
     <head>
         <title>WKZombie Test Page</title>
+        <script>
+            function testFunction() {
+                window.location.href="HTMLResultPage.html";
+            }
+        </script>
     </head>
     <body>
     <button type="button" name="button" onClick="location.href='HTMLResultPage.html'">Click Me!</button>
+    
+    <iframe src="HTMLEmbeddedPage.html" name="button_frame"></iframe>
+    
+    <form id="test_form" method="get" action="HTMLResultPage.html">
+        <input type="checkbox" name="option" value="option1"/>Option 1<br/>
+        <input type="checkbox" name="option" value="option2" checked="checked"/>Option 2<br/>
+        <input type="submit" value="Submit"/>
+    </form>
+    
+    <div id="onClick_div" onClick="testFunction()"></div>
+    <div id="href_div" href="HTMLResultPage.html"></div>
+    
     </body>
 </html>

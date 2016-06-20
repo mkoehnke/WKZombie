@@ -41,6 +41,11 @@ public class HTMLForm : HTMLElement {
         return objectForKey("name")
     }
     
+    /// Returns the value for the id attribute.
+    public var id : String? {
+        return objectForKey("id")
+    }
+    
     /// Returns the value for the action attribute.
     public var action : String? {
         return objectForKey("action")
@@ -64,6 +69,8 @@ public class HTMLForm : HTMLElement {
     internal func actionScript() -> String? {
         if let name = name {
             return "document.\(name).submit();"
+        } else if let id = id {
+            return "document.getElementById('\(id)').submit();"
         }
         return nil
     }

@@ -92,7 +92,7 @@ The following snippet demonstrates how you would use WKZombie to **collect all P
 >>* get(by: .Contains("href", "/account/"))
 >>> click(then: .Wait(2.5))
 >>* getAll(by: .Contains("class", "row-"))
-=== handleResult
+=== myOutput
 ```
 
 In order to output or process the collected data, one can either use a closure or implement a custom function taking the result as parameter:
@@ -206,22 +206,35 @@ func setAttribute<T: HTMLElement>(key: String, value: String?) -> (element: T) -
 
 ### Execute JavaScript
 
-The returned WKZombie Action will execute a JavaScript string.
+The returned WKZombie Actions will execute a JavaScript string.
 
 ```ruby
 func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult>
+func execute(script: JavaScript) -> Action<JavaScriptResult>
 ```
 
 For example, the following example shows how retrieve the title of the currently loaded website using the *execute()* method:
 
 ```ruby
-    browser.inspect()
+    browser.inspect
 >>> browser.execute("document.title")
 === myOutput
+
+func myOutput(result: JavaScriptResult?) {
+  // handle result
+}
 ```
 
+The following code shows another way to execute JavaScript, that is e.g. value of an attribute:
 ```ruby
-func myOutput(result: JavaScriptResult?) {
+    browser.open(url)
+>>> browser.get(by: .Id("div"))
+>>> browser.map { $0.objectForKey("onClick")! }
+>>> browser.execute
+>>> browser.inspect
+=== myOutput
+
+func myOutput(result: HTMLPage?) {
   // handle result
 }
 ```
@@ -253,6 +266,11 @@ The returned WKZombie Action will transform a WKZombie object into another objec
 func map<T, A>(f: T -> A) -> (element: T) -> Action<A>
 ```
 
+This function transforms an object into another object using the specified function *f*.
+```ruby
+func map<T, A>(f: T -> A) -> (object: T) -> A
+```
+
 ## Taking Snapshots
 
 Taking snapshots is **available for iOS**. First, a *snapshotHandler* must be registered, that will be called each time a snapshot has been taken:
@@ -272,10 +290,10 @@ Secondly, adding the `>>*` operator will trigger the snapshot event:
 ```
 **Note: This operator only works with the WKZombie shared instance.**
 
-Alternatively, one can use the *snap()* command:
+Alternatively, one can use the *snap* command:
 ```ruby
     browser.open(url)
->>> browser.snap()
+>>> browser.snap
 >>> browser.get(by: .Id("element"))
 === myOutput
 ```
@@ -321,7 +339,7 @@ The following Operators can be applied to *Actions*, which makes chained *Action
 Operator    | iOS | OSX | Description
 :----------:|:---:|:---:| ---------------
 `>>>`       | x   | x   | This Operator equates to the *andThen()* method. Here, the left-hand side *Action* will be started and the result is used as parameter for the right-hand side *Action*. **Note:** If the right-hand side *Action* doesn't take a parameter, the result of the left-hand side *Action* will be ignored and not passed.
-`>>*`       | x   |     | This is a convenience operator for the _snap()_ command. It is equal to the `>>>` operator with the difference that a snapshot will be taken after the left Action has been finished. **Note: This operator throws an assert if used with any other than the shared instance.**
+`>>*`       | x   |     | This is a convenience operator for the _snap_ command. It is equal to the `>>>` operator with the difference that a snapshot will be taken after the left Action has been finished. **Note: This operator throws an assert if used with any other than the shared instance.**
 `===`       | x   | x   | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
 ## Advanced Actions
@@ -338,6 +356,26 @@ func batch<T, U>(f: T -> Action<U>) -> (elements: [T]) -> Action<[U]>
 The returned WKZombie Action will execute the specified action (with the result of the previous action execution as input parameter) until a certain condition is met. Afterwards, it will return the collected action results.
 ```ruby
 func collect<T>(f: T -> Action<T>, until: T -> Bool) -> (initial: T) -> Action<[T]>
+```
+
+### Swap
+
+**Note:** Due to a XPath limitation, WKZombie can't access elements within an `iframe` directly. The swap function can workaround this issue by switching web contexts.
+
+The returned WKZombie Action will swap the current page context with the context of an embedded `<iframe>`.
+```ruby
+func swap<T: Page>(iframe : HTMLFrame) -> Action<T>
+func swap<T: Page>(then postAction: PostAction) -> (iframe : HTMLFrame) -> Action<T>
+```
+
+The following example shows how to press a button that is embedded in an iframe:
+```ruby
+    browser.open(startURL())
+>>> browser.get(by: .XPathQuery("//iframe[@name='button_frame']"))
+>>> browser.swap
+>>> browser.get(by: .Id("button"))
+>>> browser.press
+=== myOutput
 ```
 
 ## Test / Debug

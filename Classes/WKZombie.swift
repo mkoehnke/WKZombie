@@ -95,6 +95,25 @@ public class WKZombie : NSObject {
         let responseResult: Result<Response> = Result(errorDomain, Response(data: data, statusCode: statusCode))
         return responseResult >>> parseResponse
     }
+    
+    //========================================
+    // MARK: HTMLRedirectable Handling
+    //========================================
+    
+    private func redirect<T: Page, U: HTMLRedirectable>(then postAction: PostAction = .None) -> (redirectable : U) -> Action<T> {
+        return { (redirectable: U) -> Action<T> in
+            return Action() { [unowned self] completion in
+                if let script = redirectable.actionScript() {
+                    self._renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
+                        let data = self._handleResponse(result as? NSData, response: response, error: error)
+                        completion(data >>> decodeResult(response?.URL))
+                    })
+                } else {
+                    completion(Result.Error(.NetworkRequestFailure))
+                }
+            }
+        }
+    }
 }
 
 
@@ -217,7 +236,7 @@ extension WKZombie {
      */
     public func click<T: Page>(then postAction: PostAction) -> (link : HTMLLink) -> Action<T> {
         return { [unowned self] (link: HTMLLink) -> Action<T> in
-            return self._touch(then: postAction)(clickable: link)
+            return self.redirect(then: postAction)(redirectable: link)
         }
     }
     
@@ -242,23 +261,38 @@ extension WKZombie {
      */
     public func press<T: Page>(then postAction: PostAction) -> (button : HTMLButton) -> Action<T> {
         return { [unowned self] (button: HTMLButton) -> Action<T> in
-            return self._touch(then: postAction)(clickable: button)
+            return self.redirect(then: postAction)(redirectable: button)
         }
     }
+}
+
+//========================================
+// MARK: Swap Page Context
+//========================================
+
+extension WKZombie {
+    /**
+     The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
+     
+     - parameter iframe: The HTMLFrame (iFrame).
+     
+     - returns: The WKZombie Action.
+     */
+    public func swap<T: Page>(iframe : HTMLFrame) -> Action<T> {
+        return swap(then: .None)(iframe: iframe)
+    }
     
-    // Private
-    private func _touch<T: Page, U: HTMLClickable>(then postAction: PostAction = .None) -> (clickable : U) -> Action<T> {
-        return { (clickable: U) -> Action<T> in
-            return Action() { [unowned self] completion in
-                if let script = clickable.actionScript() {
-                    self._renderer.executeScript(script, willLoadPage: true, postAction: postAction, completionHandler: { result, response, error in
-                        let data = self._handleResponse(result as? NSData, response: response, error: error)
-                        completion(data >>> decodeResult(response?.URL))
-                    })
-                } else {
-                    completion(Result.Error(.NetworkRequestFailure))
-                }
-            }
+    /**
+     The returned WKZombie Action will swap the current page context with the context of an embedded iFrame.
+     
+     - parameter postAction: An wait/validation action that will be performed after the page has reloaded.
+     - parameter iframe: The HTMLFrame (iFrame).
+     
+     - returns: The WKZombie Action.
+     */
+    public func swap<T: Page>(then postAction: PostAction) -> (iframe : HTMLFrame) -> Action<T> {
+        return { [unowned self] (iframe: HTMLFrame) -> Action<T> in
+            return self.redirect(then: postAction)(redirectable: iframe)
         }
     }
 }
@@ -348,16 +382,28 @@ extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult> {
-        return { (page: HTMLPage) -> Action<JavaScriptResult> in
-            return Action() { [unowned self] completion in
-                self._renderer.executeScript(script, completionHandler: { result, response, error in
-                    let data = self._handleResponse(result as? NSData, response: response, error: error)
-                    let output = data >>> decodeString
-                    Logger.log("Script Result".uppercaseString + "\n\(output)\n")
-                    completion(output)
-                })
-            }
+    public func execute(script: JavaScript) -> Action<JavaScriptResult> {
+        return Action() { [unowned self] completion in
+            self._renderer.executeScript(script, completionHandler: { result, response, error in
+                let data = self._handleResponse(result as? NSData, response: response, error: error)
+                let output = data >>> decodeString
+                Logger.log("Script Result".uppercaseString + "\n\(output)\n")
+                completion(output)
+            })
+        }
+    }
+    
+    /**
+     The returned WKZombie Action will execute a JavaScript string.
+     
+     - parameter script: A JavaScript string.
+     - parameter page: A HTML page.
+     
+     - returns: The WKZombie Action.
+     */
+    public func execute<T: HTMLPage>(script: JavaScript) -> (page : T) -> Action<JavaScriptResult> {
+        return { [unowned self] (page : T) -> Action<JavaScriptResult> in
+            return self.execute(script)
         }
     }
 }
@@ -405,13 +451,27 @@ extension WKZombie {
      The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function.
      
      - parameter f: The function that takes a certain HTMLElement as parameter and transforms it into another HTMLElement.
-     - parameter element: A HTML element.
+     - parameter object: A HTML element.
      
      - returns: The WKZombie Action.
      */
     public func map<T, A>(f: T -> A) -> (object: T) -> Action<A> {
         return { (object: T) -> Action<A> in
             return Action(result: resultFromOptional(f(object), error: .NotFound))
+        }
+    }
+    
+    /**
+     This function transforms an object into another object using the specified closure.
+     
+     - parameter f: The closure that takes an object as parameter and transforms it into another object.
+     - parameter object: An object.
+     
+     - returns: The transformed object.
+     */
+    public func map<T, A>(f: T -> A) -> (object: T) -> A {
+        return { (object: T) -> A in
+            return f(object)
         }
     }
 }
@@ -515,19 +575,17 @@ extension WKZombie {
      
      - returns: A snapshot class.
      */
-    public func snap<T>() -> (element: T) -> Action<T> {
-        return { (element: T) -> Action<T> in
-            return Action<T>(operation: { [unowned self] completion in
-                delay(DefaultSnapshotDelay, completion: {
-                    if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
-                        snapshotHandler(snapshot)
-                        completion(Result.Success(element))
-                    } else {
-                        completion(Result.Error(.SnapshotFailure))
-                    }
-                })
+    public func snap<T>(element: T) -> Action<T> {
+        return Action<T>(operation: { [unowned self] completion in
+            delay(DefaultSnapshotDelay, completion: {
+                if let snapshotHandler = self.snapshotHandler, snapshot = self._renderer.snapshot() {
+                    snapshotHandler(snapshot)
+                    completion(Result.Success(element))
+                } else {
+                    completion(Result.Error(.SnapshotFailure))
+                }
             })
-        }
+        })
     }
 }
     

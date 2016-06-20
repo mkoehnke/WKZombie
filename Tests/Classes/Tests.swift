@@ -55,9 +55,9 @@ class Tests: XCTestCase {
         let expectation = expectationWithDescription("Inspect Done.")
         var originalPage : HTMLPage?
         
-        browser.open(startURL())
+            browser.open(startURL())
         >>> browser.map { originalPage = $0 as HTMLPage }
-        >>> browser.inspect()
+        >>> browser.inspect
         === { (result: HTMLPage?) in
             if let result = result, originalPage = originalPage {
                 XCTAssertEqual(result.data, originalPage.data)
@@ -81,6 +81,70 @@ class Tests: XCTestCase {
         === { (result: JavaScriptResult?) in
             XCTAssertEqual(result, "WKZombie Result Page")
             expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
+    func testFormSubmit() {
+        let expectation = expectationWithDescription("Form Submit Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .Id("test_form"))
+            >>> browser.submit
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
+    func testFormWithXPathQuerySubmit() {
+        let expectation = expectationWithDescription("Form XPathQuery Submit Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .XPathQuery("//form[1]"))
+            >>> browser.submit
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
+    func testDivOnClick() {
+        let expectation = expectationWithDescription("DIV OnClick Done.")
+    
+        browser.open(startURL())
+            >>> browser.get(by: .Id("onClick_div"))
+            >>> browser.map { $0.objectForKey("onClick")! }
+            >>> browser.execute
+            >>> browser.inspect
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
+    func testDivHref() {
+        let expectation = expectationWithDescription("DIV Href Done.")
+        
+        browser.open(startURL())
+            >>> browser.get(by: .Id("href_div"))
+            >>> browser.map { "window.location.href='\($0.objectForKey("href")!)'" }
+            >>> browser.execute
+            >>> browser.inspect
+            >>> browser.execute("document.title")
+            === { (result: JavaScriptResult?) in
+                XCTAssertEqual(result, "WKZombie Result Page")
+                expectation.fulfill()
         }
         
         waitForExpectationsWithTimeout(20.0, handler: nil)
@@ -111,12 +175,29 @@ class Tests: XCTestCase {
         }
         
         browser.open(startURL())
+        >>> browser.snap
         >>> browser.get(by: .Name("button"))
-        >>> browser.snap()
         >>> browser.press
-        >>> browser.snap()
+        >>> browser.snap
         === { (result: HTMLPage?) in
             XCTAssertEqual(snapshots.count, 2)
+            expectation.fulfill()
+        }
+        
+        waitForExpectationsWithTimeout(20.0, handler: nil)
+    }
+    
+    func testSwap() {
+        let expectation = expectationWithDescription("iframe Button Test Done.")
+        
+        browser.open(startURL())
+        >>> browser.get(by: .XPathQuery("//iframe[@name='button_frame']"))
+        >>> browser.swap
+        >>> browser.get(by: .XPathQuery("//button[@name='button2']"))
+        >>> browser.press
+        >>> browser.execute("document.title")
+        === { (result: JavaScriptResult?) in
+            XCTAssertEqual(result, "WKZombie Result Page")
             expectation.fulfill()
         }
         

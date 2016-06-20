@@ -116,6 +116,25 @@ public func press<T: Page>(then postAction: PostAction) -> (button : HTMLButton)
     return WKZombie.sharedInstance.press(then: postAction)
 }
 
+//========================================
+// MARK: Swap Page Context
+//========================================
+
+/**
+ The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
+ - seealso: _swap()_ function in _WKZombie_ class for more info.
+ */
+public func swap<T: Page>(iframe : HTMLFrame) -> Action<T> {
+    return WKZombie.sharedInstance.swap(iframe)
+}
+
+/**
+ The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
+ - seealso: _swap()_ function in _WKZombie_ class for more info.
+ */
+public func swap<T: Page>(then postAction: PostAction) -> (iframe : HTMLFrame) -> Action<T> {
+    return WKZombie.sharedInstance.swap(then: postAction)
+}
 
 //========================================
 // MARK: DOM Modification Methods
@@ -164,7 +183,15 @@ public func get<T: HTMLElement>(by searchType: SearchType<T>) -> (page: HTMLPage
  The returned WKZombie Action will execute a JavaScript string __using the shared WKZombie instance__.
  - seealso: _execute()_ function in _WKZombie_ class for more info.
  */
-public func execute(script: JavaScript) -> (page: HTMLPage) -> Action<JavaScriptResult> {
+public func execute(script: JavaScript) -> Action<JavaScriptResult> {
+    return WKZombie.sharedInstance.execute(script)
+}
+
+/**
+ The returned WKZombie Action will execute a JavaScript string __using the shared WKZombie instance__.
+ - seealso: _execute()_ function in _WKZombie_ class for more info.
+ */
+public func execute<T: HTMLPage>(script: JavaScript) -> (page: T) -> Action<JavaScriptResult> {
     return WKZombie.sharedInstance.execute(script)
 }
 
@@ -197,6 +224,13 @@ public func map<T, A>(f: T -> A) -> (object: T) -> Action<A> {
     return WKZombie.sharedInstance.map(f)
 }
 
+/**
+ This function transforms an object into another object using the specified closure.
+ - seealso: _map()_ function in _WKZombie_ class for more info.
+ */
+public func map<T, A>(f: T -> A) -> (object: T) -> A {
+    return WKZombie.sharedInstance.map(f)
+}
 
 //========================================
 // MARK: Advanced Actions
@@ -271,10 +305,30 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
      This is a convenience operator for the _snap()_ command. It is equal to the __>>>__ operator with the difference
      that a snapshot will be taken after the left Action has been finished.
      */
-    infix operator >>* { associativity left precedence 150 }
-    public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
+    infix operator >>* { associativity left precedence 170 }
+    
+    private func assertIfNotSharedInstance() {
         assert(WKZombie.Static.instance != nil, "The >>* operator can only be used with the WKZombie shared instance.")
-        return a >>> snap() >>> f
+    }
+    
+    public func >>*<T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> f
+    }
+    
+    public func >>*<T, U>(a: Action<T>, b: Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> b
+    }
+    
+    public func >>*<T, U: Page>(a: Action<T>, f: () -> Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> f
+    }
+    
+    public func >>*<T:Page, U>(a: () -> Action<T>, f: T -> Action<U>) -> Action<U> {
+        assertIfNotSharedInstance()
+        return a >>> snap >>> f
     }
     
     /**
@@ -283,8 +337,8 @@ public func decode<T : JSONDecodable>(array: JSONParsable) -> Action<[T]> {
      __The shared WKZombie instance will be used__.
      - seealso: _snap()_ function in _WKZombie_ class for more info.
      */
-    public func snap<T>() -> (element: T) -> Action<T> {
-        return WKZombie.sharedInstance.snap()
+    public func snap<T>(element: T) -> Action<T> {
+        return WKZombie.sharedInstance.snap(element)
     }
     
 #endif

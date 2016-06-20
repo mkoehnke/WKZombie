@@ -24,7 +24,7 @@
 import Foundation
 
 /// HTML Link class, which represents the <a> element in the DOM.
-public class HTMLLink : HTMLClickable, HTMLFetchable {
+public class HTMLLink : HTMLRedirectable, HTMLFetchable {
     
     /// Returns the value of the href attribute of the link.
     public var href : String? {

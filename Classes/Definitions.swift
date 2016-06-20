@@ -125,7 +125,7 @@ internal struct Response {
     }
 }
 
-infix operator >>> { associativity left precedence 150 }
+infix operator >>> { associativity left precedence 170 }
 internal func >>><A, B>(a: Result<A>, f: A -> Result<B>) -> Result<B> {
     switch a {
     case let .Success(x):   return f(x)
@@ -147,7 +147,7 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
 }
 
 /**
- This Operator equates to the andThen() method with the exception, that the result of the left-hand 
+ This Operator equates to the andThen() method with the exception, that the result of the left-hand
  side Action will be ignored and not passed as paramter to the right-hand side Action.
  
  - parameter a: An Action.
@@ -158,6 +158,29 @@ public func >>><T, U>(a: Action<T>, f: T -> Action<U>) -> Action<U> {
 public func >>><T, U>(a: Action<T>, b: Action<U>) -> Action<U> {
     let f : (T -> Action<U>) = { _ in b }
     return a.andThen(f)
+}
+
+
+/**
+ This Operator equates to the andThen() method with the exception, that the result of the left-hand
+ side Action will be ignored and not passed as paramter to the right-hand side Action.
+
+ *Note:* This a workaround to remove the brackets of functions without any parameters (e.g. **inspect()**)
+ to provide a consistent API.
+ */
+public func >>><T, U: Page>(a: Action<T>, f: () -> Action<U>) -> Action<U> {
+    return a >>> f()
+}
+
+/**
+ This Operator equates to the andThen() method. Here, the left-hand side Action will be started
+ and the result is used as parameter for the right-hand side Action.
+ 
+ *Note:* This a workaround to remove the brackets of functions without any parameters (e.g. **inspect()**)
+ to provide a consistent API.
+ */
+public func >>><T:Page, U>(a: () -> Action<T>, f: T -> Action<U>) -> Action<U> {
+    return a() >>> f
 }
 
 /**
@@ -190,15 +213,11 @@ public func ===<T>(a: Action<T>, completion: Result<T> -> Void) {
 }
 
 internal func parseResponse(response: Response) -> Result<NSData> {
-    guard let data = response.data else {
-        return .Error(.NetworkRequestFailure)
-    }
-    
     let successRange = 200..<300
     if !successRange.contains(response.statusCode) {
         return .Error(.NetworkRequestFailure)
     }
-    return Result(nil, data)
+    return Result(nil, response.data ?? NSData())
 }
 
 internal func resultFromOptional<A>(optional: A?, error: ActionError) -> Result<A> {
