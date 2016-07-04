@@ -63,6 +63,17 @@ public class WKZombie : NSObject {
         }
     }
     
+    /// An operation is cancelled if the time it needs to complete exceeds the time 
+    /// specified by this property. Default is 30 seconds.
+    public var timeoutInSeconds : NSTimeInterval {
+        get {
+            return self._renderer.timeoutInSeconds
+        }
+        set {
+            self._renderer.timeoutInSeconds = newValue
+        }
+    }
+    
     #if os(iOS)
     /// Snapshot Handler
     public var snapshotHandler : SnapshotHandler?

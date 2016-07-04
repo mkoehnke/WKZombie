@@ -34,14 +34,12 @@ internal class RenderOperation : NSOperation {
 
     private(set) weak var webView : WKWebView?
     private var timeout : NSTimer?
-    private let timeoutInSeconds : NSTimeInterval = 20.0
+    private let timeoutInSeconds : NSTimeInterval
     private var stopRunLoop : Bool = false
     
     var loadMediaContent : Bool = true
     var requestBlock : RequestBlock?
     var postAction: PostAction = .None
-    
-    
     
     internal private(set) var result : NSData?
     internal private(set) var response : NSURLResponse?
@@ -75,7 +73,8 @@ internal class RenderOperation : NSOperation {
         }
     }
     
-    init(webView: WKWebView) {
+    init(webView: WKWebView, timeoutInSeconds : NSTimeInterval = 30.0) {
+        self.timeoutInSeconds = timeoutInSeconds
         super.init()
         self.webView = webView
     }

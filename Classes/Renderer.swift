@@ -40,6 +40,8 @@ internal class Renderer : NSObject {
         }
     }
     
+    var timeoutInSeconds : NSTimeInterval = 30.0
+    
     private var renderQueue : NSOperationQueue = {
         let instance = NSOperationQueue()
         instance.maxConcurrentOperationCount = 1
@@ -152,7 +154,7 @@ internal class Renderer : NSObject {
     //========================================
     
     private func operationWithRequestBlock(requestBlock: (operation: RenderOperation) -> Void, postAction: PostAction = .None, completionHandler: RenderCompletion?) -> NSOperation {
-        let operation = RenderOperation(webView: webView)
+        let operation = RenderOperation(webView: webView, timeoutInSeconds: timeoutInSeconds)
         operation.loadMediaContent = loadMediaContent
         operation.postAction = postAction
         operation.completionBlock = { [weak operation] in
