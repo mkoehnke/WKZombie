@@ -138,6 +138,7 @@ There are currently a few *Actions* implemented, helping you visit and navigate 
 ### Open a Website
 
 The returned WKZombie Action will load and return a HTML or JSON page for the specified URL.
+
 ```ruby
 func open<T : Page>(url: NSURL) -> Action<T>
 ```
@@ -159,11 +160,13 @@ func inspect<T: Page>() -> Action<T>
 ### Submit a Form
 
 The returned WKZombie Action will submit the specified HTML form.
+
 ```ruby
 func submit<T : Page>(form: HTMLForm) -> Action<T>
 ```
 
 Optionally, a *PostAction* can be passed. See [PostAction](#special-parameters) for more information.
+
 ```ruby
 func submit<T : Page>(then: PostAction) -> (form: HTMLForm) -> Action<T>
 ```
@@ -171,12 +174,14 @@ func submit<T : Page>(then: PostAction) -> (form: HTMLForm) -> Action<T>
 ### Click a Link / Press a Button
 
 The returned WKZombie Actions will simulate the interaction with a HTML link/button.
+
 ```ruby
 func click<T: Page>(link : HTMLLink) -> Action<T>
 func press<T: Page>(button : HTMLButton) -> Action<T>
 ```
 
 Optionally, a *PostAction* can be passed. See [PostAction](#Special- Parameters) for more information.
+
 ```ruby
 func click<T: Page>(then: PostAction) -> (link : HTMLLink) -> Action<T>
 func press<T: Page>(then: PostAction) -> (button : HTMLButton) -> Action<T>
@@ -187,11 +192,13 @@ func press<T: Page>(then: PostAction) -> (button : HTMLButton) -> Action<T>
 ### Find HTML Elements
 
 The returned WKZombie Action will search the specified HTML page and return the first element matching the generic HTML element type and passed [SearchType](#special-parameters).
+
 ```ruby
 func get<T: HTMLElement>(by: SearchType<T>) -> (page: HTMLPage) -> Action<T>
 ```
 
 The returned WKZombie Action will search and return all elements matching.
+
 ```ruby
 func getAll<T: HTMLElement>(by: SearchType<T>) -> (page: HTMLPage) -> Action<[T]>
 ```
@@ -226,6 +233,7 @@ func myOutput(result: JavaScriptResult?) {
 ```
 
 The following code shows another way to execute JavaScript, that is e.g. value of an attribute:
+
 ```ruby
     browser.open(url)
 >>> browser.get(by: .Id("div"))
@@ -243,11 +251,13 @@ func myOutput(result: HTMLPage?) {
 
 Some HTMLElements, that implement the _HTMLFetchable_ protocol (e.g. _HTMLLink_ or _HTMLImage_), contain attributes like _"src"_ or _"href"_, that link to remote objects or data.
 The following method returns a WKZombie Action that can conveniently download this data:
+
 ```ruby
 func fetch<T: HTMLFetchable>(fetchable: T) -> Action<T>
 ```
 
 Once the _fetch_ method has been executed, the data can be retrieved and __converted__. The following example shows how to convert data, fetched from a link, into an UIImage:
+
 ```ruby
 let image : UIImage? = link.fetchedContent()
 ```
@@ -262,11 +272,13 @@ __Note:__ See the OSX example for more info on how to use this.
 ### Transform
 
 The returned WKZombie Action will transform a WKZombie object into another object using the specified function *f*.
+
 ```ruby
 func map<T, A>(f: T -> A) -> (element: T) -> Action<A>
 ```
 
 This function transforms an object into another object using the specified function *f*.
+
 ```ruby
 func map<T, A>(f: T -> A) -> (object: T) -> A
 ```
@@ -291,6 +303,7 @@ Secondly, adding the `>>*` operator will trigger the snapshot event:
 **Note: This operator only works with the WKZombie shared instance.**
 
 Alternatively, one can use the *snap* command:
+
 ```ruby
     browser.open(url)
 >>> browser.snap
@@ -347,6 +360,7 @@ Operator    | iOS | OSX | Description
 ### Batch
 
 The returned WKZombie Action will make a bulk execution of the specified action function *f* with the provided input elements. Once all actions have finished executing, the collected results will be returned.
+
 ```ruby
 func batch<T, U>(f: T -> Action<U>) -> (elements: [T]) -> Action<[U]>
 ```
@@ -354,6 +368,7 @@ func batch<T, U>(f: T -> Action<U>) -> (elements: [T]) -> Action<[U]>
 ### Collect
 
 The returned WKZombie Action will execute the specified action (with the result of the previous action execution as input parameter) until a certain condition is met. Afterwards, it will return the collected action results.
+
 ```ruby
 func collect<T>(f: T -> Action<T>, until: T -> Bool) -> (initial: T) -> Action<[T]>
 ```
@@ -363,12 +378,14 @@ func collect<T>(f: T -> Action<T>, until: T -> Bool) -> (initial: T) -> Action<[
 **Note:** Due to a XPath limitation, WKZombie can't access elements within an `iframe` directly. The swap function can workaround this issue by switching web contexts.
 
 The returned WKZombie Action will swap the current page context with the context of an embedded `<iframe>`.
+
 ```ruby
 func swap<T: Page>(iframe : HTMLFrame) -> Action<T>
 func swap<T: Page>(then postAction: PostAction) -> (iframe : HTMLFrame) -> Action<T>
 ```
 
 The following example shows how to press a button that is embedded in an iframe:
+
 ```ruby
     browser.open(startURL())
 >>> browser.get(by: .XPathQuery("//iframe[@name='button_frame']"))
@@ -383,6 +400,7 @@ The following example shows how to press a button that is embedded in an iframe:
 ### Dump
 
 This command is useful for **debugging**. It prints out the current state of the WKZombie browser represented as *DOM*.
+
 ```ruby
 func dump()
 ```
@@ -390,6 +408,7 @@ func dump()
 ### Clear Cache and Cookies
 
 Clears the cache/cookie data (such as login data, etc).
+
 ```ruby
 func clearCache()
 ```
@@ -408,6 +427,14 @@ The user agent of WKZombie can be changed by setting the following variable:
 
 ```ruby
 browser.userAgent = "Mozilla/5.0 (iPhone; CPU iPhone OS 9_0 like Mac OS X) AppleWebKit/601.1.32 (KHTML, like Gecko) Mobile/13A4254v"
+```
+
+### Timeout
+
+An operation is cancelled if the time it needs to complete exceeds the time specified by this property. The default value is 30 seconds.
+
+```ruby
+browser.timeoutInSeconds = 15.0
 ```
 
 
