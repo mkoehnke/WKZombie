@@ -89,11 +89,11 @@ public protocol HTMLFetchableContent {
     import Cocoa
     extension NSImage : HTMLFetchableContent {
         public typealias ContentType = NSImage
-        public static func instanceFromData(data: NSData) -> Result<ContentType> {
+        public static func instanceFromData(_ data: Data) -> Result<ContentType> {
             if let image = NSImage(data: data) {
-                return Result.Success(image)
+                return Result.success(image)
             }
-            return Result.Error(.TransformFailure)
+            return Result.error(.transformFailure)
         }
     }
 #endif

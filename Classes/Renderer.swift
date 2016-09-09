@@ -89,9 +89,9 @@ internal class Renderer : NSObject {
                     Logger.log(warning)
                 }
             #elseif os(OSX)
-                self.webView = WKWebView(frame: CGRectZero, configuration: config)
-                if let window = NSApplication.sharedApplication().keyWindow, let view = window.contentView {
-                    self.webView.frame = CGRect(origin: CGPointZero, size: view.frame.size)
+                self.webView = WKWebView(frame: CGRect.zero, configuration: config)
+                if let window = NSApplication.shared().keyWindow, let view = window.contentView {
+                    self.webView.frame = CGRect(origin: CGPoint.zero, size: view.frame.size)
                     self.webView.alphaValue = 0.01
                     view.addSubview(self.webView)
                 } else {

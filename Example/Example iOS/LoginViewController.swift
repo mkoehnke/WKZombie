@@ -31,8 +31,8 @@ class LoginViewController : UIViewController {
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var loginButton : UIButton!
     
-    private let url = NSURL(string: "https://developer.apple.com/membercenter/index.action")!
-    private var snapshots = [Snapshot]()
+    fileprivate let url = URL(string: "https://developer.apple.com/membercenter/index.action")!
+    fileprivate var snapshots = [Snapshot]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -42,9 +42,9 @@ class LoginViewController : UIViewController {
         }
     }
     
-    @IBAction func loginButtonTouched(button: UIButton) {
-        guard let user = nameTextField.text, password = passwordTextField.text else { return }
-        button.enabled = false
+    @IBAction func loginButtonTouched(_ button: UIButton) {
+        guard let user = nameTextField.text, let password = passwordTextField.text else { return }
+        button.isEnabled = false
         snapshots.removeAll()
         activityIndicator.startAnimating()
         getProvisioningProfiles(url, user: user, password: password)
@@ -54,17 +54,17 @@ class LoginViewController : UIViewController {
     // MARK: HTML Navigation
     //========================================
     
-    func getProvisioningProfiles(url: NSURL, user: String, password: String) {
+    func getProvisioningProfiles(_ url: URL, user: String, password: String) {
                open(url)
-           >>* get(by: .Id("accountname"))
+           >>* get(by: .id("accountname"))
            >>> setAttribute("value", value: user)
-           >>* get(by: .Id("accountpassword"))
+           >>* get(by: .id("accountpassword"))
            >>> setAttribute("value", value: password)
-           >>* get(by: .Name("form2"))
-           >>> submit(then: .Wait(2.0))
-           >>* get(by: .Contains("href", "/account/"))
-           >>> click(then: .Wait(2.5))
-           >>* getAll(by: .Contains("class", "row-"))
+           >>* get(by: .name("form2"))
+           >>> submit(then: .wait(2.0))
+           >>* get(by: .contains("href", "/account/"))
+           >>> click(then: .wait(2.5))
+           >>* getAll(by: .contains("class", "row-"))
            === handleResult
     }
     
@@ -72,21 +72,21 @@ class LoginViewController : UIViewController {
     // MARK: Handle Result
     //========================================
     
-    func handleResult(result: Result<[HTMLTableRow]>) {
+    func handleResult(_ result: Result<[HTMLTableRow]>) {
         switch result {
-        case .Success(let value): self.outputResult(value)
-        case .Error(let error): self.handleError(error)
+        case .success(let value): self.outputResult(value)
+        case .error(let error): self.handleError(error)
         }
     }
     
-    func outputResult(rows: [HTMLTableRow]) {
+    func outputResult(_ rows: [HTMLTableRow]) {
         let columns = rows.flatMap { $0.columns?.first }
-        performSegueWithIdentifier("detailSegue", sender: columns)
+        performSegue(withIdentifier: "detailSegue", sender: columns)
     }
     
-    func handleError(error: ActionError) {
+    func handleError(_ error: ActionError) {
         print("Error loading page: \(error)")
-        loginButton.enabled = true
+        loginButton.isEnabled = true
         activityIndicator.stopAnimating()
         
         dump()
@@ -97,9 +97,9 @@ class LoginViewController : UIViewController {
     // MARK: Segue
     //========================================
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "detailSegue" {
-            if let vc = segue.destinationViewController as? ProfileViewController, items = sender as? [HTMLTableColumn] {
+            if let vc = segue.destination as? ProfileViewController, let items = sender as? [HTMLTableColumn] {
                 vc.items = items
                 vc.snapshots = snapshots
             }

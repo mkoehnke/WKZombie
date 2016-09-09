@@ -34,20 +34,20 @@ class ProfileViewController: UITableViewController {
         navigationItem.hidesBackButton = true
     }
     
-    override func tableView(tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+    override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         return items?.count ?? 0
     }
 
-    override func tableView(tableView: UITableView, cellForRowAtIndexPath indexPath: NSIndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCellWithIdentifier("cell", forIndexPath: indexPath)
+    override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let cell = tableView.dequeueReusableCell(withIdentifier: "cell", for: indexPath)
         let item = items?[indexPath.row].children()?.first as HTMLElement?
         cell.textLabel?.text = item?.text
         return cell
     }
     
-    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if segue.identifier == "snapshotSegue" {
-            let vc = segue.destinationViewController as? SnapshotViewController
+            let vc = segue.destination as? SnapshotViewController
             vc?.snapshots = snapshots
         }
     }
