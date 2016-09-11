@@ -8,7 +8,7 @@
 
 [<img align="left" src="https://raw.githubusercontent.com/mkoehnke/WKZombie/develop/Resources/Logo.png" hspace="30" width="140px">](#logo)
 
-WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in Swift (>= 2.2).
+WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in **Swift 3** _(Swift 2.2 for versions < 1.0)_.
 
 It incorporates [WebKit](https://webkit.org) (WKWebView) for rendering and [hpple](https://github.com/topfunky/hpple) (libxml2) for parsing the HTML content. In addition, it can take snapshots and has rudimentary support for parsing/decoding [JSON elements](#json-elements). **Chaining asynchronous actions makes the code compact and easy to use.**
 
@@ -83,15 +83,15 @@ The following snippet demonstrates how you would use WKZombie to **collect all P
 
 ```ruby
     open(url)
->>* get(by: .Id("accountname"))
+>>* get(by: .id("accountname"))
 >>> setAttribute("value", value: user)
->>* get(by: .Id("accountpassword"))
+>>* get(by: .id("accountpassword"))
 >>> setAttribute("value", value: password)
->>* get(by: .Name("form2"))
+>>* get(by: .name("form2"))
 >>> submit
->>* get(by: .Contains("href", "/account/"))
->>> click(then: .Wait(2.5))
->>* getAll(by: .Contains("class", "row-"))
+>>* get(by: .contains("href", "/account/"))
+>>> click(then: .wait(2.5))
+>>* getAll(by: .contains("class", "row-"))
 === myOutput
 ```
 
@@ -108,8 +108,8 @@ or
 ```ruby
 func myOutput(result: Result<[HTMLTableColumn]>) {
   switch result {
-  case .Success(let value): // handle success
-  case .Error(let error): // handle error
+  case .success(let value): // handle success
+  case .error(let error): // handle error
   }
 }
 ```
@@ -123,8 +123,8 @@ let action : Action<HTMLPage> = browser.open(url)
 
 action.start { result in
     switch result {
-    case .Success(let page): // process page
-    case .Error(let error):  // handle error
+    case .success(let page): // process page
+    case .error(let error):  // handle error
     }
 }
 ```
@@ -140,13 +140,13 @@ There are currently a few *Actions* implemented, helping you visit and navigate 
 The returned WKZombie Action will load and return a HTML or JSON page for the specified URL.
 
 ```ruby
-func open<T : Page>(url: NSURL) -> Action<T>
+func open<T : Page>(url: URL) -> Action<T>
 ```
 
 Optionally, a *PostAction* can be passed. This is a special wait/validation action, that is performed after the page has finished loading. See [PostAction](#special-parameters) for more information.
 
 ```ruby
-func open<T : Page>(then: PostAction) -> (url: NSURL) -> Action<T>
+func open<T : Page>(then: PostAction) -> (url: URL) -> Action<T>
 ```
 
 ### Get the current Website
@@ -236,7 +236,7 @@ The following code shows another way to execute JavaScript, that is e.g. value o
 
 ```ruby
     browser.open(url)
->>> browser.get(by: .Id("div"))
+>>> browser.get(by: .id("div"))
 >>> browser.map { $0.objectForKey("onClick")! }
 >>> browser.execute
 >>> browser.inspect
@@ -265,7 +265,7 @@ let image : UIImage? = link.fetchedContent()
 Fetched data can be converted into types, that implement the _HTMLFetchableContent_ protocol. The following types are currently supported:
 
 - UIImage / NSImage
-- NSData
+- Data
 
 __Note:__ See the OSX example for more info on how to use this.
 
@@ -297,7 +297,7 @@ Secondly, adding the `>>*` operator will trigger the snapshot event:
 
 ```ruby
     open(url)
->>* get(by: .Id("element"))
+>>* get(by: .id("element"))
 === myOutput
 ```
 **Note: This operator only works with the WKZombie shared instance.**
@@ -307,7 +307,7 @@ Alternatively, one can use the *snap* command:
 ```ruby
     browser.open(url)
 >>> browser.snap
->>> browser.get(by: .Id("element"))
+>>> browser.get(by: .id("element"))
 === myOutput
 ```
 
@@ -322,27 +322,27 @@ Some *Actions*, that incorporate a (re-)loading of webpages (e.g. [open](#open-a
 
 PostAction                | Description
 ------------------------- | -------------
-**Wait** (Seconds)        | The time in seconds that the action will wait (after the page has been loaded) before returning. This is useful in cases where the page loading has been completed, but some JavaScript/Image loading is still in progress.
-**Validate** (Javascript) | The action will complete if the specified JavaScript expression/script returns 'true' or a timeout occurs.
+**wait** (Seconds)        | The time in seconds that the action will wait (after the page has been loaded) before returning. This is useful in cases where the page loading has been completed, but some JavaScript/Image loading is still in progress.
+**validate** (Javascript) | The action will complete if the specified JavaScript expression/script returns 'true' or a timeout occurs.
 
 ### 2. SearchType
 
 In order to find certain HTML elements within a page, you have to specify a *SearchType*. The return type of [get()](#find-html-elements) and [getAll()](#find-html-elements) is generic and determines which tag should be searched for. For instance, the following would return all links with the class *book*:
 
 ```ruby
-let books : Action<HTMLLink> = browser.getAll(by: .Class("book"))(page: htmlPage)
+let books : Action<HTMLLink> = browser.getAll(by: .class("book"))(page: htmlPage)
 ```
 
 The following 6 types are currently available and supported:
 
 SearchType                     | Description
 ------------------------------ | -------------
-**Id** (String)                | Returns an element that matches the specified id.
-**Name** (String)              | Returns all elements matching the specified value for their *name* attribute.
-**Text** (String)              | Returns all elements with inner content, that *contain* the specified text.
-**Class** (String)             | Returns all elements that match the specified class name.
-**Attribute** (String, String) | Returns all elements that match the specified attribute name/value combination.
-**Contains** (String, String)  | Returns all elements with an attribute containing the specified value.
+**id** (String)                | Returns an element that matches the specified id.
+**name** (String)              | Returns all elements matching the specified value for their *name* attribute.
+**text** (String)              | Returns all elements with inner content, that *contain* the specified text.
+**class** (String)             | Returns all elements that match the specified class name.
+**attribute** (String, String) | Returns all elements that match the specified attribute name/value combination.
+**contains** (String, String)  | Returns all elements with an attribute containing the specified value.
 **XPathQuery** (String)        | Returns all elements that match the specified XPath query.
 
 ## Operators
@@ -390,7 +390,7 @@ The following example shows how to press a button that is embedded in an iframe:
     browser.open(startURL())
 >>> browser.get(by: .XPathQuery("//iframe[@name='button_frame']"))
 >>> browser.swap
->>> browser.get(by: .Id("button"))
+>>> browser.get(by: .id("button"))
 >>> browser.press
 === myOutput
 ```
@@ -469,10 +469,10 @@ As mentioned above, WKZombie as rudimentary support for JSON documents.
 For parsing and decoding JSON, the following methods and protocols are available:
 
 #### Parsing
-The returned WKZombie Action will parse NSData and create a JSON object.
+The returned WKZombie Action will parse Data and create a JSON object.
 
 ```ruby
-func parse<T: JSON>(data: NSData) -> Action<T>
+func parse<T: JSON>(data: Data) -> Action<T>
 ```
 
 #### Decoding

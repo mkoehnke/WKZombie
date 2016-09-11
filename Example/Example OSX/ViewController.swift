@@ -29,15 +29,15 @@ class ViewController: NSViewController {
     @IBOutlet weak var imageView : NSImageView!
     @IBOutlet weak var activityIndicator : NSProgressIndicator!
     
-    let url = NSURL(string: "https://github.com/logos")!
+    let url = URL(string: "https://github.com/logos")!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         activityIndicator.startAnimation(nil)
-        getTopTrendingEntry(url)
+        getTopTrendingEntry(url: url)
     }
 
-    func getTopTrendingEntry(url: NSURL) {
+    func getTopTrendingEntry(url: URL) {
             open(url)
         >>> get(by: .XPathQuery("//img[contains(@class, 'gh-octocat')]"))
         >>> fetch
