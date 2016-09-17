@@ -549,6 +549,7 @@ $ Scripts/setup-framework.sh
 in the root WKZombie directory to set up a buildable framework project (`WKZombie.xcworkspace`).
 
 # TODOs
+* Support SPM
 * More Unit Tests
 * More examples
 * Replace hpple with more 'Swifty' implementation
