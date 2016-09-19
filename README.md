@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Build Status](https://travis-ci.org/mkoehnke/WKZombie.svg?branch=master)](https://travis-ci.org/mkoehnke/WKZombie)
 
-[<img align="left" src="https://raw.githubusercontent.com/mkoehnke/WKZombie/develop/Resources/Logo.png" hspace="30" width="140px">](#logo)
+[<img align="left" src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Documentation/Resources/Logo.png" hspace="30" width="140px">](#logo)
 
 WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in **Swift 3** _(Swift 2.2 for versions < 1.0)_.
 
@@ -29,13 +29,13 @@ The following example is supposed to demonstrate the WKZombie functionality. Let
 
 When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically type in your credentials, sign in and navigate (via links) to the *Provisioning Profiles* section:
 
-<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/WKZombie-Web-Demo.gif" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Documentation/Resources//WKZombie-Web-Demo.gif" />
 
 #### Automation with WKZombie
 
 The same navigation process can be reproduced **automatically** within an iOS/OSX app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
 
-<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/WKZombie-Simulator-Demo.gif" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Documentation/Resources/WKZombie-Simulator-Demo.gif" />
 
 # Getting Started
 
@@ -515,7 +515,7 @@ func myOutput(result: Book?) {
 
 ## [CocoaPods](http://cocoapods.org)
 
-To integrate **WKZombie** into your Xcode project using CocoaPods, specify it in your `Podfile`:
+To integrate `WKZombie` into your Xcode project using CocoaPods, specify it in your `Podfile`:
 
 ```ruby
 source 'https://github.com/CocoaPods/Specs.git'
@@ -538,6 +538,14 @@ To integrate `WKZombie` into your Xcode project using Carthage, specify it in yo
 github "mkoehnke/WKZombie"
 ```
 
+## [Swift Package Manager](http://github.com/apple/swift-package-manager)
+
+To build `WKZombie` using the Swift Package Manager, add it as dependency to your `Package.swift` file and run the following command:
+
+```ogdl
+swift build -Xcc -I/usr/include/libxml2 -Xlinker -lxml2
+```
+
 # Contributing
 
 See the CONTRIBUTING file for how to help out. You'll need to run
@@ -549,7 +557,6 @@ $ Scripts/setup-framework.sh
 in the root WKZombie directory to set up a buildable framework project (`WKZombie.xcworkspace`).
 
 # TODOs
-* Support SPM
 * More Unit Tests
 * More examples
 * Replace hpple with more 'Swifty' implementation
