@@ -54,3 +54,8 @@ Cartfile.resolved
 
 fastlane/report.xml
 fastlane/screenshots
+
+# SPM
+.build/
+Packages/
+
