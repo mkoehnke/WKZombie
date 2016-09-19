@@ -359,6 +359,7 @@ public func dump() {
 /**
  Clears the cache/cookie data (such as login data, etc).
  */
+@available(OSX 10.11, *)
 public func clearCache() {
     WKZombie.sharedInstance.clearCache()
 }

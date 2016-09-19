@@ -56,6 +56,7 @@ open class WKZombie : NSObject {
     }
     
     /// The custom user agent string or nil if no custom user agent string has been set.
+    @available(OSX 10.11, *)
     open var userAgent : String? {
         get {
             return self._renderer.userAgent
@@ -625,6 +626,7 @@ extension WKZombie {
     /**
      Clears the cache/cookie data (such as login data, etc).
      */
+    @available(OSX 10.11, *)
     public func clearCache() {
         _renderer.clearCache()
     }

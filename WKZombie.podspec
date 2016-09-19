@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "WKZombie"
-  s.version      = "1.0.0"
+  s.version      = "1.0.5"
   s.summary      = "WKZombie is a Swift library for iOS/OSX to browse websites without the need of User Interface or API."
 
   s.description  = <<-DESC
@@ -20,8 +20,8 @@ Pod::Spec.new do |s|
 
   s.source       = { :git => "https://github.com/mkoehnke/WKZombie.git", :tag => s.version.to_s }
 
-  s.source_files  = "Classes/*.{swift}", "Classes/HTML/*.{swift}", "Classes/JSON/*.{swift}"
-  s.exclude_files = "Classes/Exclude"
+  s.source_files  = "Sources/WKZombie/*.{swift}"
+  s.exclude_files = "Sources/Exclude"
 
   s.requires_arc = true
 

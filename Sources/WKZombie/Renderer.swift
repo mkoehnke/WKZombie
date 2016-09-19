@@ -30,7 +30,8 @@ typealias RenderCompletion = (_ result : Any?, _ response: URLResponse?, _ error
 internal class Renderer : NSObject {
     
     var loadMediaContent : Bool = true
-    
+
+    @available(OSX 10.11, *)
     var userAgent : String? {
         get {
             return self.webView.customUserAgent
@@ -114,7 +115,11 @@ internal class Renderer : NSObject {
     internal func renderPageWithRequest(_ request: URLRequest, postAction: PostAction = .none, completionHandler: @escaping RenderCompletion) {
         let requestBlock : (_ operation: RenderOperation) -> Void = { operation in
             if let url = request.url , url.isFileURL {
-                _ = operation.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+                if #available(OSX 10.11, *) {
+                    _ = operation.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+                } else {
+                    preconditionFailure("OSX version lower 10.11 not supported.")
+                }
             } else {
                 _ = operation.webView?.load(request)
             }
@@ -182,6 +187,7 @@ internal class Renderer : NSObject {
 //========================================
 
 extension Renderer {
+    @available(OSX 10.11, *)
     internal func clearCache() {
         let distantPast = Date.distantPast
         HTTPCookieStorage.shared.removeCookies(since: distantPast)
