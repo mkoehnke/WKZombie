@@ -2,6 +2,7 @@
 [![Twitter: @mkoehnke](https://img.shields.io/badge/contact-@mkoehnke-blue.svg?style=flat)](https://twitter.com/mkoehnke)
 [![Version](https://img.shields.io/cocoapods/v/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Carthage compatible](https://img.shields.io/badge/Carthage-compatible-4BC51D.svg?style=flat)](https://github.com/Carthage/Carthage)
+[![SPM compatible](https://img.shields.io/badge/SPM-compatible-orange.svg?style=flat)](https://github.com/apple/swift-package-manager)
 [![License](https://img.shields.io/cocoapods/l/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Build Status](https://travis-ci.org/mkoehnke/WKZombie.svg?branch=master)](https://travis-ci.org/mkoehnke/WKZombie)
@@ -90,7 +91,7 @@ self.browser = WKZombie(name: "Demo")
 
 Be sure to keep `browser` in a stored property for the time of being used.
 
-#### Chaining Actions
+### a. Chaining Actions
 
 Web page navigation is based on *Actions*, that can be executed **implicitly** when chaining actions using the [`>>>`](#operators) or [`>>*`](#operators) (for snapshots) operators. All chained actions pass their result to the next action. The [`===`](#operators) operator then starts the execution of the action chain.
 
@@ -129,7 +130,7 @@ func myOutput(result: Result<[HTMLTableColumn]>) {
 }
 ```
 
-#### Manual Actions
+### b. Manual Actions
 
 *Actions* can also be started manually by calling the *start()* method:
 
@@ -147,7 +148,7 @@ action.start { result in
 This is certainly the less complicated way, but you have to write a lot more code, which might become confusing when you want to execute *Actions* successively.  
 
 
-## Basic Actions
+## Basic Action Functions
 There are currently a few *Actions* implemented, helping you visit and navigate within a website:
 
 ### Open a Website
@@ -370,7 +371,7 @@ Operator    | iOS | OSX | Description
 `>>*`       | x   |     | This is a convenience operator for the _snap_ command. It is equal to the `>>>` operator with the difference that a snapshot will be taken after the left Action has been finished. **Note: This operator throws an assert if used with any other than the shared instance.**
 `===`       | x   | x   | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
-## Advanced Actions
+## Advanced Action Functions
 
 ### Batch
 
