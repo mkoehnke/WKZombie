@@ -6,7 +6,7 @@
 [![Platform](https://img.shields.io/cocoapods/p/WKZombie.svg?style=flat)](http://cocoadocs.org/docsets/WKZombie)
 [![Build Status](https://travis-ci.org/mkoehnke/WKZombie.svg?branch=master)](https://travis-ci.org/mkoehnke/WKZombie)
 
-[<img align="left" src="WKZombie/Resources/Documentation/Logo.png" hspace="30" width="140px">](#logo)
+[<img align="left" src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/Documentation/Logo.png" hspace="30" width="140px">](#logo)
 
 WKZombie is an **iOS/OSX web-browser without a graphical user interface**. It was developed as an experiment in order to familiarize myself with **using functional concepts** written in **Swift 3** _(Swift 2.2 for versions < 1.0)_.
 
@@ -29,13 +29,13 @@ The following example is supposed to demonstrate the WKZombie functionality. Let
 
 When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically type in your credentials, sign in and navigate (via links) to the *Provisioning Profiles* section:
 
-<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Documentation/Resources//WKZombie-Web-Demo.gif" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/Documentation/WKZombie-Web-Demo.gif" />
 
 #### Automation with WKZombie
 
 The same navigation process can be reproduced **automatically** within an iOS/OSX app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*.
 
-<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Documentation/Resources/WKZombie-Simulator-Demo.gif" />
+<img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/Documentation/WKZombie-Simulator-Demo.gif" />
 
 **NOTE:** Take a look at the **iOS/OSX** demos in the `Example` directory to see how to use it. For a **Command Line** demo, run the following commands inside the `WKZombie` root folder:
 
