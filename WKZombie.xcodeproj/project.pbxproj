@@ -651,7 +651,7 @@
 		BF455DAB1CEFBF99006D97D0 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Tests/HostApplication/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;
@@ -666,7 +666,7 @@
 		BF455DAC1CEFBF99006D97D0 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "";
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "$(SRCROOT)/Resources/Tests/HostApplication/Info.plist";
 				IPHONEOS_DEPLOYMENT_TARGET = 9.1;

@@ -33,9 +33,18 @@ When using a common web-browser (e.g. Mobile Safari) on iOS, you would typically
 
 #### Automation with WKZombie
 
-The same navigation process can be reproduced **automatically** within an iOS/OSX app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*. **Take a look at the demo project to see how to use it.**
+The same navigation process can be reproduced **automatically** within an iOS/OSX app linking WKZombie *Actions*. In addition, it is now possible to manipulate or display this data in a native way with *UITextfield*, *UIButton* and a *UITableView*.
 
 <img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Documentation/Resources/WKZombie-Simulator-Demo.gif" />
+
+**NOTE:** Take a look at the **iOS/OSX** demos in the `Example` directory to see how to use it. For a **Command Line** demo, run the following commands inside the `WKZombie` root folder:
+
+```ogdl
+$ swift build -Xcc -I/usr/include/libxml2 -Xlinker -lxml2
+
+$ .build/debug/Example <appleid> <password>
+```
+
 
 # Getting Started
 
