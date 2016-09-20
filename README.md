@@ -37,16 +37,11 @@ The same navigation process can be reproduced **automatically** within an iOS/OS
 
 <img src="https://raw.githubusercontent.com/mkoehnke/WKZombie/master/Resources/Documentation/WKZombie-Simulator-Demo.gif" />
 
-**NOTE:** Take a look at the **iOS/OSX** demos in the `Example` directory to see how to use it. For a **Command Line** demo, run the following commands inside the `WKZombie` root folder:
-
-```ogdl
-$ swift build -Xcc -I/usr/include/libxml2 -Xlinker -lxml2
-
-$ .build/debug/Example <appleid> <password>
-```
-
+**Take a look at the iOS/OSX demos in the `Example` directory to see how to use it.**
 
 # Getting Started
+
+## iOS / OSX
 
 The best way to get started is to look at the sample project. Just run the following commands in your shell and you're good to go:
 
@@ -57,6 +52,17 @@ $ open Example.xcworkspace
 ```
 
 __Note:__ You will need CocoaPods 1.0 beta4 or higher.
+
+## Command-Line
+
+For a Command-Line demo, run the following commands inside the `WKZombie` root folder:
+
+```ogdl
+$ swift build -Xcc -I/usr/include/libxml2 -Xlinker -lxml2
+
+$ .build/debug/Example <appleid> <password>
+```
+
 
 # Usage
 A WKZombie instance equates to a web session. Top-level convenience methods like *WKZombie.open()* use a shared instance, which is configured with the default settings.
