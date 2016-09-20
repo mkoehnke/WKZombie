@@ -1,6 +1,7 @@
 import Foundation
 import WKZombie
 
+// Parameters
 let url = URL(string: "https://developer.apple.com/membercenter/index.action")!
 let arguments = CommandLine.arguments
 let user = arguments[1]
@@ -15,6 +16,7 @@ func handleResult(_ result: Result<[HTMLTableRow]>) {
     }
 }
 
+// Result handling
 func handleSuccess(result: [HTMLTableRow]?) {
     print("\n")
     print("PROVISIONING PROFILES:")
@@ -35,6 +37,7 @@ func handleError(error: ActionError) {
     print(error)
 }
 
+// WKZombie Actions
     open(url)
 >>> get(by: .id("accountname"))
 >>> setAttribute("value", value: user)
@@ -47,5 +50,6 @@ func handleError(error: ActionError) {
 >>> getAll(by: .contains("class", "row-"))
 === handleResult
 
+// Keep script running until actions are finished
 let theRL = RunLoop.current
 while shouldKeepRunning && theRL.run(mode: .defaultRunLoopMode, before: .distantFuture) { }
