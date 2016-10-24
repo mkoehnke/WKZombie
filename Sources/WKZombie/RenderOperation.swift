@@ -39,6 +39,7 @@ internal class RenderOperation : Operation {
     
     var loadMediaContent : Bool = true
     var requestBlock : RequestBlock?
+    var authenticationBlock : AuthenticationHandler?
     var postAction: PostAction = .none
     
     internal fileprivate(set) var result : Data?
@@ -156,6 +157,7 @@ internal class RenderOperation : Operation {
         webView?.navigationDelegate = nil
         webView?.configuration.userContentController.removeScriptMessageHandler(forName: "doneLoading")
         webView = nil
+        authenticationBlock = nil
     }
 }
 
@@ -207,6 +209,13 @@ extension RenderOperation : WKNavigationDelegate {
         }
     }
     
+    func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
+        if let authenticationBlock = authenticationBlock, let authenticationResult = authenticationBlock(challenge) {
+            completionHandler(authenticationResult.0, authenticationResult.1)
+        } else {
+            completionHandler(.performDefaultHandling, nil)
+        }
+    }
 }
 
 //========================================

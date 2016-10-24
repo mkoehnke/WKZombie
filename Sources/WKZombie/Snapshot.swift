@@ -28,8 +28,7 @@ public typealias SnapshotImage = UIImage
 import Cocoa
 public typealias SnapshotImage = NSImage
 #endif
-    
-public typealias SnapshotHandler = (Snapshot) -> Void
+
 
 /// WKZombie Snapshot Helper Class
 open class Snapshot {

@@ -24,6 +24,9 @@
 import Foundation
 import WebKit
 
+public typealias AuthenticationHandler = (URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?)?
+public typealias SnapshotHandler = (Snapshot) -> Void
+
 open class WKZombie : NSObject {
     
     private static var __once: () = {  Static.instance = WKZombie() }()
@@ -74,6 +77,16 @@ open class WKZombie : NSObject {
         }
         set {
             self._renderer.timeoutInSeconds = newValue
+        }
+    }
+    
+    /// Authentication Handler for dealing with e.g. Basic Authentication
+    open var authenticationHandler : AuthenticationHandler? {
+        get {
+            return self._renderer.authenticationHandler
+        }
+        set {
+            self._renderer.authenticationHandler = newValue
         }
     }
     
