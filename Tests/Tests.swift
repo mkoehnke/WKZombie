@@ -204,6 +204,25 @@ class Tests: XCTestCase {
         waitForExpectations(timeout: 20.0, handler: nil)
     }
     
+    func testBasicAuthentication() {
+        let expectation = self.expectation(description: "Basic Authentication Test Done.")
+        
+        browser.authenticationHandler = { (challenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) in
+            return (.useCredential, URLCredential(user: "user", password: "passwd", persistence: .forSession))
+        }
+        
+        let url = URL(string: "https://httpbin.org/basic-auth/user/passwd")!
+        browser.open(then: .wait(2.0))(url)
+        >>> browser.get(by: .XPathQuery("//body"))
+        === { (result: HTMLElement?) in
+            XCTAssertNotNil(result, "Basic Authentication Test Failed - No Body.")
+            XCTAssertTrue(result!.hasChildren(), "Basic Authentication Test Failed - No JSON.")
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 20.0, handler: nil)
+    }
+    
     //========================================
     // MARK: Helper Methods
     //========================================

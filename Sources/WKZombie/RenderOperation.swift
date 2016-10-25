@@ -210,7 +210,8 @@ extension RenderOperation : WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didReceive challenge: URLAuthenticationChallenge, completionHandler: @escaping (URLSession.AuthChallengeDisposition, URLCredential?) -> Void) {
-        if let authenticationBlock = authenticationBlock, let authenticationResult = authenticationBlock(challenge) {
+        if let authenticationBlock = authenticationBlock {
+            let authenticationResult = authenticationBlock(challenge)
             completionHandler(authenticationResult.0, authenticationResult.1)
         } else {
             completionHandler(.performDefaultHandling, nil)
