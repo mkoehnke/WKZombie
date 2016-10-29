@@ -223,6 +223,24 @@ class Tests: XCTestCase {
         waitForExpectations(timeout: 20.0, handler: nil)
     }
     
+    func testSelfSignedCertificates() {
+        let expectation = self.expectation(description: "Self Signed Certificate Test Done.")
+        
+        browser.authenticationHandler = { (challenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) in
+            return (.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+        }
+        
+        let url = URL(string: "https://self-signed.badssl.com")!
+        browser.open(then: .wait(2.0))(url)
+        >>> browser.execute("document.title")
+        === { (result: JavaScriptResult?) in
+            XCTAssertEqual(result, "self-signed.badssl.com")
+            expectation.fulfill()
+        }
+        
+        waitForExpectations(timeout: 20.0, handler: nil)
+    }
+    
     //========================================
     // MARK: Helper Methods
     //========================================

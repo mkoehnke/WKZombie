@@ -217,6 +217,12 @@ extension RenderOperation : WKNavigationDelegate {
             completionHandler(.performDefaultHandling, nil)
         }
     }
+    
+    func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
+        Logger.log(error.localizedDescription)
+        self.error = error
+        self.completeRendering(webView)
+    }
 }
 
 //========================================
