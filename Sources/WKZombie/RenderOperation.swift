@@ -200,6 +200,7 @@ extension RenderOperation : WKNavigationDelegate {
                 self.completeRendering(webView)
             }
         }
+        Logger.log(error.localizedDescription)
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
@@ -219,9 +220,9 @@ extension RenderOperation : WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        Logger.log(error.localizedDescription)
         self.error = error
         self.completeRendering(webView)
+        Logger.log(error.localizedDescription)
     }
 }
 
