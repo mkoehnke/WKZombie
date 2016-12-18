@@ -95,6 +95,29 @@ open class WKZombie : NSObject {
     open var snapshotHandler : SnapshotHandler?
     #endif
     
+    
+    /// A view that is used as superview for the rendering WKWebView instance.
+    #if os(iOS)
+    open var renderingView : UIView? {
+        get {
+            return self._renderer.renderingView
+        }
+        set {
+            self._renderer.renderingView = newValue
+        }
+    }
+    #elseif os(OSX)
+    open var renderingView : NSView? {
+        get {
+            return self._renderer.renderingView
+        }
+        set {
+            self._renderer.renderingView = newValue
+        }
+    }
+    #endif
+    
+    
     /**
      The designated initializer.
      

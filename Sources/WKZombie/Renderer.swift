@@ -29,8 +29,12 @@ typealias RenderCompletion = (_ result : Any?, _ response: URLResponse?, _ error
 
 internal class Renderer : NSObject {
     
+    static let scrapingCommand = "document.documentElement.outerHTML"
+    
     var loadMediaContent : Bool = true
-
+    var timeoutInSeconds : TimeInterval = 30.0
+    var authenticationHandler : AuthenticationHandler?
+    
     @available(OSX 10.11, *)
     var userAgent : String? {
         get {
@@ -41,11 +45,19 @@ internal class Renderer : NSObject {
         }
     }
     
-    var timeoutInSeconds : TimeInterval = 30.0
-    
-    internal static let scrapingCommand = "document.documentElement.outerHTML"
-    
-    internal var authenticationHandler : AuthenticationHandler?
+    #if os(iOS)
+    var renderingView : UIView? {
+        didSet {
+            attachToView(renderingView: renderingView)
+        }
+    }
+    #elseif os(OSX)
+    var renderingView : NSView? {
+        didSet {
+            attachToView(renderingView: renderingView)
+        }
+    }
+    #endif
     
     fileprivate var renderQueue : OperationQueue = {
         let instance = OperationQueue()
@@ -75,35 +87,8 @@ internal class Renderer : NSObject {
         config.processPool = processPool ?? WKProcessPool()
         config.userContentController = contentController
         
-        /// Note: The WKWebView behaves very unreliable when rendering offscreen
-        /// on a device. This is especially true with JavaScript, which simply 
-        /// won't be executed sometimes.
-        /// Therefore, I decided to add this very ugly hack where the rendering
-        /// webview will be added to the view hierarchy (between the 
-        /// rootViewController's view and the key window.
-        /// Until there's no better solution, we'll have to roll with this.
-        dispatch_sync_on_main_thread {
-            let warning = "The keyWindow or contentView is missing."
-            #if os(iOS)
-                let bounds = UIScreen.main.bounds
-                self.webView = WKWebView(frame: bounds, configuration: config)
-                if let window = UIApplication.shared.keyWindow {
-                    self.webView.alpha = 0.01
-                    window.insertSubview(self.webView, at: 0)
-                } else {
-                    Logger.log(warning)
-                }
-            #elseif os(OSX)
-                self.webView = WKWebView(frame: CGRect.zero, configuration: config)
-                if let window = NSApplication.shared().keyWindow, let view = window.contentView {
-                    self.webView.frame = CGRect(origin: CGPoint.zero, size: view.frame.size)
-                    self.webView.alphaValue = 0.01
-                    view.addSubview(self.webView)
-                } else {
-                    Logger.log(warning)
-                }
-            #endif
-        }
+        self.webView = WKWebView(frame: CGRect.zero, configuration: config)
+        attachToView(renderingView: renderingView)
     }
     
     deinit {
@@ -184,7 +169,51 @@ internal class Renderer : NSObject {
         }
     }
     
+    /// Note: The WKWebView behaves very unreliable when rendering offscreen
+    /// on a device. This is especially true with JavaScript, which simply
+    /// won't be executed sometimes.
+    /// Therefore, I decided to add this very ugly hack where the rendering
+    /// webview will be added to the view hierarchy (between the
+    /// rootViewController's view and the key window.
+    /// Until there's no better solution, we'll have to roll with this.
+    
+    #if os(iOS)
+    fileprivate func attachToView(renderingView : UIView?) {
+        dispatch_sync_on_main_thread {
+            if let view = renderingView ?? UIApplication.shared.keyWindow, view != self.webView.superview {
+                self.webView.translatesAutoresizingMaskIntoConstraints = false
+                self.webView.alpha = (renderingView == nil) ? 0.01 : 1.0
+                view.insertSubview(self.webView, at: 0)
+                view.addConstraints(renderingViewConstraints())
+            } else {
+                Logger.log("The renderingView or keyWindow is missing.")
+            }
+        }
+    }
+    #elseif os(OSX)
+    fileprivate func attachToView(renderingView : NSView?) {
+        dispatch_sync_on_main_thread {
+            if let view = renderingView ?? NSApplication.shared().keyWindow?.contentView, view != self.webView.superview {
+                self.webView.translatesAutoresizingMaskIntoConstraints = false
+                self.webView.alphaValue = (renderingView == nil) ? 0.01 : 1.0
+                view.addSubview(self.webView)
+                view.addConstraints(renderingViewConstraints())
+            } else {
+                Logger.log("The renderingView or contentView is missing.")
+            }
+        }
+    }
+    #endif
+    
+    fileprivate func renderingViewConstraints() -> [NSLayoutConstraint] {
+        var constraints = [NSLayoutConstraint]()
+        let views : [String : Any] = ["view" : self.webView]
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "H:|-0-[view]-0-|", options: .directionLeadingToTrailing, metrics: nil, views: views)
+        constraints += NSLayoutConstraint.constraints(withVisualFormat: "V:|-0-[view]-0-|", options: .directionLeadingToTrailing, metrics: nil, views: views)
+        return constraints
+    }
 }
+
 
 //========================================
 // MARK: Cache
