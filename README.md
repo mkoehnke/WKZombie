@@ -371,6 +371,33 @@ Operator    | iOS | OSX | Description
 `>>*`       | x   |     | This is a convenience operator for the _snap_ command. It is equal to the `>>>` operator with the difference that a snapshot will be taken after the left Action has been finished. **Note: This operator throws an assert if used with any other than the shared instance.**
 `===`       | x   | x   | This Operator starts the left-hand side *Action* and passes the result as **Optional** to the function on the right-hand side.
 
+## Authentication
+
+Once in a while you might need to handle authentication challenges e.g. *Basic Authentication* or *Self-signed Certificates*. WKZombie provides an `authenticationHandler`, which is invoked when the internal web view needs to respond to an authentication challenge.
+
+### Basic Authentication
+
+The following example shows how Basic Authentication could be handled:
+
+```ruby
+browser.authenticationHandler = { (challenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) in
+	return (.useCredential, URLCredential(user: "user", password: "passwd", persistence: .forSession))
+}
+
+```
+
+### Self-signed Certificates
+
+In case of a self-signed certificate, you could use the authentication handler like this:
+
+```ruby
+browser.authenticationHandler = { (challenge) -> (URLSession.AuthChallengeDisposition, URLCredential?) in
+	return (.useCredential, URLCredential(trust: challenge.protectionSpace.serverTrust!))
+}
+
+```
+
+
 ## Advanced Action Functions
 
 ### Batch

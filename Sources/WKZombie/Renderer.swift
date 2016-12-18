@@ -43,6 +43,10 @@ internal class Renderer : NSObject {
     
     var timeoutInSeconds : TimeInterval = 30.0
     
+    internal static let scrapingCommand = "document.documentElement.outerHTML"
+    
+    internal var authenticationHandler : AuthenticationHandler?
+    
     fileprivate var renderQueue : OperationQueue = {
         let instance = OperationQueue()
         instance.maxConcurrentOperationCount = 1
@@ -51,7 +55,7 @@ internal class Renderer : NSObject {
     }()
     
     fileprivate var webView : WKWebView!
-    internal static let scrapingCommand = "document.documentElement.outerHTML"
+    
     
     init(processPool: WKProcessPool? = nil) {
         super.init()
@@ -166,6 +170,7 @@ internal class Renderer : NSObject {
             completionHandler?(operation?.result, operation?.response, operation?.error)
         }
         operation.requestBlock = requestBlock
+        operation.authenticationBlock = authenticationHandler
         return operation
     }
     
@@ -180,7 +185,6 @@ internal class Renderer : NSObject {
     }
     
 }
-
 
 //========================================
 // MARK: Cache
