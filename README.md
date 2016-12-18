@@ -480,7 +480,7 @@ An operation is cancelled if the time it needs to complete exceeds the time spec
 browser.timeoutInSeconds = 15.0
 ```
 
-### LoadMediaContent
+### Load Media Content
 
 This value is 'true' by default. If set 'false', the loading progress will finish once the 'raw' HTML data has been transmitted. Media content such as videos or images won't be loaded. 
 
