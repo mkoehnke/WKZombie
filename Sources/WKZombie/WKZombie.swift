@@ -93,6 +93,16 @@ open class WKZombie : NSObject {
     #if os(iOS)
     /// Snapshot Handler
     open var snapshotHandler : SnapshotHandler?
+    
+    /// If 'true', shows the network activity indicator in the status bar. The default is 'true'.
+    open var showNetworkActivity : Bool {
+        get {
+            return self._renderer.showNetworkActivity
+        }
+        set {
+            self._renderer.showNetworkActivity = newValue
+        }
+    }
     #endif
     
     /**

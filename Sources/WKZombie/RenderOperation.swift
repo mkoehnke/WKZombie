@@ -38,6 +38,7 @@ internal class RenderOperation : Operation {
     fileprivate var stopRunLoop : Bool = false
     
     var loadMediaContent : Bool = true
+    var showNetworkActivity : Bool = true
     var requestBlock : RequestBlock?
     var authenticationBlock : AuthenticationHandler?
     var postAction: PostAction = .none
@@ -187,12 +188,23 @@ extension RenderOperation : WKScriptMessageHandler {
 
 extension RenderOperation : WKNavigationDelegate {
     
+    private func setNetworkActivityIndicatorVisible(visible : Bool) {
+        #if os(iOS)
+        if showNetworkActivity { UIApplication.shared.isNetworkActivityIndicatorVisible = visible }
+        #endif
+    }
+    
+    func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        setNetworkActivityIndicatorVisible(visible: showNetworkActivity)
+    }
+    
     func webView(_ webView: WKWebView, decidePolicyFor navigationResponse: WKNavigationResponse, decisionHandler: @escaping (WKNavigationResponsePolicy) -> Void) {
         response = navigationResponse.response
         decisionHandler(.allow)
     }
     
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: Error) {
+        setNetworkActivityIndicatorVisible(visible: false)
         if let response = response as? HTTPURLResponse, let _ = completionBlock {
             let successRange = 200..<300
             if !successRange.contains(response.statusCode) {
@@ -204,6 +216,7 @@ extension RenderOperation : WKNavigationDelegate {
     }
     
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
+        setNetworkActivityIndicatorVisible(visible: false)
         switch postAction {
         case .wait, .validate: handlePostAction(postAction, webView: webView)
         case .none: finishedLoading(webView)

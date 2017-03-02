@@ -44,10 +44,16 @@ class LoginViewController : UIViewController {
     
     @IBAction func loginButtonTouched(_ button: UIButton) {
         guard let user = nameTextField.text, let password = passwordTextField.text else { return }
-        button.isEnabled = false
+        setUserInterfaceEnabled(enabled: false)
         snapshots.removeAll()
         activityIndicator.startAnimating()
         getProvisioningProfiles(url, user: user, password: password)
+    }
+    
+    private func setUserInterfaceEnabled(enabled: Bool) {
+        nameTextField.isEnabled = enabled
+        passwordTextField.isEnabled = enabled
+        loginButton.isEnabled = enabled
     }
     
     //========================================
@@ -85,12 +91,18 @@ class LoginViewController : UIViewController {
     }
     
     func handleError(_ error: ActionError) {
-        print("Error loading page: \(error)")
-        loginButton.isEnabled = true
-        activityIndicator.stopAnimating()
-        
-        dump()
         clearCache()
+        dump()
+        
+        inspect >>> execute("document.title") === { [weak self] (result: JavaScriptResult?) in
+            let title = result ?? "<Unknown>"
+            let alert = UIAlertController(title: "Error On Page:", message: "\"\(title)\"", preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Ok", style: .cancel, handler: nil))
+            self?.present(alert, animated: true) {
+                self?.setUserInterfaceEnabled(enabled: true)
+                self?.activityIndicator.stopAnimating()
+            }
+        }
     }
     
     //========================================

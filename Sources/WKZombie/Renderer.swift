@@ -43,6 +43,8 @@ internal class Renderer : NSObject {
     
     var timeoutInSeconds : TimeInterval = 30.0
     
+    var showNetworkActivity : Bool = true
+    
     internal static let scrapingCommand = "document.documentElement.outerHTML"
     
     internal var authenticationHandler : AuthenticationHandler?
@@ -165,6 +167,7 @@ internal class Renderer : NSObject {
     fileprivate func operationWithRequestBlock(_ requestBlock: @escaping (_ operation: RenderOperation) -> Void, postAction: PostAction = .none, completionHandler: RenderCompletion?) -> Operation {
         let operation = RenderOperation(webView: webView, timeoutInSeconds: timeoutInSeconds)
         operation.loadMediaContent = loadMediaContent
+        operation.showNetworkActivity = showNetworkActivity
         operation.postAction = postAction
         operation.completionBlock = { [weak operation] in
             completionHandler?(operation?.result, operation?.response, operation?.error)
