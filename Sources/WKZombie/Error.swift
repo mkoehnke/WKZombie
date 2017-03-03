@@ -44,7 +44,7 @@ extension ActionError: CustomDebugStringConvertible {
     public var debugDescription: String {
         switch self {
         case .networkRequestFailure: return "Network Request Failure"
-        case .notFound: return "Not Found"
+        case .notFound: return "Element Not Found"
         case .parsingFailure: return "Parsing Failure"
         case .transformFailure: return "Transform Failure"
         case .snapshotFailure: return "Snapshot Failure"

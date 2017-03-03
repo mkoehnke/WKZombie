@@ -488,6 +488,15 @@ This value is 'true' by default. If set 'false', the loading progress will finis
 browser.loadMediaContent = false
 ```
 
+### Show Network Activity
+
+If set to ``true``, it will show the network activity indicator in the status bar. The default is ``true``.
+
+```ruby
+browser.showNetworkActivity = true
+```
+
+
 ## HTML Elements
 
 When using WKZombie, the following classes are involved when interacting with websites:
