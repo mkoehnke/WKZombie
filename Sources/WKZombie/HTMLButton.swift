@@ -9,7 +9,7 @@
 import Foundation
 
 /// HTML Button class, which represents the <button> element in the DOM.
-open class HTMLButton : HTMLRedirectable {
+public class HTMLButton : HTMLRedirectable {
 
     //========================================
     // MARK: Overrides

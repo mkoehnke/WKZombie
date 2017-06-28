@@ -31,10 +31,10 @@ public typealias SnapshotImage = NSImage
 
 
 /// WKZombie Snapshot Helper Class
-open class Snapshot {
-    open let page : URL?
-    open let file : URL
-    open lazy var image : SnapshotImage? = {
+public class Snapshot {
+    public let page : URL?
+    public let file : URL
+    public lazy var image : SnapshotImage? = {
         let path = self.file.path
         #if os(iOS)
             return UIImage(contentsOfFile: path)
@@ -73,7 +73,7 @@ open class Snapshot {
      
      - returns: The URL with the new file location.
      */
-    open func moveTo(_ directory: URL) throws -> URL? {
+    public func moveTo(_ directory: URL) throws -> URL? {
         let fileManager = FileManager.default
         let fileName = file.lastPathComponent
         let destination = directory.appendingPathComponent(fileName)

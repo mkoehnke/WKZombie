@@ -24,8 +24,8 @@
 import Foundation
 
 /// The HTMLElement class is a base class, which can represent every element 
-/// in the DOM, e.g. <img>, <a>, <form> etc.
-open class HTMLElement : HTMLParserElement {
+/// in the DOM, e.g. "img", "a", "form" etc.
+public class HTMLElement : HTMLParserElement {
     
     internal class func createXPathQuery(_ parameters: String) -> String {
         return "//*\(parameters)"

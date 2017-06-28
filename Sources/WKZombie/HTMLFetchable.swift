@@ -28,7 +28,7 @@ import ObjectiveC
 // MARK: Fetchable Protocol
 //==========================================
 
-public protocol HTMLFetchable : NSObjectProtocol {
+public protocol HTMLFetchable {
     var fetchURL : URL? { get }
     func fetchedContent<T: HTMLFetchableContent>() -> T?
 }

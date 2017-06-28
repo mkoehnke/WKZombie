@@ -24,10 +24,10 @@
 import Foundation
 
 /// HTML iframe Class, which represents the <iframe> element in the DOM.
-open class HTMLFrame : HTMLRedirectable {
+public class HTMLFrame : HTMLRedirectable {
     
     /// Returns the value of the src attribute of the iframe.
-    open var source : String? {
+    public var source : String? {
         return objectForKey("src")
     }
     

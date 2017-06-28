@@ -27,13 +27,13 @@ import WebKit
 public typealias AuthenticationHandler = (URLAuthenticationChallenge) -> (URLSession.AuthChallengeDisposition, URLCredential?)
 public typealias SnapshotHandler = (Snapshot) -> Void
 
-open class WKZombie : NSObject {
+public class WKZombie {
     
     private static var __once: () = {  Static.instance = WKZombie() }()
     
     /// A shared instance of `Manager`, used by top-level WKZombie methods,
     /// and suitable for multiple web sessions.
-    open class var sharedInstance: WKZombie {
+    public class var sharedInstance: WKZombie {
         _ = WKZombie.__once
         return Static.instance!
     }
@@ -52,7 +52,7 @@ open class WKZombie : NSObject {
     /// If false, the loading progress will finish once the 'raw' HTML data
     /// has been transmitted. Media content such as videos or images won't
     /// be loaded.
-    open var loadMediaContent : Bool = true {
+    public var loadMediaContent : Bool = true {
         didSet {
             _renderer.loadMediaContent = loadMediaContent
         }
@@ -60,7 +60,7 @@ open class WKZombie : NSObject {
     
     /// The custom user agent string or nil if no custom user agent string has been set.
     @available(OSX 10.11, *)
-    open var userAgent : String? {
+    public var userAgent : String? {
         get {
             return self._renderer.userAgent
         }
@@ -71,7 +71,7 @@ open class WKZombie : NSObject {
     
     /// An operation is cancelled if the time it needs to complete exceeds the time 
     /// specified by this property. Default is 30 seconds.
-    open var timeoutInSeconds : TimeInterval {
+    public var timeoutInSeconds : TimeInterval {
         get {
             return self._renderer.timeoutInSeconds
         }
@@ -81,7 +81,7 @@ open class WKZombie : NSObject {
     }
     
     /// Authentication Handler for dealing with e.g. Basic Authentication
-    open var authenticationHandler : AuthenticationHandler? {
+    public var authenticationHandler : AuthenticationHandler? {
         get {
             return self._renderer.authenticationHandler
         }
@@ -92,10 +92,10 @@ open class WKZombie : NSObject {
     
     #if os(iOS)
     /// Snapshot Handler
-    open var snapshotHandler : SnapshotHandler?
+    public var snapshotHandler : SnapshotHandler?
     
     /// If 'true', shows the network activity indicator in the status bar. The default is 'true'.
-    open var showNetworkActivity : Bool {
+    public var showNetworkActivity : Bool {
         get {
             return self._renderer.showNetworkActivity
         }
@@ -113,7 +113,6 @@ open class WKZombie : NSObject {
      - returns: A WKZombie instance.
      */
     public init(name: String? = "WKZombie", processPool: WKProcessPool? = nil) {
-        super.init()
         self.name = name
         self._renderer = Renderer(processPool: processPool)
         self._fetcher = ContentFetcher()
@@ -158,7 +157,7 @@ open class WKZombie : NSObject {
 // MARK: Get Page
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      The returned WKZombie Action will load and return a HTML or JSON page for the specified URL.
      
@@ -210,7 +209,7 @@ extension WKZombie {
 // MARK: Submit Form
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      Submits the specified HTML form.
      
@@ -251,7 +250,7 @@ extension WKZombie {
 // MARK: Click Event
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      Simulates the click of a HTML link.
      
@@ -307,7 +306,7 @@ extension WKZombie {
 // MARK: Swap Page Context
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      The returned WKZombie Action will swap the current page context with the context of an embedded iframe.
      
@@ -338,7 +337,7 @@ extension WKZombie {
 // MARK: DOM Modification Methods
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     
     /**
      The returned WKZombie Action will set or update a attribute/value pair on the specified HTMLElement.
@@ -369,7 +368,7 @@ extension WKZombie {
 // MARK: Find Methods
 //========================================
 
-extension WKZombie {    
+public extension WKZombie {
     /**
      The returned WKZombie Action will search a page and return all elements matching the generic HTML element type and
      the passed key/value attributes.
@@ -410,7 +409,7 @@ extension WKZombie {
 public typealias JavaScript = String
 public typealias JavaScriptResult = String
 
-extension WKZombie {
+public extension WKZombie {
     
     /**
      The returned WKZombie Action will execute a JavaScript string.
@@ -450,7 +449,7 @@ extension WKZombie {
 // MARK: Fetch Actions
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      The returned WKZombie Action will download the linked data of the passed HTMLFetchable object.
      
@@ -459,6 +458,7 @@ extension WKZombie {
      - returns: The WKZombie Action.
      */
     public func fetch<T: HTMLFetchable>(_ fetchable: T) -> Action<T> {
+        var fetchable = fetchable
         return Action() { [unowned self] completion in
             if let fetchURL = fetchable.fetchURL {
                 self._fetcher.fetch(fetchURL, completion: { (result, response, error) in
@@ -483,7 +483,7 @@ extension WKZombie {
 // MARK: Transform Actions
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      The returned WKZombie Action will transform a HTMLElement into another HTMLElement using the specified function.
      
@@ -517,7 +517,7 @@ extension WKZombie {
 // MARK: Advanced Actions
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      Executes the specified action (with the result of the previous action execution as input parameter) until
      a certain condition is met. Afterwards, it will return the collected action results.
@@ -554,7 +554,7 @@ extension WKZombie {
 // MARK: JSON Actions
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     
     /**
      The returned WKZombie Action will parse NSData and create a JSON object.
@@ -604,7 +604,7 @@ extension WKZombie {
 /// Default delay before taking snapshots
 private let DefaultSnapshotDelay = 0.1
     
-extension WKZombie {
+public extension WKZombie {
     
     /**
      The returned WKZombie Action will make a snapshot of the current page.
@@ -632,7 +632,7 @@ extension WKZombie {
 // MARK: Debug Methods
 //========================================
 
-extension WKZombie {
+public extension WKZombie {
     /**
      Prints the current state of the WKZombie browser to the console.
      */

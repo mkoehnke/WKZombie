@@ -51,7 +51,7 @@ public protocol JSONParsable {
 
 
 /// JSONPage class, which represents the entire JSON document.
-open class JSONPage : JSONParser, Page, JSONParsable {
+public class JSONPage : JSONParser, Page, JSONParsable {
     
     /**
      Returns a JSON page instance for the specified JSON data.
@@ -61,7 +61,7 @@ open class JSONPage : JSONParser, Page, JSONParsable {
      
      - returns: A JSON page.
      */
-    open static func pageWithData(_ data: Data?, url: URL?) -> Page? {
+    public static func pageWithData(_ data: Data?, url: URL?) -> Page? {
         if let data = data {
             return JSONPage(data: data, url: url)
         }

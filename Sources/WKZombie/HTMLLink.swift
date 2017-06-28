@@ -23,20 +23,20 @@
 
 import Foundation
 
-/// HTML Link class, which represents the <a> element in the DOM.
-open class HTMLLink : HTMLRedirectable, HTMLFetchable {
+/// HTML Link class, which represents the "a" element in the DOM.
+public class HTMLLink : HTMLRedirectable, HTMLFetchable {
     
     /// Returns the value of the href attribute of the link.
-    open var href : String? {
+    public var href : String? {
         return text
     }
     
     /// Returns the link text.
-    open var linkText : String? {
+    public var linkText : String? {
         return content
     }
     
-    override open var description : String {
+    override public var description : String {
         return href ?? ""
     }
     
@@ -57,7 +57,7 @@ open class HTMLLink : HTMLRedirectable, HTMLFetchable {
     // MARK: HTMLFetchable Protocol
     //========================================
     
-    open var fetchURL : URL? {
+    public var fetchURL : URL? {
         if let href = objectForKey("href") {
             return URL(string: href)
         }

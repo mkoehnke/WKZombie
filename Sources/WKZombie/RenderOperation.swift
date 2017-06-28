@@ -127,7 +127,7 @@ internal class RenderOperation : Operation {
     }
     
     override func cancel() {
-        Logger.log("Cancelling Rendering - \(name)")
+        Logger.log("Cancelling Rendering - \(String(describing: name))")
         super.cancel()
         stopTimeout()
         cleanupReferences()
