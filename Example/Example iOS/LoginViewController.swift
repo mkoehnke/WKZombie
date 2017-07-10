@@ -68,7 +68,7 @@ class LoginViewController : UIViewController {
            >>> setAttribute("value", value: password)
            >>* get(by: .name("form2"))
            >>> submit(then: .wait(2.0))
-           >>* get(by: .contains("href", "/account/"))
+           >>* get(by: .contains("href", "/certificate/"))
            >>> click(then: .wait(2.5))
            >>* getAll(by: .contains("class", "row-"))
            === handleResult
