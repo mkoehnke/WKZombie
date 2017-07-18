@@ -1,7 +1,7 @@
 //
 // HTMLElement.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,8 +24,8 @@
 import Foundation
 
 /// The HTMLElement class is a base class, which can represent every element 
-/// in the DOM, e.g. <img>, <a>, <form> etc.
-open class HTMLElement : HTMLParserElement {
+/// in the DOM, e.g. "img", "a", "form" etc.
+public class HTMLElement : HTMLParserElement {
     
     internal class func createXPathQuery(_ parameters: String) -> String {
         return "//*\(parameters)"

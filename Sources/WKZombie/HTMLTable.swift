@@ -1,7 +1,7 @@
 //
 // HTMLTable.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -23,11 +23,11 @@
 
 import Foundation
 
-/// HTML Table class, which represents the <table> element in the DOM.
-open class HTMLTable : HTMLElement {
+/// HTML Table class, which represents the "table" element in the DOM.
+public class HTMLTable : HTMLElement {
     
     /// Returns all row elements within this table
-    open var rows : [HTMLTableRow]? {
+    public var rows : [HTMLTableRow]? {
         let rows : [HTMLTableRow]? = children()
         return (rows?.first?.tagName == "tbody") ? rows?.first?.children() : rows
     }
@@ -43,10 +43,10 @@ open class HTMLTable : HTMLElement {
 
 
 /// HTML Table Row Class, which represents the <tr> element in the DOM.
-open class HTMLTableRow : HTMLElement {
+public class HTMLTableRow : HTMLElement {
     
     /// Returns all columns within this row.
-    open var columns : [HTMLTableColumn]? {
+    public var columns : [HTMLTableColumn]? {
         return children()
     }
     
@@ -60,7 +60,7 @@ open class HTMLTableRow : HTMLElement {
 }
 
 /// HTML Table Column class, which represents the <td> element in the DOM.
-open class HTMLTableColumn : HTMLElement {
+public class HTMLTableColumn : HTMLElement {
     
     //========================================
     // MARK: Overrides

@@ -1,7 +1,7 @@
 //
 // Renderer.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -27,7 +27,7 @@ import WebKit
 
 typealias RenderCompletion = (_ result : Any?, _ response: URLResponse?, _ error: Error?) -> Void
 
-internal class Renderer : NSObject {
+internal class Renderer {
     
     var loadMediaContent : Bool = true
 
@@ -60,7 +60,6 @@ internal class Renderer : NSObject {
     
     
     init(processPool: WKProcessPool? = nil) {
-        super.init()
         let doneLoadingWithoutMediaContentScript = "window.webkit.messageHandlers.doneLoading.postMessage(\(Renderer.scrapingCommand));"
         let doneLoadingUserScript = WKUserScript(source: doneLoadingWithoutMediaContentScript, injectionTime: .atDocumentEnd, forMainFrameOnly: true)
         

@@ -1,7 +1,7 @@
 //
 // HTMLFrame.swift
 //
-// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@
 import Foundation
 
 /// HTML iframe Class, which represents the <iframe> element in the DOM.
-open class HTMLFrame : HTMLRedirectable {
+public class HTMLFrame : HTMLRedirectable {
     
     /// Returns the value of the src attribute of the iframe.
-    open var source : String? {
+    public var source : String? {
         return objectForKey("src")
     }
     

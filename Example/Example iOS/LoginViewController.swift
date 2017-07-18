@@ -1,7 +1,7 @@
 //
 // LoginViewController.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -68,7 +68,7 @@ class LoginViewController : UIViewController {
            >>> setAttribute("value", value: password)
            >>* get(by: .name("form2"))
            >>> submit(then: .wait(2.0))
-           >>* get(by: .contains("href", "/account/"))
+           >>* get(by: .contains("href", "/certificate/"))
            >>> click(then: .wait(2.5))
            >>* getAll(by: .contains("class", "row-"))
            === handleResult

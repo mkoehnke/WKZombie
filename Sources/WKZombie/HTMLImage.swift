@@ -1,7 +1,7 @@
 //
 // HTMLImage.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,7 +24,7 @@
 import Foundation
 
 /// HTML Image class, which represents the <img> element in the DOM.
-open class HTMLImage : HTMLElement, HTMLFetchable {
+public class HTMLImage : HTMLElement, HTMLFetchable {
     
     //========================================
     // MARK: Initializer
@@ -35,7 +35,7 @@ open class HTMLImage : HTMLElement, HTMLFetchable {
     }
     
     /// Returns the value of the src attribute of the image.
-    open var source : String? {
+    public var source : String? {
         return objectForKey("src")
     }
 
@@ -43,7 +43,7 @@ open class HTMLImage : HTMLElement, HTMLFetchable {
     // MARK: HTMLFetchable Protocol
     //========================================
     
-    open var fetchURL : URL? {
+    public var fetchURL : URL? {
         if let source = source {
             return URL(string: source)
         }

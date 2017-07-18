@@ -1,7 +1,7 @@
 //
 // HTMLForm.swift
 //
-// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2015 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,10 +24,10 @@
 import Foundation
 
 /// HTML Form class, which represents the <form> element in the DOM.
-open class HTMLForm : HTMLElement {
+public class HTMLForm : HTMLElement {
 
     /// All inputs fields (keys and values) of this form.
-    open fileprivate(set) var inputElements = [String : String]()
+    public fileprivate(set) var inputElements = [String : String]()
     
     required public init?(element: AnyObject, XPathQuery: String? = nil) {
         super.init(element: element, XPathQuery: XPathQuery)
@@ -37,17 +37,17 @@ open class HTMLForm : HTMLElement {
     }
     
     /// Returns the value for the name attribute.
-    open var name : String? {
+    public var name : String? {
         return objectForKey("name")
     }
     
     /// Returns the value for the id attribute.
-    open var id : String? {
+    public var id : String? {
         return objectForKey("id")
     }
     
     /// Returns the value for the action attribute.
-    open var action : String? {
+    public var action : String? {
         return objectForKey("action")
     }
     
@@ -58,7 +58,7 @@ open class HTMLForm : HTMLElement {
      
      - returns: The Input field attribute value.
      */
-    open subscript(key: String) -> String? {
+    public subscript(key: String) -> String? {
         return inputElements[key]
     }
     

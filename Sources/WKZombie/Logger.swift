@@ -1,7 +1,7 @@
 //
 // Logger.swift
 //
-// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.com)
+// Copyright (c) 2016 Mathias Koehnke (http://www.mathiaskoehnke.de)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -24,11 +24,11 @@
 import Foundation
 
 /// WKZombie Console Logger
-open class Logger : NSObject {
+public class Logger {
     
-    open static var enabled : Bool = true
+    public static var enabled : Bool = true
     
-    open class func log(_ message: String, lineBreak: Bool = true) {
+    public class func log(_ message: String, lineBreak: Bool = true) {
         if enabled {
             if lineBreak {
                 print("\(message)")
