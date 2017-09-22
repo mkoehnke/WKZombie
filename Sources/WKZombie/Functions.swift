@@ -160,7 +160,7 @@ public func setAttribute<T: HTMLElement>(_ key: String, value: String?) -> (_ el
  the passed key/value attributes. __The the shared WKZombie instance will be used__.
  - seealso: _getAll()_ function in _WKZombie_ class for more info.
  */
-public func getAll<T: HTMLElement>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<[T]> {
+public func getAll<T>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<[T]> {
     return WKZombie.sharedInstance.getAll(by: searchType)
 }
 
@@ -169,7 +169,7 @@ public func getAll<T: HTMLElement>(by searchType: SearchType<T>) -> (_ page: HTM
  the passed key/value attributes. __The shared WKZombie instance will be used__.
  - seealso: _get()_ function in _WKZombie_ class for more info.
  */
-public func get<T: HTMLElement>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<T> {
+public func get<T>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<T> {
     return WKZombie.sharedInstance.get(by: searchType)
 }
 

@@ -378,7 +378,7 @@ public extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func getAll<T: HTMLElement>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<[T]> {
+    public func getAll<T>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<[T]> {
         return { (page: HTMLPage) -> Action<[T]> in
             let elements : Result<[T]> = page.findElements(searchType)
             return Action(result: elements)
@@ -394,7 +394,7 @@ public extension WKZombie {
      
      - returns: The WKZombie Action.
      */
-    public func get<T: HTMLElement>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<T> {
+    public func get<T>(by searchType: SearchType<T>) -> (_ page: HTMLPage) -> Action<T> {
         return { (page: HTMLPage) -> Action<T> in
             let elements : Result<[T]> = page.findElements(searchType)
             return Action(result: elements.first())
