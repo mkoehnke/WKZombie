@@ -28,10 +28,10 @@ import WebKit
 // MARK: RenderOperation
 //========================================
 
+typealias RequestBlock = (_ operation: RenderOperation) -> Void
+
 internal class RenderOperation : Operation {
     
-    typealias RequestBlock = (_ operation: RenderOperation) -> Void
-
     fileprivate(set) weak var webView : WKWebView?
     fileprivate var timeout : Timer?
     fileprivate let timeoutInSeconds : TimeInterval
@@ -91,7 +91,13 @@ internal class RenderOperation : Operation {
             startTimeout()
             
             // Wait for WKWebView to finish loading before starting the operation.
-            wait { [unowned self] in self.webView?.isLoading == false }
+            wait { [unowned self] in
+                var isLoading : Bool = false
+                dispatch_sync_on_main_thread {
+                    isLoading = self.webView?.isLoading ?? false
+                }
+                return isLoading == false
+            }
             
             setupReferences()
             requestBlock?(self)
@@ -150,15 +156,19 @@ internal class RenderOperation : Operation {
     }
     
     fileprivate func setupReferences() {
-        webView?.configuration.userContentController.add(self, name: "doneLoading")
-        webView?.navigationDelegate = self
+        dispatch_sync_on_main_thread {
+            webView?.configuration.userContentController.add(self, name: "doneLoading")
+            webView?.navigationDelegate = self
+        }
     }
     
     fileprivate func cleanupReferences() {
-        webView?.navigationDelegate = nil
-        webView?.configuration.userContentController.removeScriptMessageHandler(forName: "doneLoading")
-        webView = nil
-        authenticationBlock = nil
+        dispatch_sync_on_main_thread {
+            webView?.navigationDelegate = nil
+            webView?.configuration.userContentController.removeScriptMessageHandler(forName: "doneLoading")
+            webView = nil
+            authenticationBlock = nil
+        }
     }
 }
 

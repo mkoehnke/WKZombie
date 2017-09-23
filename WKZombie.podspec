@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "WKZombie"
-  s.version      = "1.0.8"
+  s.version      = "1.1.0"
   s.summary      = "WKZombie is a Swift library for iOS/OSX to browse websites without the need of User Interface or API."
 
   s.description  = <<-DESC
@@ -27,5 +27,5 @@ Pod::Spec.new do |s|
 
   s.dependency 'hpple', '0.2.0' 
 
-  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '3.0' }
+  s.pod_target_xcconfig = { 'SWIFT_VERSION' => '4.0' }
 end

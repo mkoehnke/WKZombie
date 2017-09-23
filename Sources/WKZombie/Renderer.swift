@@ -96,7 +96,7 @@ internal class Renderer {
                 }
             #elseif os(OSX)
                 self.webView = WKWebView(frame: CGRect.zero, configuration: config)
-                if let window = NSApplication.shared().keyWindow, let view = window.contentView {
+                if let window = NSApplication.shared.keyWindow, let view = window.contentView {
                     self.webView.frame = CGRect(origin: CGPoint.zero, size: view.frame.size)
                     self.webView.alphaValue = 0.01
                     view.addSubview(self.webView)
@@ -118,15 +118,17 @@ internal class Renderer {
     //========================================
     
     internal func renderPageWithRequest(_ request: URLRequest, postAction: PostAction = .none, completionHandler: @escaping RenderCompletion) {
-        let requestBlock : (_ operation: RenderOperation) -> Void = { operation in
-            if let url = request.url , url.isFileURL {
-                if #available(OSX 10.11, *) {
-                    _ = operation.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+        let requestBlock : (_ operation: RenderOperation?) -> Void = { operation in
+            DispatchQueue.main.async {
+                if let url = request.url , url.isFileURL {
+                    if #available(OSX 10.11, *) {
+                        _ = operation?.webView?.loadFileURL(url, allowingReadAccessTo: url.deletingLastPathComponent())
+                    } else {
+                        preconditionFailure("OSX version lower 10.11 not supported.")
+                    }
                 } else {
-                    preconditionFailure("OSX version lower 10.11 not supported.")
+                    _ = operation?.webView?.load(request)
                 }
-            } else {
-                _ = operation.webView?.load(request)
             }
         }
         let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
@@ -140,18 +142,24 @@ internal class Renderer {
     //========================================
     
     internal func executeScript(_ script: String, willLoadPage: Bool? = false, postAction: PostAction = .none, completionHandler: RenderCompletion?) {
-        var requestBlock : (_ operation : RenderOperation) -> Void
+        var requestBlock : RequestBlock
         if let willLoadPage = willLoadPage , willLoadPage == true {
-            requestBlock = { $0.webView?.evaluateJavaScript(script, completionHandler: nil) }
+            requestBlock = { operation in
+                DispatchQueue.main.async {
+                    operation.webView?.evaluateJavaScript(script, completionHandler: nil)
+                }
+            }
         } else {
             requestBlock = { operation in
-                operation.webView?.evaluateJavaScript(script, completionHandler: { result, error in
-                    var data : Data?
-                    if let result = result {
-                        data = "\(result)".data(using: String.Encoding.utf8)
-                    }
-                    operation.completeRendering(operation.webView, result: data, error: error)
-                })
+                DispatchQueue.main.async {
+                    operation.webView?.evaluateJavaScript(script, completionHandler: { result, error in
+                        var data : Data?
+                        if let result = result {
+                            data = "\(result)".data(using: String.Encoding.utf8)
+                        }
+                        operation.completeRendering(operation.webView, result: data, error: error)
+                    })
+                }
             }
         }
         let operation = operationWithRequestBlock(requestBlock, postAction: postAction, completionHandler: completionHandler)
