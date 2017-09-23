@@ -91,12 +91,15 @@ internal class RenderOperation : Operation {
             startTimeout()
             
             // Wait for WKWebView to finish loading before starting the operation.
-            wait { [unowned self] in
-                var isLoading : Bool = false
-                dispatch_sync_on_main_thread {
-                    isLoading = self.webView?.isLoading ?? false
+            wait {
+                guard let webView = webView else {
+                    return false
                 }
-                return isLoading == false
+                var isLoading = false
+                dispatch_sync_on_main_thread {
+                    isLoading = webView.isLoading
+                }
+                return !isLoading
             }
             
             setupReferences()
