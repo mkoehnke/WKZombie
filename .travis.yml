@@ -1,5 +1,5 @@
 language: objective-c
-osx_image: xcode8
+osx_image: xcode9
 before_install:
   - bash Scripts/update-carthage.sh 0.16.2 
 script:

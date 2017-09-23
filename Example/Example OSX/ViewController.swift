@@ -39,7 +39,7 @@ class ViewController: NSViewController {
 
     func getTopTrendingEntry(url: URL) {
             open(url)
-        >>> get(by: .XPathQuery("//img[contains(@class, 'gh-octocat')]"))
+        >>> get(by: .XPathQuery("//img[contains(@alt, 'Github Octocat')]"))
         >>> fetch
         === output
     }
