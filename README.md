@@ -605,6 +605,35 @@ To build `WKZombie` using the Swift Package Manager, add it as dependency to you
 swift build -Xcc -I/usr/include/libxml2 -Xlinker -lxml2
 ```
 
+# FAQ
+
+## How can I use WKZombie and [Alamofire](https://github.com/Alamofire/Alamofire) in the same project?
+
+When using Alamofire and WKZombie in the same project, you might encounter a collision issue with keyword `Result` like this:
+
+```
+'Result' is ambiguous for type lookup in this context
+```
+
+This is due to the fact, that both modules use the same name for their result enum type. The type can be disambiguated using the following syntax in that particular file:
+
+```ruby
+import enum WKZombie.Result
+```
+
+From this point on, Result unambiguously refers to the one in the WKZombie module.
+
+If this would still be ambiguous or sub-optimal in some files, you can create a Swift file to rename imports using typealiases:
+
+
+```ruby
+import enum WKZombie.Result
+typealias WKZombieResult<T> = Result<T>
+```
+
+For for information, look at the solution found [here](https://stackoverflow.com/questions/37892621/how-can-i-disambiguate-a-type-and-a-module-with-the-same-name).
+
+
 # Contributing
 
 See the CONTRIBUTING file for how to help out. You'll need to run
