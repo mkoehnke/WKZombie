@@ -631,7 +631,7 @@ import enum WKZombie.Result
 typealias WKZombieResult<T> = Result<T>
 ```
 
-For for information, look at the solution found [here](https://stackoverflow.com/questions/37892621/how-can-i-disambiguate-a-type-and-a-module-with-the-same-name).
+For more information, take a look at the solution found [here](https://stackoverflow.com/questions/37892621/how-can-i-disambiguate-a-type-and-a-module-with-the-same-name).
 
 
 # Contributing
