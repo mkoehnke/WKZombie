@@ -1,7 +1,7 @@
 Pod::Spec.new do |s|
 
   s.name         = "WKZombie"
-  s.version      = "1.1.0"
+  s.version      = "1.1.1"
   s.summary      = "WKZombie is a Swift library for iOS/OSX to browse websites without the need of User Interface or API."
 
   s.description  = <<-DESC
@@ -15,8 +15,8 @@ Pod::Spec.new do |s|
 
   s.author       = "Mathias Köhnke"
 
-  s.ios.deployment_target = '9.1'
-  s.osx.deployment_target = '10.11'
+  s.ios.deployment_target = '10.3'
+  s.osx.deployment_target = '10.12'
 
   s.source       = { :git => "https://github.com/mkoehnke/WKZombie.git", :tag => s.version.to_s }
 
