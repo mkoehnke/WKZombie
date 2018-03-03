@@ -96,7 +96,7 @@ internal class Renderer {
                 }
             #elseif os(OSX)
                 self.webView = WKWebView(frame: CGRect.zero, configuration: config)
-                if let window = NSApplication.shared.keyWindow, let view = window.contentView {
+                if let window = NSApplication.shared().keyWindow, let view = window.contentView {
                     self.webView.frame = CGRect(origin: CGPoint.zero, size: view.frame.size)
                     self.webView.alphaValue = 0.01
                     view.addSubview(self.webView)
