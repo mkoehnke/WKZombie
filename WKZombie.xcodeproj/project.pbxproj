@@ -403,6 +403,7 @@
 					};
 					BF1F917C1CB6D83400A58A7F = {
 						CreatedOnToolsVersion = 7.3;
+						LastSwiftMigration = 0920;
 					};
 					BF455D9A1CEFBF99006D97D0 = {
 						CreatedOnToolsVersion = 7.3.1;
@@ -620,7 +621,8 @@
 				PRODUCT_NAME = WKZombie;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
 		};
@@ -647,7 +649,8 @@
 				PRODUCT_NAME = WKZombie;
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_VERSION = 3.0;
+				SWIFT_SWIFT3_OBJC_INFERENCE = Default;
+				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
 		};
