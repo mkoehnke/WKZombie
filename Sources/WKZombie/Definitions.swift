@@ -511,7 +511,7 @@ extension String {
     internal func terminate() -> String {
         let terminator : Character = ";"
         var trimmed = trimmingCharacters(in: CharacterSet.whitespacesAndNewlines)
-        if (trimmed.characters.last != terminator) { trimmed += String(terminator) }
+        if (trimmed.last != terminator) { trimmed += String(terminator) }
         return trimmed
     }
 }
